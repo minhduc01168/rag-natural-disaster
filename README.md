@@ -294,13 +294,6 @@ Dự án được phát triển cho mục đích học thuật.
 
 ---
 
-## Liên hệ
-
-**Huỳnh Nhật Minh**
-- GitHub: [@minhduc01168](https://github.com/minhduc01168)
-
----
-
 <p align="center">
   <em>TerraAlert - Bảo vệ cộng đồng trước thiên tai</em>
 </p>
