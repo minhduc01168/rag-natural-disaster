@@ -40,7 +40,7 @@
 3. Chọn dataset có format **GeoJSON** hoặc **CSV** với cột `latitude`, `longitude`
 4. Download file
 
-**Dataset推荐:**
+**Dataset đề xuất:**
 - `disaster-locations-vietnam` - Vị trí thiên tai Việt Nam
 - `vietnam-flood-landslide` - Lũ lụt & sạt lở
 
