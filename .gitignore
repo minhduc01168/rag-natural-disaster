@@ -1,0 +1,44 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Environment
+.env
+.env.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Model files (too large for git)
+*.pkl
+*.h5
+*.joblib
+
+# Kaggle
+kaggle.json
+
+# BMad / Agent folders (exclude from repo)
+_bmad/
+_bmad-output/
+.agent/
+.agents/
