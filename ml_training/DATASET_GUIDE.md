@@ -1,219 +1,112 @@
 # Hướng Dẫn Tạo Dataset & Huấn luyện Mô hình Landslide Susceptibility
 
-## Tổng Quan
+Tài liệu này hướng dẫn cách trích xuất dữ liệu, huấn luyện mô hình học máy (LSM - Landslide Susceptibility Mapping) cho hệ thống TerraAlert.
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│  BƯỚC 1: TẠO DATASET                                           │
-│  python create_dataset.py --mode api --output dataset.csv       │
-└─────────────────────────────────────────────────────────────────┘
-                              ↓
-┌─────────────────────────────────────────────────────────────────┐
-│  BƯỚC 2: UPLOAD LÊN KAGGLE                                     │
-│  Upload dataset.csv → New Notebook → Run All                    │
-└─────────────────────────────────────────────────────────────────┘
-                              ↓
-┌─────────────────────────────────────────────────────────────────┐
-│  BƯỚC 3: DOWNLOAD MODEL                                         │
-│  Download output/ → Copy vào backend/app/slow_lane/ml/models/   │
-└─────────────────────────────────────────────────────────────────┘
-```
+> [!IMPORTANT]
+> **Dành cho Nghiên cứu Học thuật (Research Paper):** BẮT BUỘC sử dụng phương pháp **Google Earth Engine (GEE)** để trích xuất dữ liệu vệ tinh thực tế (SRTM DEM, Sentinel-2, CHIRPS) để đảm bảo độ chính xác và tính hợp lệ khoa học.
+> 
+> **Dành cho Chạy Demo Hệ Thống:** Có thể sử dụng chế độ `--mode api` (OpenTopoData + Meteostat) để tạo dữ liệu giả lập nhanh chóng mà không cần đăng ký tài khoản GEE.
 
 ---
 
-## Bước 1: Tạo Dataset
+## 1. Phương pháp Học thuật: Sử dụng Google Earth Engine (Khuyến nghị)
 
-### Cài đặt thư viện
+Phương pháp này dùng để thu thập dữ liệu không gian thực tế tại Việt Nam để xuất bản báo cáo.
 
+### 1.1. Chuẩn bị tài khoản & Môi trường
+1. Đăng ký tài khoản GEE tại: [https://earthengine.google.com/](https://earthengine.google.com/) (Duyệt từ 1-7 ngày).
+2. Cài đặt thư viện Python:
+```bash
+pip install earthengine-api pandas numpy
+```
+3. Xác thực GEE trên máy:
+```bash
+python -c "import ee; ee.Authenticate()"
+```
+
+### 1.2. Chuẩn bị Ground Truth (Dữ liệu sạt lở thực tế)
+Bạn cần tải tọa độ các vụ sạt lở lịch sử tại Việt Nam:
+- **Nguồn:** [Humanitarian Data Exchange (HDX) - Vietnam Disasters](https://data.humdata.org/) hoặc [DesInventar Sendai](https://www.desinventar.net/).
+- **Yêu cầu:** File CSV chứa tọa độ của các vụ sạt lở. Script đã được nâng cấp để tự động nhận diện các tên cột phổ biến (`Lat`, `Y`, `Vĩ độ`, `Longitude`, `X`, `Kinh độ`).
+
+### 1.3. Trích xuất Dataset
+```bash
+cd ml_training/scripts
+python create_dataset.py --mode gee --output dataset.csv --hdx path/to/hdx_landslide_vietnam.csv
+```
+*Dữ liệu sẽ chứa các đặc trưng thực tế từ SRTM (độ cao, độ dốc), Sentinel-2 (NDVI), CHIRPS (Lượng mưa).*
+
+---
+
+## 2. Phương pháp Demo: Sử dụng Public APIs (Nhanh, không cần duyệt)
+
+Dành cho các bạn muốn build thử hệ thống ngay lập tức nhưng chưa có tài khoản GEE.
+
+### 2.1. Cài đặt thư viện
 ```bash
 pip install pandas numpy requests meteostat
 ```
 
-### Các chế độ chạy
-
-| Chế độ | Lệnh | Dữ liệu thật | Cần đăng ký |
-|--------|------|---------------|-------------|
-| Synthetic | `--mode synthetic` | Không | Không |
-| API | `--mode api` | Có | Không |
-| GEE | `--mode gee` | Có | Cần (1-7 ngày) |
-
-### Chạy synthetic (Test nhanh)
-
-```bash
-cd ml_training/scripts
-python create_dataset.py --mode synthetic --output dataset.csv
-```
-
-Output: 2000 mẫu, features random. Dùng để test pipeline.
-
-### Chạy với API miễn phí (Khuyến nghị)
-
+### 2.2. Trích xuất Dataset
 ```bash
 cd ml_training/scripts
 
-# Không có file HDX (dùng sample data)
+# Tùy chọn 1: Dùng data sạt lở mẫu tích hợp sẵn (Không cần file HDX)
 python create_dataset.py --mode api --output dataset.csv
 
-# Có file HDX
+# Tùy chọn 2: Dùng file HDX của bạn
 python create_dataset.py --mode api --output dataset.csv --hdx path/to/hdx.csv
-
-# Không dùng Meteostat (nhanh hơn)
-python create_dataset.py --mode api --output dataset.csv --no-meteostat
 ```
-
-**Features được tạo:**
-
-| Feature | Nguồn | Mô tả |
-|---------|-------|-------|
-| `elevation` | Open Elevation API | Độ cao (m) |
-| `slope` | Ước tính từ elevation | Độ dốc (độ) |
-| `aspect` | Random | Hướng dốc (0-360) |
-| `annual_precipitation` | Meteostat API | Lượng mưa năm (mm) |
-| `max_daily_rainfall` | Meteostat API | Mưa max ngày (mm) |
-| `rainfall_intensity` | Meteostat API | Cường độ mưa TB |
-| `ndvi` | Ước tính | Chỉ số thực vật |
-| `distance_to_fault` | Tính toán | Khoảng cách đứt gãy (km) |
-
-### Chạy với Google Earth Engine
-
-```bash
-# Bước 1: Đăng ký GEE (https://earthengine.google.com/)
-# Bước 2: Chờ duyệt (1-7 ngày)
-# Bước 3: Authenticate
-python -c "import ee; ee.Authenticate()"
-
-# Bước 4: Chạy script
-python create_dataset.py --mode gee --output dataset.csv --hdx path/to/hdx.csv
-```
+> [!NOTE]
+> Chế độ này dùng **OpenTopoData API** để lấy độ cao và **Meteostat** để lấy lượng mưa. Một số chỉ số như Độ dốc (Slope) và Chỉ số thực vật (NDVI) sẽ được ước tính (estimate) một cách tương đối.
 
 ---
 
-## Bước 2: Lấy Ground Truth (Lịch sử sạt lở)
+## 3. Huấn Luyện Mô Hình (Training)
 
-### Nguồn 1: HDX - Humanitarian Data Exchange
+Sau khi có file `dataset.csv`, bạn có thể huấn luyện mô hình.
 
-**URL:** https://data.humdata.org/
+### 3.1. Sử dụng Kaggle (Khuyến nghị để có GPU/RAM mạnh)
+1. Vào [Kaggle](https://www.kaggle.com/), tạo Notebook mới.
+2. Tab **Files** -> **Upload** -> Chọn file `dataset.csv`.
+3. Tab **File** -> **Import Notebook** -> Chọn file `ml_training/landslide_susceptibility_training.ipynb`.
+4. Click **Run All**.
+5. Sau khi xong, tải các file mô hình ở thư mục `output/` bên phải.
 
-1. Vào https://data.humdata.org/
-2. Search: `Vietnam landslide` hoặc `Vietnam disaster`
-3. Download CSV với cột `latitude`, `longitude`
-
-### Nguồn 2: DesInventar Sendai (UNDRR)
-
-**URL:** https://www.desinventar.net/
-
-1. Chọn **Country: Vietnam**
-2. Chọn **Disaster Type: Landslide**
-3. Export → Download CSV
-
-### Nguồn 3: Kaggle
-
-Search: `global landslide`, `Vietnam disaster`
+### 3.2. Sử dụng Local (Jupyter Notebook)
+1. Cài đặt: `pip install jupyterlab xgboost scikit-learn matplotlib seaborn`
+2. Đảm bảo file `dataset.csv` nằm cùng thư mục với notebook.
+3. Mở notebook và chạy tất cả các cell.
 
 ---
 
-## Bước 3: Upload lên Kaggle và Train
+## 4. Tích hợp vào Hệ Thống TerraAlert
 
-### 3.1. Tạo Kaggle Notebook
+Sau khi huấn luyện thành công, copy 4 file sau vào backend:
 
-1. Vào https://www.kaggle.com/code
-2. Click **New Notebook**
-
-### 3.2. Upload Dataset
-
-1. Ở panel phải, tab **Files**
-2. Click **Upload**
-3. Chọn file `dataset.csv` đã tạo ở Bước 1
-
-### 3.3. Upload Notebook
-
-1. Download file `landslide_susceptibility_training.ipynb`
-2. Trên Kaggle: **File** → **Import Notebook** → **Upload**
-
-### 3.4. Chạy Notebook
-
-1. Click **Run All** (hoặc Shift+Enter từng cell)
-2. Đợi 5-10 phút
-3. Kết quả sẽ hiển thị trực tiếp trên notebook
-
-### 3.5. Download Model
-
-1. Sau khi chạy xong, scroll xuống cuối notebook
-2. Ở panel **Output** bên phải, download các file `.pkl` và `.json`
-3. Hoặc vào tab **Files** → **output/** → download từng file
-
----
-
-## Bước 4: Tích hợp vào Backend
-
-### 4.1. Copy model files
-
-```
+```text
 backend/app/slow_lane/ml/models/
-├── lsm_xgboost_model.pkl
-├── lsm_random_forest_model.pkl
-├── label_encoders.pkl
-└── model_metadata.json
+├── lsm_xgboost_model.pkl          # Mô hình XGBoost (Chính)
+├── lsm_random_forest_model.pkl    # Mô hình RF (Backup)
+├── label_encoders.pkl             # Bộ mã hóa nhãn
+└── model_metadata.json            # Thông tin metadata & metrics
 ```
 
-### 4.2. Restart Backend
-
+Khởi động lại backend để hệ thống load mô hình mới:
 ```bash
 cd backend
 uvicorn app.main:app --reload --port 8000
 ```
 
-### 4.3. Test API
-
+Kiểm tra API:
 ```bash
 curl http://localhost:8000/api/v1/slow-lane/map/susceptibility?lat=16.05&lon=108.20
 ```
 
 ---
 
-## Troubleshooting
+## 5. Xử Lý Sự Cố (Troubleshooting)
 
-### Lỗi: Open Elevation API timeout
-
-```bash
-# Thử lại sau hoặc dùng --no-meteostat để skip
-python create_dataset.py --mode api --output dataset.csv --no-meteostat
-```
-
-### Lỗi: Meteostat không có dữ liệu
-
-```bash
-# Dùng --no-meteostat
-python create_dataset.py --mode api --output dataset.csv --no-meteostat
-```
-
-### Lỗi: Rate limit API
-
-```bash
-# Script đã có sleep() giữa các request. Nếu vẫn lỗi, tăng thời gian chờ.
-```
-
-### Lỗi: Kaggle notebook không tìm thấy file
-
-```bash
-# Đảm bảo upload file CSV trước khi chạy notebook
-# Path đúng: /kaggle/working/landslide_dataset.csv
-```
-
----
-
-## Tóm tắt nhanh
-
-```bash
-# 1. Tạo dataset (chọn 1 trong 3)
-python ml_training/scripts/create_dataset.py --mode synthetic --output dataset.csv   # Test
-python ml_training/scripts/create_dataset.py --mode api --output dataset.csv         # Thật
-
-# 2. Upload dataset.csv lên Kaggle Files
-
-# 3. Chạy notebook landslide_susceptibility_training.ipynb trên Kaggle
-
-# 4. Download model files từ output/
-
-# 5. Copy vào backend/app/slow_lane/ml/models/
-```
+- **Lỗi OpenTopoData API timeout trong chế độ `--mode api`**: Server API công cộng đôi khi bị quá tải. Script đã được cấu hình tự động thử lại (retry). Nếu vẫn thất bại, hãy đợi vài phút và chạy lại.
+- **Meteostat không có dữ liệu trạm gần đó**: Sử dụng cờ `--no-meteostat` để hệ thống tự tạo dữ liệu lượng mưa mô phỏng: `python create_dataset.py --mode api --output dataset.csv --no-meteostat`.
+- **Lỗi thiếu file CSV khi chạy Kaggle Notebook**: Cần đảm bảo file tải lên Kaggle có tên chính xác là `landslide_dataset.csv`. Notebook đã được thiết kế để tìm kiếm ở nhiều thư mục (`/kaggle/input/`, `/kaggle/working/`).

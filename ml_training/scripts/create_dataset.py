@@ -60,8 +60,8 @@ def load_ground_truth(hdx_csv_path=None):
         # Đảm bảo có cột latitude, longitude
         if 'latitude' not in df.columns or 'longitude' not in df.columns:
             # Thử tìm cột khác
-            lat_cols = [c for c in df.columns if 'lat' in c.lower()]
-            lon_cols = [c for c in df.columns if 'lon' in c.lower() or 'lng' in c.lower()]
+            lat_cols = [c for c in df.columns if 'lat' in c.lower() or c.lower() in ['y', 'vĩ độ', 'vi do']]
+            lon_cols = [c for c in df.columns if 'lon' in c.lower() or 'lng' in c.lower() or c.lower() in ['x', 'kinh độ', 'kinh do']]
             
             if lat_cols and lon_cols:
                 df = df.rename(columns={lat_cols[0]: 'latitude', lon_cols[0]: 'longitude'})
@@ -163,19 +163,24 @@ def generate_negative_samples(positive_df, ratio=1.0):
 
 def get_elevation_from_api(lat, lon):
     """
-    Lấy độ cao từ Open Elevation API.
-    URL: https://api.open-elevation.com/
+    Lấy độ cao từ OpenTopoData API (Aster30m).
+    Nguồn tin cậy hơn cho dữ liệu DEM 30m.
+    URL: https://api.opentopodata.org/
     """
-    try:
-        url = "https://api.open-elevation.com/api/v1/lookup"
-        params = {"locations": f"{lat},{lon}"}
-        response = requests.get(url, params=params, timeout=10)
-        
-        if response.status_code == 200:
-            result = response.json()
-            return result['results'][0]['elevation']
-    except Exception as e:
-        pass
+    for _ in range(3):  # Thử lại tối đa 3 lần với exponential backoff
+        try:
+            url = "https://api.opentopodata.org/v1/aster30m"
+            params = {"locations": f"{lat},{lon}"}
+            response = requests.get(url, params=params, timeout=10)
+            
+            if response.status_code == 200:
+                result = response.json()
+                if result['results'] and result['results'][0]['elevation'] is not None:
+                    return result['results'][0]['elevation']
+            time.sleep(1)
+        except Exception as e:
+            time.sleep(2)
+            pass
     
     return None
 
@@ -199,7 +204,7 @@ def get_elevation_batch(locations, batch_size=50):
         locations_str = "|".join(loc_strings)
         
         try:
-            url = "https://api.open-elevation.com/api/v1/lookup"
+            url = "https://api.opentopodata.org/v1/aster30m"
             params = {"locations": locations_str}
             response = requests.get(url, params=params, timeout=30)
             
@@ -216,7 +221,7 @@ def get_elevation_batch(locations, batch_size=50):
         progress = min(i + batch_size, total)
         print(f"    Elevation: {progress}/{total} points", end='\r')
         
-        time.sleep(0.5)  # Rate limit
+        time.sleep(1)  # Rate limit OpenTopoData (1 request/sec)
     
     print(f"    Elevation: {total}/{total} points - Done!")
     return elevations
