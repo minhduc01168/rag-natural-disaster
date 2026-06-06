@@ -84,6 +84,10 @@ def load_ground_truth(hdx_csv_path=None):
         
         print(f"  Filtered {len(df)} Vietnam records from {original_len} total global records.")
         
+        if len(df) == 0:
+            print("  WARNING: No records found in Vietnam bounds. Falling back to sample data.")
+            return get_sample_landslide_data()
+            
         return df
     else:
         print("  No HDX file provided. Using sample Vietnam landslide data.")
