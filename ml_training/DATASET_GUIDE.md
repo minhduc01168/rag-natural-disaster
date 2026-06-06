@@ -24,15 +24,26 @@ pip install earthengine-api pandas numpy
 python -c "import ee; ee.Authenticate()"
 ```
 
-### 1.2. Chuẩn bị Ground Truth (Dữ liệu sạt lở thực tế)
-Bạn cần tải tọa độ các vụ sạt lở lịch sử tại Việt Nam:
-- **Nguồn:** [Humanitarian Data Exchange (HDX) - Vietnam Disasters](https://data.humdata.org/) hoặc [DesInventar Sendai](https://www.desinventar.net/).
-- **Yêu cầu:** File CSV chứa tọa độ của các vụ sạt lở. Script đã được nâng cấp để tự động nhận diện các tên cột phổ biến (`Lat`, `Y`, `Vĩ độ`, `Longitude`, `X`, `Kinh độ`).
+### 1.2. Chuẩn bị Ground Truth (Dữ liệu sạt lở thực tế số lượng lớn)
+Để mô hình có giá trị thực tiễn và huấn luyện được trên Kaggle hiệu quả, bạn bắt buộc phải tải dữ liệu sạt lở lịch sử (Landslide Inventory) số lượng lớn. Dưới đây là cách lấy dữ liệu chi tiết:
+
+**Cách A: Kho dữ liệu NASA Global Landslide Catalog (Rất Khuyên dùng)**
+1. Truy cập trang web dữ liệu đã được NASA chia sẻ lên Kaggle: [NASA Global Landslide Catalog trên Kaggle](https://www.kaggle.com/datasets/nasa/landslide-events)
+2. Nhấn nút **Download** (Biểu tượng tải xuống màu đen ở góc phải) để tải toàn bộ bộ dữ liệu về máy. Bạn sẽ nhận được file `catalog.csv`.
+3. Mở file CSV vừa tải bằng Excel hoặc Google Sheets.
+4. Lọc (Filter) cột `country_name` để chỉ lấy các dòng có giá trị là `Vietnam` (nếu bạn tập trung nghiên cứu ở Việt Nam) hoặc giữ nguyên nếu muốn train mô hình toàn cầu.
+5. Lưu file lại với tên `nasa_landslides.csv` và chép nó vào thư mục dự án của bạn (cùng chỗ với file `create_dataset.py`).
+
+**Cách B: Nguồn Humanitarian Data Exchange (HDX)**
+1. Truy cập [HDX Vietnam](https://data.humdata.org/dataset?groups=vnm&q=landslide) hoặc [DesInventar Sendai](https://www.desinventar.net/).
+2. Tìm các báo cáo thảm họa sạt lở và tải file CSV.
+
+> *Lưu ý về Code:* Script `create_dataset.py` của chúng ta đã được lập trình thuật toán nhận diện thông minh, tự động quét và tìm các cột chứa tọa độ (như `Lat`, `Y`, `Vĩ độ`, `Longitude`, `X`, `Kinh độ`) trong file bạn tải về. Do đó, bạn không cần tốn công ngồi đổi tên cột bằng tay!
 
 ### 1.3. Trích xuất Dataset
 ```bash
 cd ml_training/scripts
-python create_dataset.py --mode gee --output dataset.csv --hdx path/to/hdx_landslide_vietnam.csv
+python create_dataset.py --mode gee --output dataset.csv --hdx nasa_landslides.csv
 ```
 *Dữ liệu sẽ chứa các đặc trưng thực tế từ SRTM (độ cao, độ dốc), Sentinel-2 (NDVI), CHIRPS (Lượng mưa).*
 
@@ -51,11 +62,11 @@ pip install pandas numpy requests meteostat
 ```bash
 cd ml_training/scripts
 
-# Tùy chọn 1: Dùng data sạt lở mẫu tích hợp sẵn (Không cần file HDX)
+# Tùy chọn 1: Dùng data sạt lở mẫu tích hợp sẵn (Chỉ có 36 điểm, dùng để test lỗi code)
 python create_dataset.py --mode api --output dataset.csv
 
-# Tùy chọn 2: Dùng file HDX của bạn
-python create_dataset.py --mode api --output dataset.csv --hdx path/to/hdx.csv
+# Tùy chọn 2: Dùng file dữ liệu thực tế tải từ NASA/HDX (Dùng để Train trên Kaggle)
+python create_dataset.py --mode api --output dataset.csv --hdx nasa_landslides.csv
 ```
 > [!NOTE]
 > Chế độ này dùng **OpenTopoData API** để lấy độ cao và **Meteostat** để lấy lượng mưa. Một số chỉ số như Độ dốc (Slope) và Chỉ số thực vật (NDVI) sẽ được ước tính (estimate) một cách tương đối.
