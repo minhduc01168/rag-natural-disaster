@@ -73,10 +73,16 @@ def load_ground_truth(hdx_csv_path=None):
         df = df.dropna(subset=['latitude', 'longitude'])
         df['latitude'] = pd.to_numeric(df['latitude'], errors='coerce')
         df['longitude'] = pd.to_numeric(df['longitude'], errors='coerce')
+        
+        # TỰ ĐỘNG LỌC DỮ LIỆU THUỘC LÃNH THỔ VIỆT NAM (Dành cho Global Dataset)
+        # Bounding box Việt Nam: Vĩ độ (8.0 -> 24.0), Kinh độ (102.0 -> 110.0)
+        original_len = len(df)
         df = df[
-            (df['latitude'].between(-90, 90)) & 
-            (df['longitude'].between(-180, 180))
+            (df['latitude'].between(8.0, 24.0)) & 
+            (df['longitude'].between(102.0, 110.0))
         ]
+        
+        print(f"  Filtered {len(df)} Vietnam records from {original_len} total global records.")
         
         return df
     else:
@@ -178,7 +184,7 @@ def get_elevation_from_api(lat, lon):
                 if result['results'] and result['results'][0]['elevation'] is not None:
                     return result['results'][0]['elevation']
             time.sleep(1)
-        except Exception as e:
+        except Exception:
             time.sleep(2)
             pass
     
@@ -214,7 +220,7 @@ def get_elevation_batch(locations, batch_size=50):
                     elevations.append(r['elevation'])
             else:
                 elevations.extend([None] * len(batch))
-        except Exception as e:
+        except Exception:
             elevations.extend([None] * len(batch))
         
         # Progress
@@ -250,7 +256,7 @@ def get_precipitation_from_meteostat(lat, lon, year=2022):
             }
     except ImportError:
         pass
-    except Exception as e:
+    except Exception:
         pass
     
     return None
@@ -457,9 +463,9 @@ def create_dataset_with_api(output_csv='landslide_dataset.csv', hdx_csv=None, us
     print(f"\n  Dataset saved: {output_csv}")
     print(f"  Shape: {output_df.shape}")
     print(f"  Columns: {output_df.columns.tolist()}")
-    print(f"\n  Landslide distribution:")
+    print("\n  Landslide distribution:")
     print(f"    {output_df['landslide'].value_counts().to_dict()}")
-    print(f"\n  Feature statistics:")
+    print("\n  Feature statistics:")
     print(output_df.describe().round(2).to_string())
     
     return output_df
@@ -607,7 +613,7 @@ def create_dataset_with_gee(output_csv='landslide_dataset.csv', hdx_csv=None):
     
     print(f"\n  Dataset saved: {output_csv}")
     print(f"  Shape: {df.shape}")
-    print(f"\n  Landslide distribution:")
+    print("\n  Landslide distribution:")
     print(f"    {df['landslide'].value_counts().to_dict()}")
     
     return df
@@ -658,9 +664,9 @@ def create_dataset_synthetic(output_csv='landslide_dataset.csv', n_samples=2000)
     
     print(f"\n  Dataset saved: {output_csv}")
     print(f"  Shape: {df.shape}")
-    print(f"\n  Landslide distribution:")
+    print("\n  Landslide distribution:")
     print(f"    {df['landslide'].value_counts().to_dict()}")
-    print(f"\n  Feature statistics:")
+    print("\n  Feature statistics:")
     print(df.describe().round(2).to_string())
     
     return df
@@ -719,4 +725,4 @@ Ví dụ sử dụng:
     
     print_header("HOÀN THÀNH!")
     print(f"  File: {args.output}")
-    print(f"  Bước tiếp theo: Upload file này lên Kaggle và chạy notebook training")
+    print("  Bước tiếp theo: Upload file này lên Kaggle và chạy notebook training")
