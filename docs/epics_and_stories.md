@@ -1,6 +1,6 @@
-# Danh Sách Các Epics (Project Backlog)
+# Danh Sách Các Epics (Project Backlog - Advanced RAG Edition)
 
-Dự án **TerraAlert** được chia thành 6 Epics chính để triển khai cuốn chiếu. Việc chia nhỏ nhằm ưu tiên xử lý luồng cảnh báo sinh tồn trước (Fast Lane), sau đó mới ráp hệ thống AI phức tạp (Slow Lane).
+Dự án **TerraAlert** được chia thành 7 Epics chính để triển khai cuốn chiếu. Việc chia nhỏ nhằm ưu tiên xử lý luồng cảnh báo sinh tồn trước (Fast Lane), sau đó ráp hệ thống Agentic RAG phức tạp (Slow Lane).
 
 ## Epic 1: Project Setup & Foundation
 - **Story 1.1:** Khởi tạo PWA scaffolding (React + TailwindCSS).
@@ -19,19 +19,24 @@ Dự án **TerraAlert** được chia thành 6 Epics chính để triển khai c
 - **Story 3.2:** Cài đặt Service Workers và IndexedDB để lưu trữ (cache) nội dung tĩnh.
 - **Story 3.3:** Viết test giả lập (simulate) trạng thái mất mạng và xác nhận luồng offline hoạt động trơn tru.
 
-## Epic 4: Slow Lane Data Ingestion & ML Pipeline
-- **Story 4.1:** Thiết lập Celery Workers và Redis cho job queue.
-- **Story 4.2:** Viết cron job gọi API từ Google Earth Engine (SRTM, Sentinel-2, GPM) và dữ liệu HDX.
-- **Story 4.3:** Xây dựng script chuẩn hóa dữ liệu GIS và lưu trữ vào PostgreSQL (có cài extension PostGIS).
-- **Story 4.4:** Huấn luyện mô hình Machine Learning (Random Forest) dựa trên dữ liệu GIS và lịch sử HDX để tạo bản đồ nhạy cảm sạt lở (LSM).
+## Epic 4: Knowledge Base Construction & Ingestion
+- **Story 4.1:** Thu thập, số hóa và làm sạch tài liệu: Cẩm nang phòng chống thiên tai, luật đê điều, hướng dẫn sơ tán sạt lở (PDF, Word).
+- **Story 4.2:** Tích hợp Document Parser (vd: `unstructured`) để trích xuất text từ PDF, đảm bảo giữ nguyên bảng biểu và cấu trúc văn bản.
+- **Story 4.3:** Xây dựng thuật toán **Semantic Chunking** thay vì cắt theo độ dài, giúp giữ trọn vẹn ngữ nghĩa từng đoạn văn bản.
+- **Story 4.4:** Áp dụng Embedding model và lưu toàn bộ chunks vào Vector Database (ChromaDB / Pinecone).
 
-## Epic 5: Multi-Agent RAG System (TerraBot)
-- **Story 5.1:** Thiết lập ChromaDB và nhúng (embed) các tài liệu phòng chống thiên tai để làm Knowledge Base.
-- **Story 5.2:** Khởi tạo 4 Agents bằng LangChain/LlamaIndex (Weather, Geographic, Knowledge, Synthesis).
-- **Story 5.3:** Tích hợp LLM API (Gemini/Groq) để Agents diễn dịch ngôn ngữ tự nhiên tiếng Việt.
-- **Story 5.4:** Xây dựng giao diện chat *TerraBot Space* và API endpoint tương ứng.
+## Epic 5: Advanced RAG Core & Retrieval
+- **Story 5.1:** Xây dựng cơ chế **Hybrid Search**: Kết hợp tìm kiếm từ khóa (BM25) và tìm kiếm ngữ nghĩa (Vector Search).
+- **Story 5.2:** Triển khai **Cross-Encoder Re-ranking**: Xếp hạng lại top các chunks tìm được để đảm bảo lấy ra những thông tin chính xác nhất.
+- **Story 5.3:** Cài đặt framework đánh giá **RAGAS** hoặc TruLens. Viết kịch bản test để tự động chấm điểm độ chính xác (Faithfulness) và độ liên quan (Answer Relevance).
 
-## Epic 6: Research Dashboard (GIS Visualization)
-- **Story 6.1:** Xây dựng API (REST) để query dữ liệu GeoJSON/không gian từ PostGIS.
-- **Story 6.2:** Tích hợp thư viện bản đồ tương tác (Leaflet hoặc Mapbox) vào React.
-- **Story 6.3:** Trực quan hóa bản đồ nhạy cảm sạt lở (LSM) sinh ra từ mô hình ML và các biểu đồ Time-series lượng mưa.
+## Epic 6: Multi-Agent Orchestration (TerraBot)
+- **Story 6.1:** Khởi tạo các API Tools: `get_weather_now`, `get_elevation`.
+- **Story 6.2:** Xây dựng các Agents: `RouterAgent` (điều hướng), `KnowledgeAgent` (gọi RAG Core ở Epic 5), `ToolAgent` (gọi API thời tiết/địa hình).
+- **Story 6.3:** Xây dựng `SynthesisAgent` để tổng hợp thông tin, đưa ra quyết định sơ tán theo ngôn ngữ tự nhiên.
+- **Story 6.4:** Tích hợp LLM API (Gemini Flash/Groq) và xây dựng giao diện chat *TerraBot Space* trên Frontend.
+
+## Epic 7: Research Dashboard (Geo-Spatial Visualization)
+- **Story 7.1:** Xây dựng API query dữ liệu không gian từ PostGIS.
+- **Story 7.2:** Tích hợp bản đồ tương tác (Leaflet) vào React Frontend.
+- **Story 7.3:** Trực quan hóa dữ liệu thời tiết (lượng mưa) và vị trí cảnh báo rủi ro lên bản đồ thay vì hiển thị dữ liệu ML.

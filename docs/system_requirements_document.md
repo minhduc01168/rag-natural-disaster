@@ -1,6 +1,6 @@
 # Bản Yêu Cầu Hệ Thống (System Requirements Document - SRD)
-**Dự án:** TerraAlert - Nền tảng cảnh báo sớm sạt lở đất ứng dụng Agentic RAG và Dữ liệu vệ tinh.
-*(Bản cập nhật kiến trúc theo nguyên tắc Phân tách Không gian & Thời gian)*
+**Dự án:** TerraAlert - Nền tảng Hỗ trợ ra quyết định ứng phó sạt lở đất ứng dụng Advanced Agentic RAG.
+*(Bản cập nhật kiến trúc loại bỏ ML, tập trung chuyên sâu vào Agentic RAG)*
 
 ---
 
@@ -21,12 +21,13 @@
 
 ## 2. Tổng Quan Dự Án & Hàm Lượng Nghiên Cứu (Research Focus)
 
-* **Tên đề tài nghiên cứu dự kiến:** *A Cost-Effective Multi-Agent Early Warning System for Landslides in Mountainous Regions Using Open Satellite Remote Sensing and Integrated RAG Architecture.*
-* **Khu vực nghiên cứu thử nghiệm (Case Study):** Một tỉnh vùng cao trọng điểm (ví dụ: tỉnh Gia Lai hoặc khu vực Tây Nguyên/Tây Bắc).
+* **Tên đề tài nghiên cứu dự kiến:** *An Intelligent Multi-Agent RAG System for Emergency Decision Support in Landslide Disasters.*
+* **Khu vực nghiên cứu thử nghiệm (Case Study):** Các tỉnh vùng cao trọng điểm (ví dụ: khu vực Tây Nguyên/Tây Bắc, Việt Nam).
 * **Đóng góp khoa học & Triết lý thiết kế:**
-  1. **Decoupled Architecture (Kiến trúc phân tách):** Giải quyết mâu thuẫn giữa độ trễ của AI và tính cấp bách của cứu nạn bằng cách phân tách hệ thống thành 2 luồng: **Fast Lane** (Cứu nạn thời gian thực) và **Slow Lane** (Học thuật, AI phân tích).
-  2. Xây dựng bản đồ nhạy cảm sạt lở đất (LSM) từ dữ liệu vệ tinh mở (SRTM, Sentinel-2, GPM).
-  3. Đề xuất kiến trúc **Multi-Agent RAG** giúp dịch lý thuyết khí tượng phức tạp thành khuyến nghị hành động ngôn ngữ tự nhiên.
+  1. **Decoupled Architecture (Kiến trúc phân tách):** Giải quyết mâu thuẫn giữa độ trễ của AI và tính cấp bách của cứu nạn bằng cách phân tách hệ thống thành 2 luồng: **Fast Lane** (Cứu nạn thời gian thực) và **Slow Lane** (Học thuật, Agentic RAG hỗ trợ ra quyết định).
+  2. **Advanced RAG Pipeline:** Xây dựng hệ thống RAG chuyên sâu ứng dụng Semantic Chunking, Hybrid Search và mô hình Cross-Encoder để Re-ranking tài liệu cứu hộ.
+  3. **Multi-Agent Orchestration:** Đề xuất kiến trúc đa tác vụ (Multi-Agent) kết hợp LLM và khả năng gọi API bên ngoài (Thời tiết, Địa hình) để tự động hóa việc đưa ra khuyến nghị sơ tán và sinh tồn.
+  4. **Rigorous Evaluation:** Đánh giá định lượng chất lượng của hệ thống RAG bằng framework RAGAS (Faithfulness, Answer Relevance, Context Precision).
 
 ---
 
@@ -34,14 +35,15 @@
 
 Hệ thống được chia làm hai luồng (Lanes) xử lý độc lập để đảm bảo an toàn sinh mạng đồng thời giữ nguyên giá trị nghiên cứu AI:
 
-1. **Slow Lane (Data Ingestion, ML Pipeline & AI RAG):**
-   * *Background Workers (Celery + Redis):* Định kỳ trích xuất dữ liệu không gian từ GEE (SRTM DEM, Sentinel-2 NDVI, NASA GPM). Dữ liệu bản đồ nặng được lưu và truy vấn qua **PostgreSQL + PostGIS**.
-   * *Gán nhãn & Huấn luyện Mô hình ML (Research Core):*
-     * Chồng ghép tọa độ các vụ sạt lở lịch sử từ **HDX** lên bản đồ địa hình SRTM để tạo bộ dữ liệu có nhãn (labeled dataset).
-     * Trích xuất các đặc trưng (features): độ dốc, độ cao (SRTM), chỉ số NDVI $= \frac{NIR - Red}{NIR + Red}$ (Sentinel-2), lượng mưa tích lũy (NASA GPM).
-     * Huấn luyện thuật toán **Random Forest** (hoặc Frequency Ratio) để phân tích trọng số rủi ro từng yếu tố.
-     * Xuất kết quả dưới dạng **Bản đồ Nhạy cảm Sạt lở (Landslide Susceptibility Map - LSM)** dạng GeoJSON/GeoTIFF, lưu vào PostGIS phục vụ Research Dashboard và Geographic Agent.
-   * *Knowledge Base:* Các tài liệu phòng chống thiên tai được chunking và lưu trong **ChromaDB** phục vụ riêng cho các tác vụ RAG của TerraBot.
+1. **Slow Lane (Advanced Agentic RAG - Research Core):**
+   * *Data Ingestion (Chế biến tài liệu):* Thu thập cẩm nang phòng chống thiên tai, luật đê điều, hướng dẫn sơ tán (PDF, Word). Áp dụng **Semantic Chunking** để chia nhỏ tài liệu theo ngữ nghĩa thay vì độ dài cố định.
+   * *Vector Database & Retrieval:* Embedding tài liệu lưu vào **ChromaDB/Pinecone**. Triển khai cơ chế **Hybrid Search** (kết hợp BM25 và Vector Search) và sử dụng Cross-Encoder để **Re-ranking** các tài liệu phù hợp nhất.
+   * *Multi-Agent Orchestration:* 
+     * `Router Agent`: Phân loại ý định người dùng (hỏi luật, hỏi thời tiết, hay cần hướng dẫn sơ tán).
+     * `Retrieval Agent`: Chuyên truy xuất VectorDB để tìm quy trình chuẩn.
+     * `Tool Agents`: Chuyên gọi API bên ngoài (Meteostat lấy lượng mưa, OpenTopoData lấy độ cao/địa hình).
+     * `Synthesis Agent`: Trích xuất thông tin từ các Agent khác để viết câu trả lời hoàn chỉnh, trung thực (Faithful) và dễ hiểu.
+   * *RAG Evaluation:* Hệ thống được benchmark liên tục bằng **RAGAS/TruLens** để đo lường độ chính xác và giảm thiểu ảo giác (Hallucination).
 2. **Fast Lane (Real-time Alert & SOS Pipeline):**
    * *Alert API:* Gọi API từ Meteostat 3 giờ/lần. Nếu vượt ngưỡng bão hòa, kích hoạt Push Notification ngay lập tức thông qua luồng Basic REST/WebSockets. Không có sự can thiệp của AI RAG ở luồng này để đảm bảo độ trễ < 1 giây.
 
@@ -80,11 +82,9 @@ Hệ thống được chia làm hai luồng (Lanes) xử lý độc lập để 
 * **Bộ công nghệ (Tech Stack):**
   * *Frontend:* ReactJS / TailwindCSS. Bắt buộc thiết kế theo kiến trúc **PWA (Progressive Web App)** với Service Workers và IndexedDB để đảm bảo tính năng "Offline Survival Guide" luôn hoạt động khi sập mạng.
   * *Backend Fast Lane:* FastAPI, WebSockets/FCM cho Push Notifications.
-  * *Backend Slow Lane:* Celery + Redis cho Data Ingestion; PostgreSQL + PostGIS cho dữ liệu không gian.
-  * *Machine Learning (LSM):* **Scikit-learn** (Random Forest), `geopandas`, `shapely` cho xử lý và huấn luyện mô hình dự báo sạt lở. Google Earth Engine Python API để truy cập dữ liệu vệ tinh.
-  * *AI Framework:* LangChain/LlamaIndex. Vector DB: ChromaDB. LLM API: Groq/Gemini Flash.
+  * *Backend Slow Lane (Agentic RAG):* FastAPI, Celery + Redis cho Data Ingestion tài liệu lớn.
+  * *Advanced RAG & Evaluation:* LangChain/LlamaIndex. Vector DB: ChromaDB hoặc Pinecone. Đánh giá tự động: **RAGAS**, TruLens. LLM API: Groq/Gemini Flash.
 * **Hiệu năng & Vận hành (SLA):**
   * *SOS & Alert:* Độ trễ < 1 giây.
-  * *TerraBot RAG:* Độ trễ < 5-10 giây (chỉ dùng trước/sau thảm họa).
-  * *ML Model Training:* Chạy offline/batch trên Google Colab hoặc local, sau đó lưu model đã huấn luyện (`.pkl`) vào hệ thống.
+  * *Multi-Agent RAG:* Độ trễ < 5-10 giây. Tối ưu hóa bằng cơ chế streaming response.
   * Toàn bộ mã nguồn đóng gói bằng **Docker** để dễ triển khai.

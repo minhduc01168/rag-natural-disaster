@@ -56,12 +56,12 @@ export function ChatWindow() {
 
     try {
       // Call API
-      const response = await fetch(`${API_BASE_URL}/api/v1/slow-lane/chat`, {
+      const response = await fetch(`${API_BASE_URL}/api/v1/rag/chat`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ message: text }),
+        body: JSON.stringify({ query: text }),
       });
 
       if (!response.ok) {
@@ -73,10 +73,10 @@ export function ChatWindow() {
       // Add bot response
       const botMessage: Message = {
         id: (Date.now() + 1).toString(),
-        text: data.response,
+        text: data.answer,
         sender: 'bot',
         timestamp: new Date(),
-        agent: data.agent,
+        agent: data.route_taken === 'knowledge' ? 'TerraBot Cẩm Nang' : `TerraBot ${data.route_taken}`,
         sources: data.sources,
       };
 
