@@ -94,49 +94,32 @@ def load_ground_truth(hdx_csv_path=None):
         return get_sample_landslide_data()
 
 
-def get_sample_landslide_data():
+def get_sample_landslide_data(n_samples=500):
     """
-    Sample landslide locations tại Việt Nam.
-    Dữ liệu từ các sự kiện sạt lở có thật (2020-2023).
+    Sinh dữ liệu mô phỏng sạt lở (synthetic data) tại Việt Nam với số lượng lớn.
+    Tập trung vào 3 vùng có nguy cơ cao: Tây Bắc, Miền Trung, Tây Nguyên.
     """
-    data = {
-        'latitude': [
-            # Miền Trung (nhiều sạt lở nhất)
-            16.05, 16.07, 15.60, 15.62, 15.12, 14.58, 14.02, 13.45,
-            16.20, 16.22, 15.80, 15.82, 15.30, 14.75, 14.20, 13.60,
-            # Tây Nguyên
-            14.85, 14.90, 15.30, 15.35, 14.50, 14.55,
-            # Tây Bắc
-            21.03, 20.95, 22.35, 22.40, 21.50, 21.45, 20.80, 20.75,
-            # Đông Bắc
-            22.10, 22.15, 21.80, 21.85, 22.50, 22.55,
-        ],
-        'longitude': [
-            # Miền Trung
-            108.20, 108.22, 108.35, 108.38, 108.85, 108.50, 108.92, 109.15,
-            107.80, 107.82, 107.90, 107.92, 108.10, 108.30, 108.60, 108.80,
-            # Tây Nguyên
-            108.70, 108.72, 108.45, 108.48, 107.80, 107.82,
-            # Tây Bắc
-            105.85, 105.80, 103.95, 103.90, 104.20, 104.25, 104.80, 104.85,
-            # Đông Bắc
-            106.50, 106.52, 106.80, 106.82, 105.90, 105.92,
-        ],
-        'event_date': [
-            '2020-10-15', '2020-10-15', '2020-10-18', '2020-10-18',
-            '2020-10-20', '2020-10-22', '2020-10-25', '2020-10-28',
-            '2021-10-15', '2021-10-15', '2021-10-18', '2021-10-18',
-            '2021-10-20', '2021-10-22', '2021-10-25', '2021-10-28',
-            '2021-08-10', '2021-08-10', '2021-09-05', '2021-09-05',
-            '2022-08-15', '2022-08-15',
-            '2021-06-15', '2021-06-15', '2021-07-20', '2021-07-20',
-            '2022-06-10', '2022-06-10', '2022-07-15', '2022-07-15',
-            '2022-09-01', '2022-09-01', '2023-06-15', '2023-06-15',
-            '2023-08-10', '2023-08-10',
-        ]
-    }
-    df = pd.DataFrame(data)
-    print(f"  Sample data: {len(df)} landslide locations in Vietnam")
+    # 3 vùng có nguy cơ sạt lở cao (Tây Bắc, Miền Trung, Tây Nguyên)
+    regions = [
+        {'lat_min': 21.0, 'lat_max': 23.0, 'lon_min': 103.0, 'lon_max': 105.5}, # Tây Bắc
+        {'lat_min': 14.5, 'lat_max': 16.5, 'lon_min': 107.5, 'lon_max': 108.5}, # Miền Trung
+        {'lat_min': 11.5, 'lat_max': 14.0, 'lon_min': 107.5, 'lon_max': 108.5}, # Tây Nguyên
+    ]
+    
+    lats, lons = [], []
+    for _ in range(n_samples):
+        reg = regions[np.random.randint(0, len(regions))]
+        lats.append(np.random.uniform(reg['lat_min'], reg['lat_max']))
+        lons.append(np.random.uniform(reg['lon_min'], reg['lon_max']))
+        
+    df = pd.DataFrame({
+        'latitude': lats,
+        'longitude': lons,
+        'landslide': 1,
+        'event_date': '2023-08-10'  # Dummy date
+    })
+    
+    print(f"  Generated {n_samples} synthetic landslide locations in Vietnam's mountainous regions.")
     return df
 
 
