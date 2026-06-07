@@ -1,9 +1,16 @@
 import os
 import chromadb
-from chromadb.config import Settings
-import google.generativeai as genai
+import requests
+from chromadb import Documents, EmbeddingFunction, Embeddings
 
-from chromadb.utils import embedding_functions
+class CustomHTTPEmbeddingFunction(EmbeddingFunction):
+    def __init__(self, api_url: str):
+        self.api_url = api_url
+
+    def __call__(self, input: Documents) -> Embeddings:
+        response = requests.post(self.api_url, json={"texts": input})
+        response.raise_for_status()
+        return response.json()["embeddings"]
 
 class ChromaManager:
     """
@@ -16,10 +23,10 @@ class ChromaManager:
         # Khởi tạo PersistentClient để lưu dữ liệu xuống đĩa cứng
         self.client = chromadb.PersistentClient(path=self.persist_directory)
         
-        # Khởi tạo embedding model
-        self.embedding_fn = embedding_functions.SentenceTransformerEmbeddingFunction(
-            model_name="microsoft/harrier-oss-v1-0.6b"
-        )
+        # Sử dụng microservice cho embedding
+        # URL trỏ tới container embedding_service trong mạng docker (hoặc localhost nếu chạy local)
+        embedding_url = os.environ.get("EMBEDDING_SERVICE_URL", "http://embedding_service:8002/embed")
+        self.embedding_fn = CustomHTTPEmbeddingFunction(api_url=embedding_url)
         
         # Tạo hoặc lấy collection
         self.collection = self.client.get_or_create_collection(

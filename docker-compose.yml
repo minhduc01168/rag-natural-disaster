@@ -57,6 +57,15 @@ services:
     networks:
       - terraalert-network
 
+  embedding_service:
+    build:
+      context: ./embedding_service
+      dockerfile: Dockerfile
+    ports:
+      - "8002:8002"
+    networks:
+      - terraalert-network
+
 volumes:
   postgres_data:
   redis_data:
