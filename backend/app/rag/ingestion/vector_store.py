@@ -3,6 +3,8 @@ import chromadb
 from chromadb.config import Settings
 import google.generativeai as genai
 
+from chromadb.utils import embedding_functions
+
 class ChromaManager:
     """
     Quản lý việc lưu trữ các Document Chunks vào ChromaDB.
@@ -14,8 +16,16 @@ class ChromaManager:
         # Khởi tạo PersistentClient để lưu dữ liệu xuống đĩa cứng
         self.client = chromadb.PersistentClient(path=self.persist_directory)
         
+        # Khởi tạo embedding model
+        self.embedding_fn = embedding_functions.SentenceTransformerEmbeddingFunction(
+            model_name="microsoft/harrier-oss-v1-0.6b"
+        )
+        
         # Tạo hoặc lấy collection
-        self.collection = self.client.get_or_create_collection(name=self.collection_name)
+        self.collection = self.client.get_or_create_collection(
+            name=self.collection_name,
+            embedding_function=self.embedding_fn
+        )
 
     def add_documents(self, docs):
         """
@@ -34,7 +44,7 @@ class ChromaManager:
             # Tạo ID duy nhất dựa trên index hoặc nội dung
             ids.append(f"doc_{time.time()}_{i}")
 
-        # Thêm vào collection (ChromaDB sẽ tự động gọi default embedding function nếu không config embedding riêng)
+        # Thêm vào collection (Sẽ tự động sử dụng model microsoft/harrier-oss-v1-0.6b đã cấu hình)
         self.collection.add(
             documents=documents,
             metadatas=metadatas,
