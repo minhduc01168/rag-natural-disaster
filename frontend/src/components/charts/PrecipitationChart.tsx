@@ -27,36 +27,47 @@ const mockData: PrecipitationData[] = Array.from({ length: 30 }, (_, i) => ({
 
 export function PrecipitationChart({ data = mockData, className }: PrecipitationChartProps) {
   return (
-    <div className={`bg-white rounded-xl shadow-md p-6 ${className}`}>
-      <h3 className="text-lg font-semibold text-gray-900 mb-4">Lượng mưa theo thời gian</h3>
+    <div className={`bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-2xl relative overflow-hidden group hover:bg-white/10 transition-all duration-300 ${className}`}>
+      <h3 className="text-xl font-semibold text-white mb-6 flex items-center gap-2">
+        <span className="bg-gradient-to-r from-blue-400 to-teal-300 bg-clip-text text-transparent">Lượng mưa theo thời gian</span>
+      </h3>
       
-      <ResponsiveContainer width="100%" height={300}>
-        <LineChart data={data}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis
-            dataKey="date"
-            tick={{ fontSize: 12 }}
-            tickFormatter={(value) => value.split('-')[2]}
-          />
-          <YAxis
-            label={{ value: 'mm', angle: -90, position: 'insideLeft' }}
-          />
-          <Tooltip
-            labelFormatter={(value) => `Ngày: ${value}`}
-            formatter={(value: number) => [`${value.toFixed(1)} mm`, 'Lượng mưa']}
-          />
-          <Legend />
-          <Line
-            type="monotone"
-            dataKey="amount"
-            name="Lượng mưa"
-            stroke="#3b82f6"
-            strokeWidth={2}
-            dot={{ r: 3 }}
-            activeDot={{ r: 5 }}
-          />
-        </LineChart>
-      </ResponsiveContainer>
+      <div className="relative z-10">
+        <ResponsiveContainer width="100%" height={300}>
+          <LineChart data={data}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#ffffff1a" vertical={false} />
+            <XAxis
+              dataKey="date"
+              tick={{ fill: '#94a3b8', fontSize: 12 }}
+              tickFormatter={(value) => value.split('-')[2]}
+              axisLine={{ stroke: '#ffffff1a' }}
+              tickLine={{ stroke: '#ffffff1a' }}
+            />
+            <YAxis
+              tick={{ fill: '#94a3b8', fontSize: 12 }}
+              axisLine={{ stroke: '#ffffff1a' }}
+              tickLine={{ stroke: '#ffffff1a' }}
+              label={{ value: 'mm', angle: -90, position: 'insideLeft', fill: '#94a3b8' }}
+            />
+            <Tooltip
+              contentStyle={{ backgroundColor: 'rgba(15, 23, 42, 0.9)', borderColor: 'rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff' }}
+              labelFormatter={(value) => `Ngày: ${value}`}
+              formatter={(value: any) => [`${Number(value).toFixed(1)} mm`, 'Lượng mưa']}
+            />
+            <Legend wrapperStyle={{ paddingTop: '20px', color: '#94a3b8' }} />
+            <Line
+              type="monotone"
+              dataKey="amount"
+              name="Lượng mưa"
+              stroke="#2dd4bf"
+              strokeWidth={3}
+              dot={{ r: 4, fill: '#0f172a', stroke: '#2dd4bf', strokeWidth: 2 }}
+              activeDot={{ r: 6, fill: '#2dd4bf', stroke: '#fff', strokeWidth: 2 }}
+              animationDuration={1500}
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   );
 }

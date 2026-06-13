@@ -34,11 +34,21 @@ export function MessageBubble({ message }: MessageBubbleProps) {
         {!isUser && message.sources && message.sources.length > 0 && (
           <div className="mt-2 pt-2 border-t border-gray-100">
             <p className="text-xs text-gray-400">Nguồn:</p>
-            {message.sources.map((source, idx) => (
-              <span key={idx} className="text-xs text-primary-600 mr-2">
-                📚 {source}
-              </span>
-            ))}
+            {message.sources.map((source, idx) => {
+              const linkMatch = source.match(/\[([^\]]+)\]\(([^)]+)\)/);
+              if (linkMatch) {
+                return (
+                  <a key={idx} href={linkMatch[2]} target="_blank" rel="noopener noreferrer" className="text-xs text-primary-600 hover:text-primary-700 hover:underline mr-2 inline-flex items-center">
+                    📚 {linkMatch[1]}
+                  </a>
+                );
+              }
+              return (
+                <span key={idx} className="text-xs text-primary-600 mr-2">
+                  📚 {source}
+                </span>
+              );
+            })}
           </div>
         )}
 

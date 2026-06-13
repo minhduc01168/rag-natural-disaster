@@ -6,7 +6,7 @@ interface CategoryCardProps {
   onClick: () => void;
 }
 
-export function CategoryCard({ id, name, icon, description, onClick }: CategoryCardProps) {
+export function CategoryCard({ name, icon, description, onClick }: CategoryCardProps) {
   return (
     <button
       onClick={onClick}

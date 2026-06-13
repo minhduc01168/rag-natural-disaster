@@ -7,7 +7,7 @@ from app.rag.agents.synthesis_agent import SynthesisAgent
 router = APIRouter()
 
 # Khởi tạo agent dùng chung cho router, có thể chuyển llm_mock=False trong môi trường Production
-synthesis_agent = SynthesisAgent(llm_mock=True)
+synthesis_agent = SynthesisAgent(llm_mock=False)
 
 class QueryRequest(BaseModel):
     query: str

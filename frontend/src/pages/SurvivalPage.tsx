@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { CategoryCard } from '../components/CategoryCard';
 import { GuideContent } from '../components/GuideContent';
-import { categories, survivalGuides, getGuidesByCategory, searchGuides, SurvivalGuide } from '../data/survivalGuides';
+import { categories, getGuidesByCategory, searchGuides, SurvivalGuide } from '../data/survivalGuides';
 
 type ViewState = 'categories' | 'category-detail' | 'guide-detail';
 

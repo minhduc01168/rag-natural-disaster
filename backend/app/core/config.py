@@ -27,6 +27,11 @@ class Settings(BaseSettings):
     GEMINI_API_KEY: str = ""
     GROQ_API_KEY: str = ""
 
+    # Auth
+    SECRET_KEY: str = "terrasecret12345"
+    ALGORITHM: str = "HS256"
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 1440
+
 
 @lru_cache()
 def get_settings() -> Settings:

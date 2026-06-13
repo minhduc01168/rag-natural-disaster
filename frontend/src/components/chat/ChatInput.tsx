@@ -30,7 +30,7 @@ export function ChatInput({ onSend, disabled }: ChatInputProps) {
         onKeyPress={handleKeyPress}
         placeholder="Nhập tin nhắn..."
         disabled={disabled}
-        className="flex-1 resize-none rounded-xl border border-gray-200 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent max-h-32"
+        className="flex-1 resize-none rounded-xl border border-gray-200 px-4 py-3 text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent max-h-32"
         rows={1}
       />
       <button

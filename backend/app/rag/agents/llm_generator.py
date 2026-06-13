@@ -5,7 +5,7 @@ class LLMGenerator:
     """
     Sử dụng Google Gemini để tổng hợp thông tin (context) và sinh ra câu trả lời tự nhiên.
     """
-    def __init__(self, model_name: str = "gemini-1.5-flash", mock: bool = False):
+    def __init__(self, model_name: str = "gemini-2.5-flash", mock: bool = False):
         self.mock = mock
         if not self.mock:
             api_key = os.environ.get("GEMINI_API_KEY", "")

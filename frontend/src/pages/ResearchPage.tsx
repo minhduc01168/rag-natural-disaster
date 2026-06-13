@@ -22,8 +22,8 @@ export function ResearchPage() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h2 className="text-2xl font-bold text-gray-900">Research Dashboard</h2>
-        <p className="text-gray-600 mt-1">Phân tích dữ liệu GIS và bản đồ nhạy cảm sạt lở</p>
+        <h2 className="text-2xl font-bold text-white drop-shadow-sm">Research Dashboard</h2>
+        <p className="text-slate-300 mt-1">Phân tích dữ liệu GIS và bản đồ nhạy cảm sạt lở</p>
       </div>
 
       {/* Layer Controls */}
@@ -32,8 +32,8 @@ export function ResearchPage() {
           onClick={() => setActiveLayer('lsm')}
           className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
             activeLayer === 'lsm'
-              ? 'bg-primary-600 text-white'
-              : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-200'
+              ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20'
+              : 'bg-slate-800/80 text-slate-300 hover:bg-slate-700 border border-white/10'
           }`}
         >
           🗺️ Bản đồ LSM
@@ -42,8 +42,8 @@ export function ResearchPage() {
           onClick={() => setActiveLayer('disasters')}
           className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
             activeLayer === 'disasters'
-              ? 'bg-primary-600 text-white'
-              : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-200'
+              ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20'
+              : 'bg-slate-800/80 text-slate-300 hover:bg-slate-700 border border-white/10'
           }`}
         >
           ⚠️ Thiên tai
@@ -52,8 +52,8 @@ export function ResearchPage() {
           onClick={() => setActiveLayer('elevation')}
           className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
             activeLayer === 'elevation'
-              ? 'bg-primary-600 text-white'
-              : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-200'
+              ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20'
+              : 'bg-slate-800/80 text-slate-300 hover:bg-slate-700 border border-white/10'
           }`}
         >
           ⛰️ Cao độ
@@ -65,32 +65,32 @@ export function ResearchPage() {
         <div className="flex gap-2">
           <button
             onClick={() => setRiskFilter('')}
-            className={`px-3 py-1.5 rounded-lg text-sm ${
-              !riskFilter ? 'bg-gray-200' : 'bg-white border border-gray-200'
+            className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
+              !riskFilter ? 'bg-slate-700 text-white' : 'bg-slate-800/80 text-slate-400 hover:bg-slate-700 border border-white/10'
             }`}
           >
             Tất cả
           </button>
           <button
             onClick={() => setRiskFilter('low')}
-            className={`px-3 py-1.5 rounded-lg text-sm ${
-              riskFilter === 'low' ? 'bg-green-500 text-white' : 'bg-white border border-gray-200'
+            className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
+              riskFilter === 'low' ? 'bg-green-600 text-white' : 'bg-slate-800/80 text-slate-400 hover:bg-slate-700 border border-white/10'
             }`}
           >
             Thấp
           </button>
           <button
             onClick={() => setRiskFilter('medium')}
-            className={`px-3 py-1.5 rounded-lg text-sm ${
-              riskFilter === 'medium' ? 'bg-yellow-500 text-white' : 'bg-white border border-gray-200'
+            className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
+              riskFilter === 'medium' ? 'bg-yellow-600 text-white' : 'bg-slate-800/80 text-slate-400 hover:bg-slate-700 border border-white/10'
             }`}
           >
             Trung bình
           </button>
           <button
             onClick={() => setRiskFilter('high')}
-            className={`px-3 py-1.5 rounded-lg text-sm ${
-              riskFilter === 'high' ? 'bg-red-500 text-white' : 'bg-white border border-gray-200'
+            className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
+              riskFilter === 'high' ? 'bg-red-600 text-white' : 'bg-slate-800/80 text-slate-400 hover:bg-slate-700 border border-white/10'
             }`}
           >
             Cao
@@ -110,16 +110,16 @@ export function ResearchPage() {
           <LSMLegend />
           
           {/* Summary Stats */}
-          <div className="bg-white rounded-xl shadow-md p-4">
-            <h4 className="font-semibold text-gray-900 mb-3">Thống kê</h4>
+          <div className="bg-slate-900/50 backdrop-blur-md border border-white/10 rounded-xl shadow-lg p-4">
+            <h4 className="font-semibold text-slate-100 mb-3">Thống kê</h4>
             <div className="space-y-2">
               <div className="flex justify-between">
-                <span className="text-sm text-gray-600">Tổng điểm dữ liệu:</span>
-                <span className="text-sm font-medium">{currentData?.features?.length || 0}</span>
+                <span className="text-sm text-slate-400">Tổng điểm dữ liệu:</span>
+                <span className="text-sm font-medium text-slate-200">{currentData?.features?.length || 0}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-sm text-gray-600">Lớp dữ liệu:</span>
-                <span className="text-sm font-medium capitalize">{activeLayer}</span>
+                <span className="text-sm text-slate-400">Lớp dữ liệu:</span>
+                <span className="text-sm font-medium text-slate-200 capitalize">{activeLayer}</span>
               </div>
             </div>
           </div>
@@ -131,33 +131,33 @@ export function ResearchPage() {
         <PrecipitationChart />
         
         {/* Risk Distribution */}
-        <div className="bg-white rounded-xl shadow-md p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Phân bố rủi ro</h3>
+        <div className="bg-slate-900/50 backdrop-blur-md border border-white/10 rounded-xl shadow-lg p-6">
+          <h3 className="text-lg font-semibold text-slate-100 mb-4">Phân bố rủi ro</h3>
           <div className="space-y-4">
             <div>
               <div className="flex justify-between mb-1">
-                <span className="text-sm text-gray-600">Thấp</span>
-                <span className="text-sm text-green-600">40%</span>
+                <span className="text-sm text-slate-300">Thấp</span>
+                <span className="text-sm text-green-400">40%</span>
               </div>
-              <div className="w-full bg-gray-200 rounded-full h-2">
+              <div className="w-full bg-slate-800 rounded-full h-2">
                 <div className="bg-green-500 h-2 rounded-full" style={{ width: '40%' }} />
               </div>
             </div>
             <div>
               <div className="flex justify-between mb-1">
-                <span className="text-sm text-gray-600">Trung bình</span>
-                <span className="text-sm text-yellow-600">35%</span>
+                <span className="text-sm text-slate-300">Trung bình</span>
+                <span className="text-sm text-yellow-400">35%</span>
               </div>
-              <div className="w-full bg-gray-200 rounded-full h-2">
+              <div className="w-full bg-slate-800 rounded-full h-2">
                 <div className="bg-yellow-500 h-2 rounded-full" style={{ width: '35%' }} />
               </div>
             </div>
             <div>
               <div className="flex justify-between mb-1">
-                <span className="text-sm text-gray-600">Cao</span>
-                <span className="text-sm text-red-600">25%</span>
+                <span className="text-sm text-slate-300">Cao</span>
+                <span className="text-sm text-red-400">25%</span>
               </div>
-              <div className="w-full bg-gray-200 rounded-full h-2">
+              <div className="w-full bg-slate-800 rounded-full h-2">
                 <div className="bg-red-500 h-2 rounded-full" style={{ width: '25%' }} />
               </div>
             </div>

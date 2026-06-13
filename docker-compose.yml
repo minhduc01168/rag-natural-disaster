@@ -20,24 +20,27 @@ services:
       - "8000:8000"
     env_file:
       - ./backend/.env
-#    depends_on:
-#      - postgres
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/terraalert
+      - CHROMA_HOST=chromadb
+    depends_on:
+      - postgres
 #      - redis
     networks:
       - terraalert-network
 
-#  postgres:
-#    image: postgres:15-alpine
-#    environment:
-#      POSTGRES_USER: postgres
-#      POSTGRES_PASSWORD: postgres
-#      POSTGRES_DB: terraalert
-#    ports:
-#      - "5432:5432"
-#    volumes:
-#      - postgres_data:/var/lib/postgresql/data
-#    networks:
-#      - terraalert-network
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: terraalert
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - terraalert-network
 #
 #  redis:
 #    image: redis:7-alpine

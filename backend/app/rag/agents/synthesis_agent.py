@@ -1,7 +1,7 @@
 from app.rag.agents.router import RouterAgent
 from app.rag.agents.knowledge_agent import KnowledgeAgent
 from app.rag.agents.llm_generator import LLMGenerator
-from app.rag.tools.weather import WeatherTool
+from app.rag.agents.weather_agent import WeatherAgent
 from app.rag.tools.geo import GeoTool
 
 class SynthesisAgent:
@@ -16,30 +16,33 @@ class SynthesisAgent:
         self.router = RouterAgent()
         self.knowledge_agent = knowledge_agent or KnowledgeAgent()
         self.llm = LLMGenerator(mock=llm_mock)
-        self.weather_tool = WeatherTool(mock=True)
+        self.weather_agent = WeatherAgent(llm_generator=self.llm, mock_tool=False)
         self.geo_tool = GeoTool(mock=True)
 
     def process_query(self, query: str) -> dict:
         """
         Xử lý truy vấn end-to-end.
         """
-        # 1. Routing
-        route = self.router.route_query(query)
+        # 1. Routing & Entity Extraction
+        routing_info = self.router.route_query(query)
+        route = routing_info.get("route", "knowledge")
+        location = routing_info.get("location")
 
         # 2. Xử lý dựa trên Route
         if route == "weather":
-            # Trong thực tế, có thể dùng NLP để extract location từ query
-            location = "Hà Nội" 
-            weather_data = self.weather_tool.get_weather(location)
-            context = f"Thời tiết tại {location}: Nhiệt độ {weather_data['temperature']}, {weather_data['condition']}. Gió: {weather_data['wind_speed']}."
-            sources = ["OpenWeatherMap API"]
+            # Giao phó toàn bộ tác vụ cho WeatherAgent xử lý
+            return {
+                "query": query,
+                "route_taken": route,
+                **self.weather_agent.process(query, location)
+            }
             
         elif route == "geo":
-            location = "Lào Cai"
-            geo_data = self.geo_tool.check_risk_zone(location)
+            target_location = location if location else "Lào Cai"
+            geo_data = self.geo_tool.check_risk_zone(target_location)
             safe_zones = ", ".join(geo_data['safe_zones_nearby'])
-            context = f"Cảnh báo: Khu vực {location} có mức rủi ro {geo_data['risk_level']} về {geo_data['disaster_type']}. Nơi an toàn gần nhất: {safe_zones}."
-            sources = ["Geo Susceptibility Map API"]
+            context = f"Cảnh báo: Khu vực {target_location} có mức rủi ro {geo_data['risk_level']} về {geo_data['disaster_type']}. Nơi an toàn gần nhất: {safe_zones}."
+            sources = ["Mock Geo API"]
             
         else: # "knowledge"
             result = self.knowledge_agent.answer_query(query)
