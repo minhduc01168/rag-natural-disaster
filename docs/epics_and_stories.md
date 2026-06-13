@@ -8,7 +8,7 @@ Dự án **TerraAlert** được chia thành 7 Epics chính để triển khai c
 - **Story 1.3:** Thiết lập Docker & Docker Compose cho toàn bộ hệ thống (PostgreSQL, Redis, ChromaDB, Web, Worker).
 
 ## Epic 2: Fast Lane Core (Real-time SOS & Alerts)
-- **Story 2.1:** Tích hợp Meteostat API lấy dữ liệu thời tiết realtime.
+- **Story 2.1:** Tích hợp Open-Meteo API lấy dữ liệu thời tiết realtime.
 - **Story 2.2:** Xây dựng Rule-based engine trên FastAPI để phân loại cảnh báo (An toàn, Cảnh giác, Nguy hiểm).
 - **Story 2.3:** Cài đặt hệ thống gửi thông báo Push Notifications (WebSockets hoặc FCM).
 - **Story 2.4:** Xây dựng giao diện màn hình *Home & Emergency Dashboard*.

@@ -48,7 +48,7 @@ graph TB
         WS["WebSocket Server\n/ws/alerts"]
         AE["Alert Engine\n(Rule-based Classifier)\nXanh / Vàng / Đỏ"]
         NS["Notification Service\nConnectionManager"]
-        WP["Weather Service\nMeteostat API"]
+        WP["Weather Service\nOpen-Meteo API"]
         SOS_H["SOS Handler\nPOST /sos"]
     end
 
@@ -86,7 +86,7 @@ graph TB
 
     %% ─────────────── EXTERNAL APIs ───────────────
     subgraph EXT["🌐 External Data Sources"]
-        MET["☁️ Meteostat API\n(Thời tiết thực)"]
+        MET["☁️ Open-Meteo API\n(Thời tiết thực)"]
         TOPO["🏔️ OpenTopoData\n(Độ cao/Độ dốc)"]
         LLM_API["🧠 LLM API\nGemini Flash · Groq"]
     end
@@ -148,7 +148,7 @@ sequenceDiagram
     participant FE as 📱 PWA Frontend
     participant GW as 🔀 Nginx Gateway
     participant FA as ⚡ FastAPI Core
-    participant WP as ☁️ Meteostat API
+    participant WP as ☁️ Open-Meteo API
     participant AE as 🔴 Alert Engine
     participant WS as 📡 WebSocket
     participant NS as 🔔 Notification Svc

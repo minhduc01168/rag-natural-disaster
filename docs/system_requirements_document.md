@@ -10,7 +10,7 @@
 
 * **Dữ liệu lượng mưa:** 
   * *Lịch sử:* Dữ liệu vệ tinh **NASA GPM IMERG** (Global Precipitation Measurement) hoặc **CHIRPS** tích hợp sẵn trên Google Earth Engine (GEE). Đạt độ phân giải không gian cao, miễn phí hoàn toàn cho nghiên cứu.
-  * *Thời gian thực (Real-time):* **Meteostat API** hoặc **OpenWeatherMap (Free Tier)**. Cung cấp dữ liệu mưa theo giờ của các trạm khí tượng quốc tế tại Việt Nam.
+  * *Thời gian thực (Real-time):* **Open-Meteo API** (Hoàn toàn mở, không giới hạn phi thương mại). Cung cấp dữ liệu mưa theo giờ của các trạm khí tượng quốc tế tại Việt Nam.
 * **Dữ liệu đặc tính địa chất & địa hình:**
   * *Độ dốc/Độ cao:* **SRTM DEM (Shuttle Radar Topography Mission)** độ phân giải 30m của NASA/USGS trên GEE.
   * *Thảm thực vật:* Vệ tinh **Sentinel-2 (ESA)** để tính toán chỉ số thực vật thời gian thực.
@@ -41,11 +41,11 @@ Hệ thống được chia làm hai luồng (Lanes) xử lý độc lập để 
    * *Multi-Agent Orchestration:* 
      * `Router Agent`: Phân loại ý định người dùng (hỏi luật, hỏi thời tiết, hay cần hướng dẫn sơ tán).
      * `Retrieval Agent`: Chuyên truy xuất VectorDB để tìm quy trình chuẩn.
-     * `Tool Agents`: Chuyên gọi API bên ngoài (Meteostat lấy lượng mưa, OpenTopoData lấy độ cao/địa hình).
+     * `Tool Agents`: Chuyên gọi API bên ngoài (Open-Meteo lấy lượng mưa, OpenTopoData lấy độ cao/địa hình).
      * `Synthesis Agent`: Trích xuất thông tin từ các Agent khác để viết câu trả lời hoàn chỉnh, trung thực (Faithful) và dễ hiểu.
    * *RAG Evaluation:* Hệ thống được benchmark liên tục bằng **RAGAS/TruLens** để đo lường độ chính xác và giảm thiểu ảo giác (Hallucination).
 2. **Fast Lane (Real-time Alert & SOS Pipeline):**
-   * *Alert API:* Gọi API từ Meteostat 3 giờ/lần. Nếu vượt ngưỡng bão hòa, kích hoạt Push Notification ngay lập tức thông qua luồng Basic REST/WebSockets. Không có sự can thiệp của AI RAG ở luồng này để đảm bảo độ trễ < 1 giây.
+   * *Alert API:* Gọi API từ Open-Meteo 3 giờ/lần. Nếu vượt ngưỡng bão hòa, kích hoạt Push Notification ngay lập tức thông qua luồng Basic REST/WebSockets. Không có sự can thiệp của AI RAG ở luồng này để đảm bảo độ trễ < 1 giây.
 
 ---
 

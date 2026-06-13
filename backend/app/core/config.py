@@ -24,7 +24,6 @@ class Settings(BaseSettings):
     ALLOWED_ORIGINS: list[str] = ["http://localhost:3000", "http://localhost:5173"]
     
     # API Keys (do not commit real values)
-    METEOSTAT_API_KEY: str = ""
     GEMINI_API_KEY: str = ""
     GROQ_API_KEY: str = ""
 
