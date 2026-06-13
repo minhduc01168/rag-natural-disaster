@@ -6,8 +6,40 @@ Dự án TerraAlert đã được tối giản hóa nhờ kiến trúc Agentic R
 
 - **Docker Desktop** (hoặc Docker Engine + Docker Compose) đã được cài đặt và đang chạy.
 - **Git** (để clone mã nguồn).
+- **Node.js** và **Python 3.11+** (nếu muốn chạy thủ công không qua Docker).
 
-## 2. Thiết lập môi trường
+---
+
+## 2. Hướng dẫn cài đặt công cụ cho từng Hệ điều hành
+
+### 🪟 Trên Windows
+- **Git:** Tải và cài đặt Git từ [git-scm.com/download/win](https://git-scm.com/download/win) hoặc mở PowerShell và chạy lệnh: `winget install --id Git.Git -e --source winget`
+- **Docker:** Tải và cài đặt **Docker Desktop** tại [docker.com/products/docker-desktop](https://www.docker.com/products/docker-desktop/). *(Khuyến nghị bật tính năng WSL 2 backend trong lúc cài đặt để chạy mượt mà).*
+
+### 🍎 Trên macOS
+- **Git:** Mở Terminal và chạy lệnh: `xcode-select --install` hoặc cài qua Homebrew: `brew install git`
+- **Docker:** Tải Docker Desktop cho Mac tại [docker.com/products/docker-desktop](https://www.docker.com/products/docker-desktop/) hoặc cài qua Homebrew: `brew install --cask docker`
+
+### 🐧 Trên Ubuntu / Linux
+Mở Terminal và lần lượt chạy các lệnh sau để cài đặt Git và Docker:
+```bash
+# Cập nhật hệ thống
+sudo apt update && sudo apt upgrade -y
+
+# Cài đặt Git
+sudo apt install git -y
+
+# Cài đặt Docker và Docker Compose plugin
+sudo apt install docker.io docker-compose-v2 -y
+
+# Thêm user hiện tại vào group docker để không cần gõ sudo mỗi khi dùng docker
+sudo usermod -aG docker $USER
+newgrp docker
+```
+
+---
+
+## 3. Thiết lập môi trường
 
 Đầu tiên, tải mã nguồn về máy:
 
@@ -29,7 +61,7 @@ Tiếp theo, bạn cần cấp khóa API cho AI (Google Gemini):
    GEMINI_API_KEY=AIzaSyYourSecretKeyHere...
    ```
 
-## 3. Khởi chạy bằng Docker Compose (Khuyến nghị)
+## 4. Khởi chạy bằng Docker Compose (Khuyến nghị)
 
 Cách đơn giản và sạch sẽ nhất là dùng Docker để khởi chạy toàn bộ hệ thống (Frontend, Backend, ChromaDB) chỉ bằng 1 lệnh.
 
@@ -47,7 +79,7 @@ Kiểm tra trạng thái các container:
 docker-compose ps
 ```
 
-## 4. Truy cập hệ thống
+## 5. Truy cập hệ thống
 
 Sau khi Docker báo `Started`, bạn có thể truy cập:
 
@@ -57,7 +89,7 @@ Sau khi Docker báo `Started`, bạn có thể truy cập:
 
 ---
 
-## 5. (Tùy chọn) Chạy thủ công không dùng Docker
+## 6. (Tùy chọn) Chạy thủ công không dùng Docker
 
 Nếu bạn muốn chạy trực tiếp trên máy để code/debug:
 
@@ -84,7 +116,7 @@ Truy cập `http://localhost:5173` để dùng giao diện dev.
 
 ---
 
-## 6. Lệnh dọn dẹp thường dùng (Docker)
+## 7. Lệnh dọn dẹp thường dùng (Docker)
 
 Để tắt hệ thống:
 ```bash
