@@ -78,6 +78,7 @@ Tài liệu này bao gồm các Test Case để kiểm tra toàn bộ chức nă
 ### 6.1. Knowledge Base (Nạp Dữ liệu RAG)
 | Test Case ID | Mục tiêu kiểm thử | Các bước thực hiện | Kết quả mong đợi |
 | --- | --- | --- | --- |
-| TC_ADMIN_KB_01 | Upload file hợp lệ (Dry Run) | 1. Vào `/admin/kb`.<br>2. Chọn file `.pdf`, `.md` hoặc `.txt`.<br>3. Bấm "Phân tích thử". | Chờ xử lý xong, hệ thống hiển thị danh sách các Chunk (đoạn text được cắt) kèm theo ước tính Token. |
+| TC_ADMIN_KB_01 | Upload file hợp lệ (Dry Run) | 1. Vào `/admin/kb`.<br>2. Chọn file `.pdf`, `.md` hoặc `.txt`.<br>3. Bấm "Phân tích thử". | Chờ xử lý xong, hệ thống hiển thị danh sách các Chunk (đoạn text được cắt) dạng danh sách dọc kèm theo ước tính Token. |
 | TC_ADMIN_KB_02 | Lưu Chunks vào Vector DB (Commit) | 1. Sau khi Dry Run thành công, hiển thị danh sách Chunk.<br>2. Bấm "Phê duyệt & Nạp". | Chunks được lưu vào ChromaDB, hiển thị thông báo thành công màu xanh lá và xóa danh sách đang preview. |
 | TC_ADMIN_KB_03 | Upload file không hợp lệ | 1. Vào `/admin/kb`.<br>2. Bấm "Phân tích thử" khi chưa chọn file. | Nút phân tích bị khóa (disabled) hoặc hệ thống cảnh báo yêu cầu chọn file. |
+| TC_ADMIN_KB_04 | Giao diện thu gọn Chunk (Show More/Less) | 1. Tải lên file văn bản dài và bấm "Phân tích thử".<br>2. Bấm nút `🔽 Xem chi tiết` ở chunk bất kỳ.<br>3. Bấm `🔼 Thu gọn`. | Mặc định chunk hiển thị tối đa 3 dòng. Bấm "Xem chi tiết" sẽ mở rộng toàn bộ nội dung. Bấm "Thu gọn" sẽ thu lại như cũ. |

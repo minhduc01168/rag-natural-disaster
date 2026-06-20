@@ -12,6 +12,7 @@ export function KnowledgeBasePage() {
   const [chunks, setChunks] = useState<ChunkData[] | null>(null);
   const [committing, setCommitting] = useState(false);
   const [success, setSuccess] = useState('');
+  const [expandedChunks, setExpandedChunks] = useState<Record<number, boolean>>({});
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -145,22 +146,31 @@ export function KnowledgeBasePage() {
             </button>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
-            {chunks.map((chunk, idx) => (
-              <div key={idx} className="bg-slate-800/80 border border-slate-700 rounded-xl p-4 flex flex-col group hover:border-slate-500 transition-colors">
-                <div className="flex justify-between items-start mb-2">
-                  <span className="text-xs font-semibold bg-slate-700 text-slate-300 px-2 py-1 rounded">
-                    Chunk #{idx + 1}
-                  </span>
-                  <span className="text-xs text-slate-400" title="Kích thước ước tính">
-                    ~{Math.round(chunk.text.length / 4)} tokens
-                  </span>
+          <div className="flex flex-col gap-4 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
+            {chunks.map((chunk, idx) => {
+              const isExpanded = expandedChunks[idx] || false;
+              return (
+                <div key={idx} className="bg-slate-800/80 border border-slate-700 rounded-xl p-4 flex flex-col group hover:border-slate-500 transition-colors">
+                  <div className="flex justify-between items-start mb-3">
+                    <span className="text-xs font-semibold bg-slate-700 text-slate-300 px-3 py-1.5 rounded-md">
+                      Chunk #{idx + 1}
+                    </span>
+                    <span className="text-xs text-slate-400 font-mono bg-black/20 px-2 py-1 rounded-md" title="Kích thước ước tính">
+                      ~{Math.round(chunk.text.length / 4)} tokens
+                    </span>
+                  </div>
+                  <div className={`text-sm text-slate-300 whitespace-pre-wrap font-mono bg-slate-950/50 p-4 rounded-lg transition-all duration-300 ${!isExpanded ? 'line-clamp-3 overflow-hidden' : ''}`}>
+                    {chunk.text}
+                  </div>
+                  <button 
+                    onClick={() => setExpandedChunks(prev => ({ ...prev, [idx]: !isExpanded }))}
+                    className="mt-3 text-xs font-medium text-blue-400 hover:text-blue-300 self-start flex items-center gap-1 transition-colors"
+                  >
+                    {isExpanded ? '🔼 Thu gọn' : '🔽 Xem chi tiết'}
+                  </button>
                 </div>
-                <div className="text-sm text-slate-300 flex-1 whitespace-pre-wrap font-mono bg-slate-950/50 p-3 rounded-lg overflow-y-auto max-h-48">
-                  {chunk.text}
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       )}

@@ -4,10 +4,7 @@ export function AdminLayout() {
   const location = useLocation();
 
   const navItems = [
-    { path: '/admin', icon: '📊', label: 'Dashboard' },
     { path: '/admin/kb', icon: '📚', label: 'Knowledge Base' },
-    { path: '/admin/alerts', icon: '📢', label: 'Quản lý Cảnh báo' },
-    { path: '/admin/settings', icon: '⚙️', label: 'Cấu hình AI' },
   ];
 
   return (

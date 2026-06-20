@@ -122,15 +122,6 @@ function Offline() {
   )
 }
 
-function AdminDashboardPlaceholder() {
-  return (
-    <div className="text-center py-20">
-      <h2 className="text-2xl font-bold text-white mb-4">Dashboard Tổng quan</h2>
-      <p className="text-slate-400">Các biểu đồ thống kê sẽ hiển thị tại đây.</p>
-    </div>
-  );
-}
-
 function App() {
   return (
     <AuthProvider>
@@ -148,9 +139,9 @@ function App() {
             {/* Protected Admin Routes */}
             <Route element={<ProtectedRoute requiredRole="ADMIN" />}>
               <Route path="/admin" element={<AdminLayout />}>
-                <Route index element={<AdminDashboardPlaceholder />} />
+                <Route index element={<KnowledgeBasePage />} />
                 <Route path="kb" element={<KnowledgeBasePage />} />
-                <Route path="*" element={<AdminDashboardPlaceholder />} />
+                <Route path="*" element={<KnowledgeBasePage />} />
               </Route>
             </Route>
           </Routes>
