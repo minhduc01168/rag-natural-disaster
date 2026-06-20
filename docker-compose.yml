@@ -30,7 +30,7 @@ services:
       - terraalert-network
 
   postgres:
-    image: postgres:15-alpine
+    image: postgis/postgis:15-3.4-alpine
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres

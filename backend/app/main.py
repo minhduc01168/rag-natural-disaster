@@ -9,15 +9,20 @@ settings = get_settings()
 from contextlib import asynccontextmanager
 from app.db.session import engine, Base, SessionLocal
 from app.models.user import UserRole
+from app.models.gis import SpatialFeature
 from app.crud.crud_user import get_user_by_email, create_user
 from app.schemas.user import UserCreate
+from sqlalchemy import text
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Initialize DB tables
+    with engine.begin() as conn:
+        conn.execute(text("CREATE EXTENSION IF NOT EXISTS postgis;"))
+    
     Base.metadata.create_all(bind=engine)
     
-    # Seed Admin User
+    # Seed Admin User and Spatial Data
     db = SessionLocal()
     try:
         admin_email = "admin@terraalert.com"
@@ -33,6 +38,28 @@ async def lifespan(app: FastAPI):
             )
             create_user(db, user=admin_in, role=UserRole.ADMIN)
             print("Admin user created successfully.")
+            
+        # Seed default GIS data if empty
+        if db.query(SpatialFeature).count() == 0:
+            print("Seeding default spatial features...")
+            feature1 = SpatialFeature(
+                layer_name="disasters",
+                properties={"name": "Sạt lở đất lịch sử Mù Cang Chải", "risk_level": "high", "magnitude": "severe"},
+                geom="SRID=4326;POINT(104.0848 21.8542)"
+            )
+            feature2 = SpatialFeature(
+                layer_name="lsm",
+                properties={"risk_level": "high", "area": "Mù Cang Chải Red Zone"},
+                geom="SRID=4326;POLYGON((104.0 21.8, 104.2 21.8, 104.2 22.0, 104.0 22.0, 104.0 21.8))"
+            )
+            feature3 = SpatialFeature(
+                layer_name="elevation",
+                properties={"elevation": 1500},
+                geom="SRID=4326;POINT(104.1 21.9)"
+            )
+            db.add_all([feature1, feature2, feature3])
+            db.commit()
+            print("Spatial features seeded successfully.")
     finally:
         db.close()
     

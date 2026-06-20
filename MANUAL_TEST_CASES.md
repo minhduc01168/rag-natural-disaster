@@ -70,3 +70,14 @@ Tài liệu này bao gồm các Test Case để kiểm tra toàn bộ chức nă
 | Test Case ID | Mục tiêu kiểm thử | Các bước thực hiện | Kết quả mong đợi |
 | --- | --- | --- | --- |
 | TC_RES_01 | Giao diện trên Màn hình nhỏ (Mobile) | 1. Mở F12 -> Bật chế độ Responsive (Kích thước iPhone 14/15).<br>2. Điều hướng các trang. | Sidebar menu thu gọn thành Hamburger menu. Các Card hiển thị dạng cột (Column). Thanh chat Input không bị che lấp bởi bàn phím ảo. |
+
+---
+
+## 6. Module Quản trị (Admin)
+
+### 6.1. Knowledge Base (Nạp Dữ liệu RAG)
+| Test Case ID | Mục tiêu kiểm thử | Các bước thực hiện | Kết quả mong đợi |
+| --- | --- | --- | --- |
+| TC_ADMIN_KB_01 | Upload file hợp lệ (Dry Run) | 1. Vào `/admin/kb`.<br>2. Chọn file `.pdf`, `.md` hoặc `.txt`.<br>3. Bấm "Phân tích thử". | Chờ xử lý xong, hệ thống hiển thị danh sách các Chunk (đoạn text được cắt) kèm theo ước tính Token. |
+| TC_ADMIN_KB_02 | Lưu Chunks vào Vector DB (Commit) | 1. Sau khi Dry Run thành công, hiển thị danh sách Chunk.<br>2. Bấm "Phê duyệt & Nạp". | Chunks được lưu vào ChromaDB, hiển thị thông báo thành công màu xanh lá và xóa danh sách đang preview. |
+| TC_ADMIN_KB_03 | Upload file không hợp lệ | 1. Vào `/admin/kb`.<br>2. Bấm "Phân tích thử" khi chưa chọn file. | Nút phân tích bị khóa (disabled) hoặc hệ thống cảnh báo yêu cầu chọn file. |

@@ -33,7 +33,7 @@ export function KnowledgeBasePage() {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('/api/v1/admin/rag/dry-run', {
+      const response = await fetch('http://localhost:8000/api/v1/admin/rag/dry-run', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -61,7 +61,7 @@ export function KnowledgeBasePage() {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('/api/v1/admin/rag/commit', {
+      const response = await fetch('http://localhost:8000/api/v1/admin/rag/commit', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

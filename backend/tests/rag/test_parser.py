@@ -1,7 +1,7 @@
 import os
 import pytest
 from unittest.mock import patch, MagicMock
-from app.rag.ingestion.parser import GeminiPDFParser
+from app.rag.ingestion.parser import GeminiDocumentParser
 
 @pytest.fixture
 def mock_gemini():
@@ -27,20 +27,28 @@ def test_gemini_parser_init_without_key():
     if "GOOGLE_API_KEY" in os.environ:
         del os.environ["GOOGLE_API_KEY"]
     with pytest.raises(ValueError):
-        GeminiPDFParser()
+        GeminiDocumentParser()
+
+@patch("google.generativeai.configure")
+@patch("google.generativeai.GenerativeModel")
+def test_gemini_parser_init(mock_model, mock_configure):
+    os.environ["GEMINI_API_KEY"] = "fake_key"
+    parser = GeminiDocumentParser(model_name="gemini-test")
+    
+    mock_configure.assert_called_once_with(api_key="fake_key")
 
 def test_parse_pdf_file_not_found():
-    parser = GeminiPDFParser(api_key="fake-key")
+    parser = GeminiDocumentParser(api_key="fake-key")
     with pytest.raises(FileNotFoundError):
-        parser.parse_pdf("non_existent_file.pdf")
+        parser.parse_document("non_existent_file.pdf")
 
 def test_parse_pdf_success(mock_gemini, tmp_path):
     # Tạo một file giả để test
     fake_pdf = tmp_path / "fake.pdf"
     fake_pdf.write_text("dummy content")
     
-    parser = GeminiPDFParser(api_key="fake-key")
-    result = parser.parse_pdf(str(fake_pdf))
+    parser = GeminiDocumentParser(api_key="fake-key")
+    result = parser.parse_document(str(fake_pdf))
     
     assert "Hướng dẫn Sinh tồn" in result
     assert "Markdown giả lập" in result

@@ -28,6 +28,10 @@ app.dependency_overrides[get_db] = override_get_db
 
 @pytest.fixture(autouse=True)
 def setup_db():
+    if engine.name == "sqlite":
+        # Remove SpatialFeature from metadata to prevent CompileError
+        if "spatial_features" in Base.metadata.tables:
+            Base.metadata.remove(Base.metadata.tables["spatial_features"])
     Base.metadata.create_all(bind=engine)
     yield
     Base.metadata.drop_all(bind=engine)
