@@ -42,3 +42,8 @@ _bmad/
 _bmad-output/
 .agent/
 .agents/
+
+# Data and Vector DB
+backend/.chroma/
+filtered_pdf/
+markdowns/
