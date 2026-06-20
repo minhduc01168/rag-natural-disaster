@@ -69,4 +69,14 @@ class ChromaManager:
         )
         return results
 
+    def get_all_documents(self):
+        """
+        Lấy toàn bộ documents từ collection để phục vụ BM25 indexing.
+        """
+        try:
+            return self.collection.get()
+        except Exception as e:
+            print(f"Error fetching all documents: {e}")
+            return {"documents": [], "metadatas": [], "ids": []}
+
 import time

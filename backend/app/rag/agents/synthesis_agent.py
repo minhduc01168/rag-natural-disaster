@@ -17,7 +17,7 @@ class SynthesisAgent:
         self.knowledge_agent = knowledge_agent or KnowledgeAgent()
         self.llm = LLMGenerator(mock=llm_mock)
         self.weather_agent = WeatherAgent(llm_generator=self.llm, mock_tool=False)
-        self.geo_tool = GeoTool(mock=True)
+        self.geo_tool = GeoTool(mock=False)
 
     def process_query(self, query: str) -> dict:
         """
