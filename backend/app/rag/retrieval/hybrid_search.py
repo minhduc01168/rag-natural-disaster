@@ -1,5 +1,4 @@
 from rank_bm25 import BM25Okapi
-import numpy as reciprocal_rank_fusion
 
 class HybridSearcher:
     """

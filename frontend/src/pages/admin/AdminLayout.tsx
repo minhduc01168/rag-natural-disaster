@@ -1,21 +1,24 @@
 import { Outlet, Link, useLocation } from 'react-router-dom';
+import { useLanguage } from '../../context/LanguageContext';
 
 export function AdminLayout() {
   const location = useLocation();
+  const { t } = useLanguage();
 
   const navItems = [
-    { path: '/admin/kb', icon: '📚', label: 'Knowledge Base' },
+    { path: '/admin/kb', icon: '📚', label: t('admin.navUpload') },
+    { path: '/admin/kb-docs', icon: '🗂️', label: t('admin.navManage') },
   ];
 
   return (
-    <div className="flex min-h-[calc(100vh-80px)] -mt-12 -mx-4 sm:-mx-6 lg:-mx-8">
+    <div className="flex flex-1 min-h-[calc(100vh-73px)] w-full">
       {/* Sidebar */}
-      <aside className="w-64 bg-slate-900/80 border-r border-white/10 flex flex-col backdrop-blur-xl">
+      <aside className="w-64 bg-slate-900/80 border-r border-white/10 flex flex-col backdrop-blur-xl shrink-0">
         <div className="p-6 border-b border-white/5">
           <h2 className="text-xl font-bold bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">
-            Control Room
+            {t('admin.title')}
           </h2>
-          <p className="text-xs text-slate-400 mt-1">Admin Dashboard</p>
+          <p className="text-xs text-slate-400 mt-1">{t('admin.subtitle')}</p>
         </div>
         <nav className="flex-1 py-4 space-y-1">
           {navItems.map((item) => {
@@ -27,7 +30,7 @@ export function AdminLayout() {
                 to={item.path}
                 className={`flex items-center gap-3 px-6 py-3 transition-colors ${
                   isActive 
-                    ? 'bg-blue-500/10 text-blue-400 border-r-2 border-blue-500' 
+                    ? 'bg-blue-500/10 text-blue-400 border-r-2 border-blue-500 font-semibold' 
                     : 'text-slate-400 hover:bg-white/5 hover:text-slate-200'
                 }`}
               >
@@ -40,8 +43,8 @@ export function AdminLayout() {
       </aside>
 
       {/* Main Content Area */}
-      <main className="flex-1 overflow-auto bg-slate-950/50 p-8">
-        <div className="max-w-6xl mx-auto">
+      <main className="flex-1 overflow-auto bg-slate-950/50 p-6 sm:p-8">
+        <div className="w-full max-w-none">
           <Outlet />
         </div>
       </main>

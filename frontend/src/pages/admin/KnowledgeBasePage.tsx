@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react';
+import { useLanguage } from '../../context/LanguageContext';
 
 interface ChunkData {
   text: string;
@@ -6,6 +7,7 @@ interface ChunkData {
 }
 
 export function KnowledgeBasePage() {
+  const { t } = useLanguage();
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -75,7 +77,7 @@ export function KnowledgeBasePage() {
         throw new Error('Lỗi khi lưu vào CSDL');
       }
 
-      setSuccess(`Đã lưu thành công ${chunks.length} phân đoạn vào Knowledge Base.`);
+      setSuccess(`Đã lưu thành công ${chunks.length} phân đoạn vào hệ thống.`);
       setChunks(null);
       setFile(null);
       if (fileInputRef.current) fileInputRef.current.value = '';
@@ -90,8 +92,8 @@ export function KnowledgeBasePage() {
     <div className="space-y-6">
       <div className="flex justify-between items-end">
         <div>
-          <h1 className="text-3xl font-bold text-white drop-shadow-sm">Quản lý Knowledge Base</h1>
-          <p className="text-slate-400 mt-2">Tải lên và kiểm duyệt tài liệu AI RAG (Two-Phase Ingestion)</p>
+          <h1 className="text-3xl font-bold text-white drop-shadow-sm">{t('admin.kbTitle')}</h1>
+          <p className="text-slate-400 mt-2 text-sm">{t('admin.kbSubtitle')}</p>
         </div>
       </div>
 
@@ -107,9 +109,23 @@ export function KnowledgeBasePage() {
         </div>
       )}
 
+      {(loading || committing) && (
+        <div className="bg-yellow-500/10 border border-yellow-500/30 text-yellow-400 p-4 rounded-xl flex items-center gap-3 animate-pulse shadow-lg">
+          <div className="w-5 h-5 border-2 border-yellow-400 border-t-transparent rounded-full animate-spin shrink-0" />
+          <div>
+            <p className="font-semibold text-sm flex items-center gap-2 flex-wrap">
+              <span>{t('admin.statusLabel')}:</span>
+              <span className="bg-yellow-500/20 text-yellow-300 px-2 py-0.5 rounded text-xs uppercase font-bold tracking-wider">{t('admin.statusProcessing')}</span>
+              <span>— {loading ? t('admin.analyzing') : t('admin.committing')}</span>
+            </p>
+            <p className="text-xs text-yellow-500/80 mt-1">{t('admin.statusProcessingDesc')}</p>
+          </div>
+        </div>
+      )}
+
       <div className="bg-slate-900/50 border border-white/10 p-6 rounded-2xl backdrop-blur-md shadow-xl">
-        <h2 className="text-xl font-semibold mb-4 text-slate-200">1. Upload Tài liệu</h2>
-        <div className="flex items-center gap-4">
+        <h2 className="text-xl font-semibold mb-4 text-slate-200">{t('admin.step1')}</h2>
+        <div className="flex flex-col sm:flex-row sm:items-center gap-4">
           <input 
             type="file" 
             ref={fileInputRef}
@@ -125,24 +141,24 @@ export function KnowledgeBasePage() {
           <button 
             onClick={handleDryRun}
             disabled={!file || loading}
-            className="bg-blue-600 hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed text-white px-6 py-2 rounded-xl whitespace-nowrap shadow-lg shadow-blue-500/20 font-medium transition-all"
+            className="bg-blue-600 hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed text-white px-6 py-2.5 rounded-xl whitespace-nowrap shadow-lg shadow-blue-500/20 font-semibold transition-all hover:scale-105 active:scale-95"
           >
-            {loading ? 'Đang phân tích...' : 'Phân tích thử (Dry Run)'}
+            {loading ? t('admin.analyzing') : t('admin.dryRun')}
           </button>
         </div>
-        <p className="text-xs text-slate-500 mt-3">Hỗ trợ: PDF, DOCX, TXT. Hệ thống sẽ bóc tách văn bản và chia nhỏ (chunk) nhưng chưa lưu vào Database.</p>
+        <p className="text-xs text-slate-500 mt-3">{t('admin.step1Note')}</p>
       </div>
 
       {chunks && (
         <div className="bg-slate-900/50 border border-white/10 p-6 rounded-2xl backdrop-blur-md shadow-xl animate-in fade-in slide-in-from-bottom-4">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-semibold text-slate-200">2. Chunking Inspector (Kiểm duyệt)</h2>
+          <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-6">
+            <h2 className="text-xl font-semibold text-slate-200">{t('admin.step2')}</h2>
             <button 
               onClick={handleCommit}
               disabled={committing}
-              className="bg-green-600 hover:bg-green-500 disabled:opacity-50 text-white px-6 py-2 rounded-xl shadow-lg shadow-green-500/20 font-medium transition-all"
+              className="bg-green-600 hover:bg-green-500 disabled:opacity-50 text-white px-6 py-2.5 rounded-xl shadow-lg shadow-green-500/20 font-semibold transition-all hover:scale-105 active:scale-95 whitespace-nowrap"
             >
-              {committing ? 'Đang lưu...' : `Phê duyệt & Nạp ${chunks.length} Chunks`}
+              {committing ? t('admin.committing') : `${t('admin.commit')} (${chunks.length} ${t('admin.chunks')})`}
             </button>
           </div>
 

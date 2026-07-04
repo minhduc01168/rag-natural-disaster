@@ -10,8 +10,8 @@ model = None
 async def lifespan(app: FastAPI):
     global model
     # Load the model on startup
-    print("Loading embedding model 'microsoft/harrier-oss-v1-0.6b'...")
-    model = SentenceTransformer("microsoft/harrier-oss-v1-0.6b")
+    print("Loading embedding model 'microsoft/harrier-oss-v1-270m'...")
+    model = SentenceTransformer("microsoft/harrier-oss-v1-270m")
     print("Model loaded successfully.")
     yield
     # Clean up resources on shutdown
@@ -35,9 +35,17 @@ async def embed_texts(request: EmbedRequest):
         raise HTTPException(status_code=503, detail="Model is not loaded yet.")
 
     try:
-        # Encode the texts
-        # sentence-transformers encode returns a numpy array, we convert to list
-        embeddings = model.encode(request.texts)
+        n = len(request.texts)
+        print(f"[EmbedService] Encoding {n} texts với batch_size=32...")
+        # batch_size=32: xử lý 32 chunks/lần → tránh OOM trên CPU
+        # show_progress_bar=True: in progress ra log để dễ debug
+        embeddings = model.encode(
+            request.texts,
+            batch_size=32,
+            show_progress_bar=(n > 10),  # chỉ hiện progress khi nhiều chunk
+            convert_to_numpy=True,
+        )
+        print(f"[EmbedService] ✅ Done {n} texts.")
         return EmbedResponse(embeddings=embeddings.tolist())
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

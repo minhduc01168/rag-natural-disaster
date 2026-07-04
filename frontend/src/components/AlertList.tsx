@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { AlertCard } from './AlertCard';
 import { AlertFilter } from './AlertFilter';
+import { useLanguage } from '../context/LanguageContext';
 
 interface Alert {
   id: string;
@@ -20,55 +21,56 @@ const sampleAlerts: Alert[] = [
     id: 'ALT-001',
     level: 'green',
     location: 'Hà Nội',
-    description: 'Thời tiết bình thường, không có nguy hiểm',
+    description: 'Thời tiết bình thường, không có nguy hiểm / Normal weather conditions, no hazards detected',
     timestamp: '2026-05-23T10:00:00Z',
   },
   {
     id: 'ALT-002',
     level: 'yellow',
     location: 'Lào Cai',
-    description: 'Mưa vừa, gió mạnh cấp 5-6',
+    description: 'Mưa vừa, gió mạnh cấp 5-6 / Moderate rain, strong wind gusting level 5-6',
     timestamp: '2026-05-23T09:30:00Z',
   },
   {
     id: 'ALT-003',
     level: 'red',
     location: 'Yên Bái',
-    description: 'Cảnh báo sạt lở đất, mưa lớn kéo dài',
+    description: 'Cảnh báo sạt lở đất, mưa lớn kéo dài / High landslide alert due to continuous heavy rainfall',
     timestamp: '2026-05-23T09:00:00Z',
   },
   {
     id: 'ALT-004',
     level: 'yellow',
     location: 'Sơn La',
-    description: 'Nhiệt độ cao bất thường, nguy cơ cháy rừng',
+    description: 'Nhiệt độ cao bất thường, nguy cơ cháy rừng / Abnormal high temperature, forest fire risk',
     timestamp: '2026-05-23T08:30:00Z',
   },
   {
     id: 'ALT-005',
     level: 'green',
     location: 'Đà Nẵng',
-    description: 'Thời tiết tốt, biển lặng',
+    description: 'Thời tiết tốt, biển lặng / Favorable weather, calm seas',
     timestamp: '2026-05-23T08:00:00Z',
   },
 ];
 
 export function AlertList({ alerts = sampleAlerts }: AlertListProps) {
   const [filter, setFilter] = useState('all');
+  const { t } = useLanguage();
 
   const filteredAlerts = filter === 'all'
     ? alerts
     : alerts.filter((alert) => alert.level === filter);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <AlertFilter activeFilter={filter} onFilterChange={setFilter} />
 
       {filteredAlerts.length === 0 ? (
-        <div className="text-center py-12">
-          <div className="text-4xl mb-4">📭</div>
-          <p className="text-gray-500">Không có cảnh báo nào</p>
-          <p className="text-sm text-gray-400 mt-1">Hệ thống đang theo dõi thời tiết...</p>
+        <div className="text-center py-16 bg-slate-900/40 border border-white/5 rounded-2xl">
+          <div className="text-5xl mb-4">📭</div>
+          <p className="text-slate-300 font-medium text-base">{t('alerts.emptyTitle')}</p>
+          <p className="text-sm text-slate-500 mt-1">{t('alerts.emptyDesc')}</p>
         </div>
       ) : (
         <div className="space-y-3">
@@ -85,8 +87,8 @@ export function AlertList({ alerts = sampleAlerts }: AlertListProps) {
         </div>
       )}
 
-      <div className="text-center text-sm text-gray-400 pt-4">
-        Hiển thị {filteredAlerts.length} / {alerts.length} cảnh báo
+      <div className="text-center text-sm text-slate-400 pt-2 font-medium">
+        {t('alerts.showing')} {filteredAlerts.length} / {alerts.length}
       </div>
     </div>
   );

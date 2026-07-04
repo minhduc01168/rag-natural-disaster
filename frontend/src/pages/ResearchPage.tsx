@@ -3,12 +3,14 @@ import { MapView } from '../components/map/MapView';
 import { LSMLegend } from '../components/map/LSMLayer';
 import { PrecipitationChart } from '../components/charts/PrecipitationChart';
 import { useGeoJSON } from '../hooks/useGeoJSON';
+import { useLanguage } from '../context/LanguageContext';
 
 type DataLayer = 'elevation' | 'precipitation' | 'disasters' | 'lsm';
 
 export function ResearchPage() {
   const [activeLayer, setActiveLayer] = useState<DataLayer>('lsm');
   const [riskFilter, setRiskFilter] = useState<string>('');
+  const { t } = useLanguage();
 
   const { data: lsmData } = useGeoJSON('lsm', riskFilter ? { risk_level: riskFilter } : undefined);
   const { data: disasterData } = useGeoJSON('disasters');
@@ -22,78 +24,78 @@ export function ResearchPage() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h2 className="text-2xl font-bold text-white drop-shadow-sm">Research Dashboard</h2>
-        <p className="text-slate-300 mt-1">Phân tích dữ liệu GIS và bản đồ nhạy cảm sạt lở</p>
+        <h2 className="text-3xl font-bold text-white drop-shadow-sm">{t('research.title')}</h2>
+        <p className="text-slate-300 mt-1 text-sm">{t('research.subtitle')}</p>
       </div>
 
       {/* Layer Controls */}
       <div className="flex flex-wrap gap-3">
         <button
           onClick={() => setActiveLayer('lsm')}
-          className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+          className={`px-4 py-2.5 rounded-xl text-sm font-semibold transition-all shadow-sm ${
             activeLayer === 'lsm'
-              ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20'
-              : 'bg-slate-800/80 text-slate-300 hover:bg-slate-700 border border-white/10'
+              ? 'bg-blue-600 text-white shadow-blue-500/20 scale-105'
+              : 'bg-slate-800/80 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700 hover:border-slate-500'
           }`}
         >
-          🗺️ Bản đồ LSM
+          {t('research.layerLsm')}
         </button>
         <button
           onClick={() => setActiveLayer('disasters')}
-          className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+          className={`px-4 py-2.5 rounded-xl text-sm font-semibold transition-all shadow-sm ${
             activeLayer === 'disasters'
-              ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20'
-              : 'bg-slate-800/80 text-slate-300 hover:bg-slate-700 border border-white/10'
+              ? 'bg-blue-600 text-white shadow-blue-500/20 scale-105'
+              : 'bg-slate-800/80 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700 hover:border-slate-500'
           }`}
         >
-          ⚠️ Thiên tai
+          {t('research.layerDisaster')}
         </button>
         <button
           onClick={() => setActiveLayer('elevation')}
-          className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+          className={`px-4 py-2.5 rounded-xl text-sm font-semibold transition-all shadow-sm ${
             activeLayer === 'elevation'
-              ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20'
-              : 'bg-slate-800/80 text-slate-300 hover:bg-slate-700 border border-white/10'
+              ? 'bg-blue-600 text-white shadow-blue-500/20 scale-105'
+              : 'bg-slate-800/80 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700 hover:border-slate-500'
           }`}
         >
-          ⛰️ Cao độ
+          {t('research.layerElevation')}
         </button>
       </div>
 
       {/* Risk Filter for LSM */}
       {activeLayer === 'lsm' && (
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2 pt-1">
           <button
             onClick={() => setRiskFilter('')}
-            className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
-              !riskFilter ? 'bg-slate-700 text-white' : 'bg-slate-800/80 text-slate-400 hover:bg-slate-700 border border-white/10'
+            className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all shadow-sm ${
+              !riskFilter ? 'bg-slate-700 text-white scale-105 border border-slate-500' : 'bg-slate-800/80 text-slate-400 hover:bg-slate-700 hover:text-white border border-slate-700'
             }`}
           >
-            Tất cả
+            {t('alerts.filterAll')}
           </button>
           <button
             onClick={() => setRiskFilter('low')}
-            className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
-              riskFilter === 'low' ? 'bg-green-600 text-white' : 'bg-slate-800/80 text-slate-400 hover:bg-slate-700 border border-white/10'
+            className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all shadow-sm ${
+              riskFilter === 'low' ? 'bg-emerald-600 text-white scale-105 border border-emerald-500' : 'bg-slate-800/80 text-slate-400 hover:bg-slate-700 hover:text-white border border-slate-700'
             }`}
           >
-            Thấp
+            {t('alerts.riskLow')}
           </button>
           <button
             onClick={() => setRiskFilter('medium')}
-            className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
-              riskFilter === 'medium' ? 'bg-yellow-600 text-white' : 'bg-slate-800/80 text-slate-400 hover:bg-slate-700 border border-white/10'
+            className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all shadow-sm ${
+              riskFilter === 'medium' ? 'bg-amber-600 text-white scale-105 border border-amber-500' : 'bg-slate-800/80 text-slate-400 hover:bg-slate-700 hover:text-white border border-slate-700'
             }`}
           >
-            Trung bình
+            {t('alerts.riskMedium')}
           </button>
           <button
             onClick={() => setRiskFilter('high')}
-            className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
-              riskFilter === 'high' ? 'bg-red-600 text-white' : 'bg-slate-800/80 text-slate-400 hover:bg-slate-700 border border-white/10'
+            className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all shadow-sm ${
+              riskFilter === 'high' ? 'bg-rose-600 text-white scale-105 border border-rose-500' : 'bg-slate-800/80 text-slate-400 hover:bg-slate-700 hover:text-white border border-slate-700'
             }`}
           >
-            Cao
+            {t('alerts.riskHigh')}
           </button>
         </div>
       )}
@@ -110,16 +112,18 @@ export function ResearchPage() {
           <LSMLegend />
           
           {/* Summary Stats */}
-          <div className="bg-slate-900/50 backdrop-blur-md border border-white/10 rounded-xl shadow-lg p-4">
-            <h4 className="font-semibold text-slate-100 mb-3">Thống kê</h4>
-            <div className="space-y-2">
-              <div className="flex justify-between">
-                <span className="text-sm text-slate-400">Tổng điểm dữ liệu:</span>
-                <span className="text-sm font-medium text-slate-200">{currentData?.features?.length || 0}</span>
+          <div className="bg-slate-900/50 backdrop-blur-md border border-white/10 rounded-2xl shadow-lg p-5">
+            <h4 className="font-semibold text-white mb-3 text-base flex items-center gap-2">
+              <span>📊</span> {t('research.statsTitle')}
+            </h4>
+            <div className="space-y-2.5">
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-slate-400">{t('research.totalPoints')}</span>
+                <span className="text-sm font-bold text-blue-400 font-mono bg-blue-500/10 px-2 py-0.5 rounded-lg border border-blue-500/20">{currentData?.features?.length || 0}</span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-sm text-slate-400">Lớp dữ liệu:</span>
-                <span className="text-sm font-medium text-slate-200 capitalize">{activeLayer}</span>
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-slate-400">{t('research.dataLayer')}</span>
+                <span className="text-sm font-semibold text-slate-200 uppercase tracking-wider bg-slate-800 px-2 py-0.5 rounded-lg">{activeLayer}</span>
               </div>
             </div>
           </div>
@@ -131,34 +135,36 @@ export function ResearchPage() {
         <PrecipitationChart />
         
         {/* Risk Distribution */}
-        <div className="bg-slate-900/50 backdrop-blur-md border border-white/10 rounded-xl shadow-lg p-6">
-          <h3 className="text-lg font-semibold text-slate-100 mb-4">Phân bố rủi ro</h3>
+        <div className="bg-slate-900/50 backdrop-blur-md border border-white/10 rounded-2xl shadow-lg p-6">
+          <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+            <span>📈</span> {t('research.riskDist')}
+          </h3>
           <div className="space-y-4">
             <div>
               <div className="flex justify-between mb-1">
-                <span className="text-sm text-slate-300">Thấp</span>
-                <span className="text-sm text-green-400">40%</span>
+                <span className="text-sm font-medium text-slate-300">{t('alerts.riskLow')}</span>
+                <span className="text-sm font-bold text-emerald-400 font-mono">40%</span>
               </div>
-              <div className="w-full bg-slate-800 rounded-full h-2">
-                <div className="bg-green-500 h-2 rounded-full" style={{ width: '40%' }} />
-              </div>
-            </div>
-            <div>
-              <div className="flex justify-between mb-1">
-                <span className="text-sm text-slate-300">Trung bình</span>
-                <span className="text-sm text-yellow-400">35%</span>
-              </div>
-              <div className="w-full bg-slate-800 rounded-full h-2">
-                <div className="bg-yellow-500 h-2 rounded-full" style={{ width: '35%' }} />
+              <div className="w-full bg-slate-800 rounded-full h-2.5 overflow-hidden border border-white/5">
+                <div className="bg-gradient-to-r from-emerald-500 to-green-400 h-full rounded-full transition-all duration-500" style={{ width: '40%' }} />
               </div>
             </div>
             <div>
               <div className="flex justify-between mb-1">
-                <span className="text-sm text-slate-300">Cao</span>
-                <span className="text-sm text-red-400">25%</span>
+                <span className="text-sm font-medium text-slate-300">{t('alerts.riskMedium')}</span>
+                <span className="text-sm font-bold text-amber-400 font-mono">35%</span>
               </div>
-              <div className="w-full bg-slate-800 rounded-full h-2">
-                <div className="bg-red-500 h-2 rounded-full" style={{ width: '25%' }} />
+              <div className="w-full bg-slate-800 rounded-full h-2.5 overflow-hidden border border-white/5">
+                <div className="bg-gradient-to-r from-amber-500 to-yellow-400 h-full rounded-full transition-all duration-500" style={{ width: '35%' }} />
+              </div>
+            </div>
+            <div>
+              <div className="flex justify-between mb-1">
+                <span className="text-sm font-medium text-slate-300">{t('alerts.riskHigh')}</span>
+                <span className="text-sm font-bold text-rose-400 font-mono">25%</span>
+              </div>
+              <div className="w-full bg-slate-800 rounded-full h-2.5 overflow-hidden border border-white/5">
+                <div className="bg-gradient-to-r from-rose-500 to-red-400 h-full rounded-full transition-all duration-500" style={{ width: '25%' }} />
               </div>
             </div>
           </div>

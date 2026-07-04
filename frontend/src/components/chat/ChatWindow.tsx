@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { MessageBubble } from './MessageBubble';
 import { ChatInput } from './ChatInput';
+import { useLanguage } from '../../context/LanguageContext';
 
 interface Message {
   id: string;
@@ -13,26 +14,34 @@ interface Message {
 
 const API_BASE_URL = 'http://localhost:8000';
 
-const WELCOME_MESSAGE: Message = {
-  id: 'welcome',
-  text: `Xin chào! Tôi là TerraBot, trợ lý AI của hệ thống TerraAlert.
-
-Tôi có thể giúp bạn với:
-• Thông tin thời tiết và cảnh báo
-• Kiến thức phòng chống thiên tai
-• Kỹ năng sinh tồn và sơ cấp cứu
-• Thông tin địa lý và bản đồ
-
-Hãy đặt câu hỏi cho tôi!`,
-  sender: 'bot',
-  timestamp: new Date(),
-  agent: 'TerraBot',
-};
-
 export function ChatWindow() {
-  const [messages, setMessages] = useState<Message[]>([WELCOME_MESSAGE]);
+  const { t } = useLanguage();
+  const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Initialize welcome message when language changes or on first mount
+  useEffect(() => {
+    if (messages.length === 0) {
+      setMessages([
+        {
+          id: 'welcome',
+          text: t('bot.welcome'),
+          sender: 'bot',
+          timestamp: new Date(),
+          agent: 'TerraBot',
+        },
+      ]);
+    } else if (messages[0]?.id === 'welcome') {
+      setMessages((prev) => [
+        {
+          ...prev[0],
+          text: t('bot.welcome'),
+        },
+        ...prev.slice(1),
+      ]);
+    }
+  }, [t]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -85,7 +94,7 @@ export function ChatWindow() {
       // Add error message
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
-        text: 'Xin lỗi, tôi không thể kết nối lúc này. Vui lòng thử lại sau.',
+        text: t('bot.errorMsg'),
         sender: 'bot',
         timestamp: new Date(),
         agent: 'System',
@@ -97,50 +106,46 @@ export function ChatWindow() {
     }
   };
 
-  return (
-    <div className="flex flex-col h-[600px] bg-gray-50 rounded-xl shadow-lg overflow-hidden">
-      {/* Header */}
-      <div className="bg-primary-600 text-white px-6 py-4">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
-            <span className="text-2xl">🤖</span>
-          </div>
-          <div>
-            <h3 className="font-semibold">TerraBot</h3>
-            <p className="text-sm text-blue-100">Trợ lý AI • Sẵn sàng hỗ trợ</p>
-          </div>
-        </div>
-      </div>
+  const quickReplies = [
+    t('bot.replyWeather'),
+    t('bot.replyCpr'),
+    t('bot.replyFlood'),
+    t('bot.replyWater'),
+  ];
 
-      {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-2">
+  return (
+    <div className="flex flex-col h-full bg-slate-950/30">
+      {/* Messages area */}
+      <div className="flex-1 overflow-y-auto p-4 space-y-1 scroll-smooth">
         {messages.map((message) => (
           <MessageBubble key={message.id} message={message} />
         ))}
-        
+
         {isLoading && (
-          <div className="flex justify-start mb-4">
-            <div className="bg-white rounded-2xl rounded-bl-md px-4 py-3 shadow-sm">
-              <div className="flex space-x-2">
-                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" />
-                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }} />
-                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }} />
+          <div className="flex justify-start mb-3">
+            <div className="bg-slate-800 border border-slate-700 rounded-2xl rounded-bl-md px-4 py-3">
+              <div className="flex items-center gap-1.5">
+                <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce [animation-delay:0ms]" />
+                <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce [animation-delay:150ms]" />
+                <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce [animation-delay:300ms]" />
               </div>
             </div>
           </div>
         )}
-        
+
         <div ref={messagesEndRef} />
       </div>
 
       {/* Quick Replies */}
-      <div className="px-4 pb-2">
-        <div className="flex flex-wrap gap-2">
-          {['Thời tiết hôm nay', 'Sơ cấp cứu CPR', 'Xử lý lũ lụt', 'Tìm nước sạch'].map((reply) => (
+      <div className="px-3 py-2 border-t border-slate-800/60">
+        <div className="flex flex-wrap gap-1.5">
+          {quickReplies.map((reply) => (
             <button
               key={reply}
               onClick={() => handleSend(reply)}
-              className="px-3 py-1.5 bg-white border border-gray-200 rounded-full text-sm text-gray-600 hover:bg-gray-50 transition-colors"
+              disabled={isLoading}
+              className="px-3 py-1 bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-slate-500
+                         rounded-full text-xs text-slate-300 hover:text-white transition-all disabled:opacity-40 shadow-sm hover:scale-105"
             >
               {reply}
             </button>

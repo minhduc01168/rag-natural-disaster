@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { CategoryCard } from '../components/CategoryCard';
 import { GuideContent } from '../components/GuideContent';
 import { categories, getGuidesByCategory, searchGuides, SurvivalGuide } from '../data/survivalGuides';
+import { useLanguage } from '../context/LanguageContext';
 
 type ViewState = 'categories' | 'category-detail' | 'guide-detail';
 
@@ -10,6 +11,7 @@ export function SurvivalPage() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedGuide, setSelectedGuide] = useState<SurvivalGuide | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const { t } = useLanguage();
 
   const handleCategoryClick = (categoryId: string) => {
     setSelectedCategory(categoryId);
@@ -38,21 +40,21 @@ export function SurvivalPage() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h2 className="text-2xl font-bold text-gray-900">Cẩm nang Sinh tồn</h2>
-        <p className="text-gray-600 mt-1">Kiến thức sinh tồn cơ bản - hoạt động offline</p>
+        <h2 className="text-3xl font-bold text-white drop-shadow-sm">{t('survival.title')}</h2>
+        <p className="text-slate-400 mt-1 text-sm">{t('survival.subtitle')}</p>
       </div>
 
       {/* Search Bar */}
       <div className="relative">
         <input
           type="text"
-          placeholder="Tìm kiếm cẩm nang..."
+          placeholder={t('survival.searchPlaceholder')}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full px-4 py-3 pl-10 bg-white rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+          className="w-full px-4 py-3.5 pl-11 bg-slate-800/80 text-white rounded-2xl border border-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-slate-400 shadow-inner transition-all"
         />
         <svg
-          className="absolute left-3 top-3.5 w-5 h-5 text-gray-400"
+          className="absolute left-4 top-4 w-5 h-5 text-slate-400"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -69,21 +71,21 @@ export function SurvivalPage() {
       {/* Search Results */}
       {searchQuery && (
         <div className="space-y-3">
-          <h3 className="font-semibold text-gray-700">Kết quả tìm kiếm ({filteredGuides.length})</h3>
+          <h3 className="font-semibold text-slate-200">{t('survival.searchResults')} ({filteredGuides.length})</h3>
           {filteredGuides.length === 0 ? (
-            <p className="text-gray-500">Không tìm thấy kết quả</p>
+            <p className="text-slate-400 py-4 text-center bg-slate-900/40 rounded-xl border border-white/5">{t('survival.noResults')}</p>
           ) : (
             filteredGuides.map((guide) => (
               <button
                 key={guide.id}
                 onClick={() => handleGuideClick(guide)}
-                className="w-full text-left bg-white rounded-lg p-4 hover:bg-gray-50 transition-colors border border-gray-100"
+                className="w-full text-left bg-slate-800/80 rounded-xl p-4 hover:bg-slate-700 transition-all border border-slate-700 hover:border-slate-500 shadow-sm hover:scale-[1.01]"
               >
-                <div className="flex items-center gap-3">
-                  <span className="text-2xl">{guide.icon}</span>
+                <div className="flex items-center gap-3.5">
+                  <span className="text-3xl">{guide.icon}</span>
                   <div>
-                    <p className="font-medium text-gray-900">{guide.title}</p>
-                    <p className="text-sm text-gray-600">{guide.description}</p>
+                    <p className="font-semibold text-white">{guide.title}</p>
+                    <p className="text-sm text-slate-300 mt-0.5">{guide.description}</p>
                   </div>
                 </div>
               </button>
@@ -113,15 +115,15 @@ export function SurvivalPage() {
         <div className="space-y-4">
           <button
             onClick={handleBack}
-            className="flex items-center gap-2 text-gray-600 hover:text-gray-900"
+            className="flex items-center gap-2 text-slate-300 hover:text-white bg-slate-800/80 hover:bg-slate-700 px-4 py-2 rounded-xl text-sm font-semibold border border-slate-700 transition-all shadow-sm hover:scale-105 active:scale-95"
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
-            Quay lại danh mục
+            <span>{t('survival.backToCat')}</span>
           </button>
 
-          <h3 className="text-lg font-semibold text-gray-900">
+          <h3 className="text-xl font-bold text-white drop-shadow-sm">
             {categories.find((c) => c.id === selectedCategory)?.name}
           </h3>
 
@@ -130,13 +132,13 @@ export function SurvivalPage() {
               <button
                 key={guide.id}
                 onClick={() => handleGuideClick(guide)}
-                className="w-full text-left bg-white rounded-xl shadow-sm p-4 hover:shadow-md transition-shadow"
+                className="w-full text-left bg-slate-800/80 rounded-xl p-4 hover:bg-slate-700 transition-all border border-slate-700 hover:border-slate-500 shadow-sm hover:scale-[1.01]"
               >
-                <div className="flex items-center gap-3">
-                  <span className="text-2xl">{guide.icon}</span>
+                <div className="flex items-center gap-3.5">
+                  <span className="text-3xl">{guide.icon}</span>
                   <div>
-                    <p className="font-medium text-gray-900">{guide.title}</p>
-                    <p className="text-sm text-gray-600">{guide.description}</p>
+                    <p className="font-semibold text-white">{guide.title}</p>
+                    <p className="text-sm text-slate-300 mt-0.5">{guide.description}</p>
                   </div>
                 </div>
               </button>
@@ -151,8 +153,8 @@ export function SurvivalPage() {
       )}
 
       {/* Offline Indicator */}
-      <div className="text-center text-sm text-gray-400 pt-4 border-t border-gray-100">
-        📱 Nội dung này hoạt động offline
+      <div className="text-center text-xs text-slate-400 pt-4 border-t border-white/5 font-medium">
+        {t('survival.offlineNotice')}
       </div>
     </div>
   );

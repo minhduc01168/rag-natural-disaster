@@ -7,16 +7,27 @@ from app.api.router import api_router
 settings = get_settings()
 
 from contextlib import asynccontextmanager
+from concurrent.futures import ThreadPoolExecutor
 from app.db.session import engine, Base, SessionLocal
 from app.models.user import UserRole
 from app.models.gis import SpatialFeature
 from app.crud.crud_user import get_user_by_email, create_user
 from app.schemas.user import UserCreate
+from app.rag.retrieval.reranker import Reranker
 from sqlalchemy import text
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Initialize DB tables
+    # ── 0. Warm-up Reranker (background thread, không block event loop) ──
+    reranker = Reranker()
+    executor = ThreadPoolExecutor(max_workers=1)
+    loop = __import__('asyncio').get_event_loop()
+    loop.run_in_executor(executor, reranker.preload)
+    # Lưu vào app.state để các router có thể dùng nếu cần
+    app.state.reranker = reranker
+    print("[Startup] Reranker warm-up đã được khởi động (background thread).")
+
+    # ── 1. Initialize DB tables ──
     with engine.begin() as conn:
         conn.execute(text("CREATE EXTENSION IF NOT EXISTS postgis;"))
     

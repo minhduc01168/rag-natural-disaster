@@ -27,8 +27,10 @@ class KnowledgeAgent:
             results = self.chroma_manager.search(query, n_results=10)
             vector_docs = []
             if results and "documents" in results and results["documents"]:
-                for doc in results["documents"][0]:
-                    vector_docs.append({"text": doc})
+                metadatas = results.get("metadatas", [[]])[0]
+                for i, doc in enumerate(results["documents"][0]):
+                    meta = metadatas[i] if i < len(metadatas) else {}
+                    vector_docs.append({"text": doc, "metadata": meta})
 
             # 2. Keyword Search (BM25)
             bm25_docs = []
@@ -53,10 +55,22 @@ class KnowledgeAgent:
 
             # 5. Tổng hợp câu trả lời
             context_str = "\n".join([doc["text"] for doc in final_docs])
-            
+
+            # Tạo danh sách nguồn trích dẫn: ưu tiên tên file, fallback sang text snippet
+            seen = set()
+            sources = []
+            for doc in final_docs:
+                meta = doc.get("metadata", {})
+                src = meta.get("source_file") if meta else None
+                if not src:
+                    src = doc.get("text", "")[:80] + "..."
+                if src not in seen:
+                    seen.add(src)
+                    sources.append(src)
+
             return {
-                "answer": f"Dựa trên cẩm nang, đây là thông tin tôi tìm được:\n{context_str}",
-                "sources": [doc.get("text", "")[:150] + "..." for doc in final_docs]
+                "answer": context_str,
+                "sources": sources
             }
         except Exception as e:
             import traceback

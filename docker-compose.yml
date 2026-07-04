@@ -23,6 +23,8 @@ services:
     environment:
       - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/terraalert
       - CHROMA_HOST=chromadb
+    volumes:
+      - backend_chroma:/app/.chroma
     depends_on:
       - postgres
 #      - redis
@@ -73,6 +75,7 @@ volumes:
   postgres_data:
   redis_data:
   chroma_data:
+  backend_chroma:
 
 networks:
   terraalert-network:
