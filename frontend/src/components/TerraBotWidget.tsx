@@ -65,12 +65,12 @@ export function TerraBotWidget() {
           aria-modal={isExpanded ? 'true' : undefined}
           aria-label="TerraBot Chat"
           className={`
-            fixed flex flex-col bg-slate-900 border border-slate-700/60 rounded-2xl overflow-hidden
+            fixed flex flex-col bg-white/95 backdrop-blur-xl border border-slate-200/90 rounded-2xl overflow-hidden
             transition-all duration-300 ease-in-out
             ${
               isExpanded
-                ? 'z-[201] inset-3 sm:inset-6 md:inset-10 lg:inset-16 shadow-[0_32px_80px_-8px_rgba(0,0,0,0.7)] animate-in zoom-in-95 fade-in duration-200'
-                : 'z-[100] bottom-[5.5rem] right-4 sm:right-6 shadow-2xl shadow-black/40 animate-in slide-in-from-bottom-4 fade-in duration-200'
+                ? 'z-[201] inset-3 sm:inset-6 md:inset-10 lg:inset-16 shadow-[0_32px_80px_-8px_rgba(0,0,0,0.25)] animate-in zoom-in-95 fade-in duration-200'
+                : 'z-[100] bottom-[5.5rem] right-4 sm:right-6 shadow-2xl shadow-slate-900/15 animate-in slide-in-from-bottom-4 fade-in duration-200'
             }
           `}
           style={

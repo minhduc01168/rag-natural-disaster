@@ -1,3 +1,5 @@
+import os
+import torch
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from sentence_transformers import SentenceTransformer
@@ -9,10 +11,18 @@ model = None
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     global model
+    # Set PyTorch threads to utilize all CPU cores efficiently
+    num_threads = min(os.cpu_count() or 4, 8)
+    torch.set_num_threads(num_threads)
+    
     # Load the model on startup
-    print("Loading embedding model 'microsoft/harrier-oss-v1-270m'...")
+    print(f"Loading embedding model 'microsoft/harrier-oss-v1-270m' with {num_threads} CPU threads...")
     model = SentenceTransformer("microsoft/harrier-oss-v1-270m")
-    print("Model loaded successfully.")
+    
+    # Model warm-up to ensure instant execution on first query
+    print("Warming up embedding model...")
+    _ = model.encode(["Cảnh báo lũ quét sạt lở đất khẩn cấp"], convert_to_numpy=True)
+    print("✅ Model loaded and warmed up successfully.")
     yield
     # Clean up resources on shutdown
     model = None
@@ -36,16 +46,15 @@ async def embed_texts(request: EmbedRequest):
 
     try:
         n = len(request.texts)
-        print(f"[EmbedService] Encoding {n} texts với batch_size=32...")
-        # batch_size=32: xử lý 32 chunks/lần → tránh OOM trên CPU
-        # show_progress_bar=True: in progress ra log để dễ debug
+        # Tối ưu batch_size: n <= 4 (query chat đơn lẻ) dùng batch_size=n; nhiều chunks dùng 64
+        batch_size = 64 if n > 4 else n
         embeddings = model.encode(
             request.texts,
-            batch_size=32,
-            show_progress_bar=(n > 10),  # chỉ hiện progress khi nhiều chunk
+            batch_size=batch_size,
+            show_progress_bar=(n > 20),
             convert_to_numpy=True,
+            normalize_embeddings=True,
         )
-        print(f"[EmbedService] ✅ Done {n} texts.")
         return EmbedResponse(embeddings=embeddings.tolist())
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -53,3 +62,4 @@ async def embed_texts(request: EmbedRequest):
 @app.get("/health")
 async def health_check():
     return {"status": "healthy", "model_loaded": model is not None}
+

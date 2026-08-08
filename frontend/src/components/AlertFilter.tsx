@@ -21,10 +21,10 @@ export function AlertFilter({ activeFilter, onFilterChange }: AlertFilterProps) 
         <button
           key={filter.key}
           onClick={() => onFilterChange(filter.key)}
-          className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all shadow-sm ${
+          className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all shadow-xs ${
             activeFilter === filter.key
-              ? 'bg-blue-600 text-white shadow-blue-500/20 scale-105'
-              : 'bg-slate-800/80 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700 hover:border-slate-500'
+              ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20 scale-105 font-bold'
+              : 'bg-white text-slate-700 hover:bg-slate-50 hover:text-slate-900 border border-slate-200/90'
           }`}
         >
           {filter.label}
@@ -33,3 +33,6 @@ export function AlertFilter({ activeFilter, onFilterChange }: AlertFilterProps) 
     </div>
   );
 }
+
+
+

@@ -1,0 +1,127 @@
+{
+  "vrain_stations": [
+    {
+      "id": "vrain-01",
+      "name": "Trạm Sa Pa",
+      "province": "Lào Cai",
+      "lat": 22.3364,
+      "lng": 103.8438,
+      "rainfall24h": 185,
+      "rainfall72h": 310,
+      "status": "Danger",
+      "lastUpdated": "2026-08-08 08:30"
+    },
+    {
+      "id": "vrain-02",
+      "name": "Trạm Mù Cang Chải",
+      "province": "Yên Bái",
+      "lat": 21.8543,
+      "lng": 104.0857,
+      "rainfall24h": 142,
+      "rainfall72h": 240,
+      "status": "Alert",
+      "lastUpdated": "2026-08-08 08:30"
+    },
+    {
+      "id": "vrain-03",
+      "name": "Trạm Hoàng Su Phì",
+      "province": "Hà Giang",
+      "lat": 22.7388,
+      "lng": 104.6732,
+      "rainfall24h": 168,
+      "rainfall72h": 295,
+      "status": "Danger",
+      "lastUpdated": "2026-08-08 08:30"
+    },
+    {
+      "id": "vrain-04",
+      "name": "Trạm Mộc Châu",
+      "province": "Sơn La",
+      "lat": 20.8441,
+      "lng": 104.6436,
+      "rainfall24h": 88,
+      "rainfall72h": 155,
+      "status": "Alert",
+      "lastUpdated": "2026-08-08 08:30"
+    },
+    {
+      "id": "vrain-05",
+      "name": "Trạm Nguyên Bình",
+      "province": "Cao Bằng",
+      "lat": 22.5647,
+      "lng": 105.9723,
+      "rainfall24h": 195,
+      "rainfall72h": 340,
+      "status": "Danger",
+      "lastUpdated": "2026-08-08 08:30"
+    },
+    {
+      "id": "vrain-06",
+      "name": "Trạm Phong Thổ",
+      "province": "Lai Châu",
+      "lat": 22.5361,
+      "lng": 103.3512,
+      "rainfall24h": 62,
+      "rainfall72h": 110,
+      "status": "Safe",
+      "lastUpdated": "2026-08-08 08:30"
+    }
+  ],
+  "hdx_landslide_hotspots": [
+    {
+      "id": "hdx-01",
+      "location": "Xã Thượng Hà, Bảo Yên",
+      "province": "Lào Cai",
+      "lat": 22.2891,
+      "lng": 104.3412,
+      "riskLevel": "Danger",
+      "radiusMeters": 3000,
+      "date": "09/2024",
+      "details": "Sạt trượt đất dốc bão hòa nước sau mưa bão lũ tích lũy >300mm."
+    },
+    {
+      "id": "hdx-02",
+      "location": "Xã Hồ Thầu, Hoàng Su Phì",
+      "province": "Hà Giang",
+      "lat": 22.6841,
+      "lng": 104.6215,
+      "riskLevel": "Danger",
+      "radiusMeters": 2500,
+      "date": "10/2024",
+      "details": "Điểm nóng nứt đất bề mặt nguy cơ lũ quét khe suối."
+    },
+    {
+      "id": "hdx-03",
+      "location": "Xã Lao Chải, Mù Cang Chải",
+      "province": "Yên Bái",
+      "lat": 21.8812,
+      "lng": 104.0321,
+      "riskLevel": "Alert",
+      "radiusMeters": 2000,
+      "date": "08/2024",
+      "details": "Vùng trượt lở đất tảng dốc đèo có nguy cơ ách tắc giao thông."
+    },
+    {
+      "id": "hdx-04",
+      "location": "Xã Ca Thành, Nguyên Bình",
+      "province": "Cao Bằng",
+      "lat": 22.6123,
+      "lng": 105.8912,
+      "riskLevel": "Danger",
+      "radiusMeters": 3500,
+      "date": "09/2024",
+      "details": "Điểm nóng sạt lở nghiêm trọng mái taluy đường quốc lộ."
+    },
+    {
+      "id": "hdx-05",
+      "location": "Xã Tà Xừa, Bắc Yên",
+      "province": "Sơn La",
+      "lat": 21.2531,
+      "lng": 104.4612,
+      "riskLevel": "Alert",
+      "radiusMeters": 1800,
+      "date": "07/2024",
+      "details": "Nguy cơ sạt trượt đất đá taluy âm khu dân cư dốc cao."
+    }
+  ]
+}

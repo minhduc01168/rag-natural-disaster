@@ -55,12 +55,17 @@ services:
 
   chromadb:
     image: chromadb/chroma:latest
+    environment:
+      - IS_PERSISTENT=TRUE
+      - PERSIST_DIRECTORY=/chroma/chroma
+      - ANONYMIZED_TELEMETRY=FALSE
     ports:
       - "8001:8000"
     volumes:
       - chroma_data:/chroma/chroma
     networks:
       - terraalert-network
+
 
   embedding_service:
     build:

@@ -67,9 +67,9 @@ export function AlertList({ alerts = sampleAlerts }: AlertListProps) {
       <AlertFilter activeFilter={filter} onFilterChange={setFilter} />
 
       {filteredAlerts.length === 0 ? (
-        <div className="text-center py-16 bg-slate-900/40 border border-white/5 rounded-2xl">
+        <div className="text-center py-16 bg-white/95 border border-slate-200/90 rounded-2xl shadow-xs">
           <div className="text-5xl mb-4">📭</div>
-          <p className="text-slate-300 font-medium text-base">{t('alerts.emptyTitle')}</p>
+          <p className="text-slate-800 font-bold text-base">{t('alerts.emptyTitle')}</p>
           <p className="text-sm text-slate-500 mt-1">{t('alerts.emptyDesc')}</p>
         </div>
       ) : (
@@ -87,9 +87,12 @@ export function AlertList({ alerts = sampleAlerts }: AlertListProps) {
         </div>
       )}
 
-      <div className="text-center text-sm text-slate-400 pt-2 font-medium">
+      <div className="text-center text-sm text-slate-500 pt-2 font-semibold">
         {t('alerts.showing')} {filteredAlerts.length} / {alerts.length}
       </div>
+
+
+
     </div>
   );
 }

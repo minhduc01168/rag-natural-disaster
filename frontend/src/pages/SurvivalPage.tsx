@@ -40,8 +40,8 @@ export function SurvivalPage() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h2 className="text-3xl font-bold text-white drop-shadow-sm">{t('survival.title')}</h2>
-        <p className="text-slate-400 mt-1 text-sm">{t('survival.subtitle')}</p>
+        <h2 className="text-3xl font-black text-slate-900">{t('survival.title')}</h2>
+        <p className="text-slate-500 mt-1 text-sm">{t('survival.subtitle')}</p>
       </div>
 
       {/* Search Bar */}
@@ -51,7 +51,7 @@ export function SurvivalPage() {
           placeholder={t('survival.searchPlaceholder')}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full px-4 py-3.5 pl-11 bg-slate-800/80 text-white rounded-2xl border border-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-slate-400 shadow-inner transition-all"
+          className="w-full px-4 py-3.5 pl-11 bg-white text-slate-900 rounded-2xl border border-slate-200/90 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-slate-400 shadow-sm transition-all font-medium"
         />
         <svg
           className="absolute left-4 top-4 w-5 h-5 text-slate-400"
@@ -71,21 +71,21 @@ export function SurvivalPage() {
       {/* Search Results */}
       {searchQuery && (
         <div className="space-y-3">
-          <h3 className="font-semibold text-slate-200">{t('survival.searchResults')} ({filteredGuides.length})</h3>
+          <h3 className="font-bold text-slate-800">{t('survival.searchResults')} ({filteredGuides.length})</h3>
           {filteredGuides.length === 0 ? (
-            <p className="text-slate-400 py-4 text-center bg-slate-900/40 rounded-xl border border-white/5">{t('survival.noResults')}</p>
+            <p className="text-slate-500 py-4 text-center bg-white rounded-xl border border-slate-200/90 shadow-xs">{t('survival.noResults')}</p>
           ) : (
             filteredGuides.map((guide) => (
               <button
                 key={guide.id}
                 onClick={() => handleGuideClick(guide)}
-                className="w-full text-left bg-slate-800/80 rounded-xl p-4 hover:bg-slate-700 transition-all border border-slate-700 hover:border-slate-500 shadow-sm hover:scale-[1.01]"
+                className="w-full text-left bg-white/95 rounded-xl p-4 hover:bg-slate-50 transition-all border border-slate-200/90 hover:border-blue-400 shadow-xs hover:scale-[1.005]"
               >
                 <div className="flex items-center gap-3.5">
                   <span className="text-3xl">{guide.icon}</span>
                   <div>
-                    <p className="font-semibold text-white">{guide.title}</p>
-                    <p className="text-sm text-slate-300 mt-0.5">{guide.description}</p>
+                    <p className="font-bold text-slate-900">{guide.title}</p>
+                    <p className="text-sm text-slate-600 mt-0.5">{guide.description}</p>
                   </div>
                 </div>
               </button>
@@ -115,7 +115,7 @@ export function SurvivalPage() {
         <div className="space-y-4">
           <button
             onClick={handleBack}
-            className="flex items-center gap-2 text-slate-300 hover:text-white bg-slate-800/80 hover:bg-slate-700 px-4 py-2 rounded-xl text-sm font-semibold border border-slate-700 transition-all shadow-sm hover:scale-105 active:scale-95"
+            className="flex items-center gap-2 text-slate-700 hover:text-slate-900 bg-white hover:bg-slate-50 px-4 py-2 rounded-xl text-sm font-semibold border border-slate-200 transition-all shadow-xs hover:scale-105 active:scale-95"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -123,7 +123,7 @@ export function SurvivalPage() {
             <span>{t('survival.backToCat')}</span>
           </button>
 
-          <h3 className="text-xl font-bold text-white drop-shadow-sm">
+          <h3 className="text-xl font-bold text-slate-900">
             {categories.find((c) => c.id === selectedCategory)?.name}
           </h3>
 
@@ -132,13 +132,13 @@ export function SurvivalPage() {
               <button
                 key={guide.id}
                 onClick={() => handleGuideClick(guide)}
-                className="w-full text-left bg-slate-800/80 rounded-xl p-4 hover:bg-slate-700 transition-all border border-slate-700 hover:border-slate-500 shadow-sm hover:scale-[1.01]"
+                className="w-full text-left bg-white/95 rounded-xl p-4 hover:bg-slate-50 transition-all border border-slate-200/90 hover:border-blue-400 shadow-xs hover:scale-[1.005]"
               >
                 <div className="flex items-center gap-3.5">
                   <span className="text-3xl">{guide.icon}</span>
                   <div>
-                    <p className="font-semibold text-white">{guide.title}</p>
-                    <p className="text-sm text-slate-300 mt-0.5">{guide.description}</p>
+                    <p className="font-bold text-slate-900">{guide.title}</p>
+                    <p className="text-sm text-slate-600 mt-0.5">{guide.description}</p>
                   </div>
                 </div>
               </button>
@@ -153,9 +153,12 @@ export function SurvivalPage() {
       )}
 
       {/* Offline Indicator */}
-      <div className="text-center text-xs text-slate-400 pt-4 border-t border-white/5 font-medium">
+      <div className="text-center text-xs text-slate-500 pt-4 border-t border-slate-200/80 font-medium">
         {t('survival.offlineNotice')}
       </div>
     </div>
   );
 }
+
+
+

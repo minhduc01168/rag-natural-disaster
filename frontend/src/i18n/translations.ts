@@ -94,23 +94,7 @@ export type TranslationKeys = {
     guideLabel: string;
     offlineNotice: string;
   };
-  research: {
-    title: string;
-    subtitle: string;
-    tabTrends: string;
-    tabModels: string;
-    tabReports: string;
-    exportData: string;
-    filterRegion: string;
-    chartTitle: string;
-    layerLsm: string;
-    layerDisaster: string;
-    layerElevation: string;
-    statsTitle: string;
-    totalPoints: string;
-    dataLayer: string;
-    riskDist: string;
-  };
+
   bot: {
     title: string;
     subtitle: string;
@@ -118,6 +102,8 @@ export type TranslationKeys = {
     send: string;
     welcome: string;
     errorMsg: string;
+    replyEmergency: string;
+    replyGuide: string;
     replyWeather: string;
     replyCpr: string;
     replyFlood: string;
@@ -191,7 +177,7 @@ export const translations: Record<Language, TranslationKeys> = {
       home: 'Trang chủ',
       alerts: 'Cảnh báo',
       survival: 'Cẩm nang',
-      research: '📊 Nghiên cứu',
+      research: 'Nghiên cứu',
       admin: '⚙️ Quản trị',
       login: 'Đăng nhập',
       register: 'Đăng ký',
@@ -280,23 +266,7 @@ export const translations: Record<Language, TranslationKeys> = {
       guideLabel: 'Hướng dẫn chi tiết:',
       offlineNotice: '📱 Nội dung này được lưu trữ và hoạt động offline ngay cả khi mất mạng',
     },
-    research: {
-      title: 'Trung tâm Nghiên cứu & Dữ liệu GIS',
-      subtitle: 'Phân tích dữ liệu địa không gian và bản đồ nhạy cảm sạt lở đất (LSM)',
-      tabTrends: 'Xu hướng Khí hậu',
-      tabModels: 'Mô hình AI & Dự báo',
-      tabReports: 'Báo cáo Định kỳ',
-      exportData: 'Xuất báo cáo (CSV/PDF)',
-      filterRegion: 'Lọc theo khu vực',
-      chartTitle: 'Biểu đồ Tần suất Thiên tai theo Năm',
-      layerLsm: '🗺️ Bản đồ LSM',
-      layerDisaster: '⚠️ Thiên tai',
-      layerElevation: '⛰️ Cao độ',
-      statsTitle: 'Thống kê lớp dữ liệu',
-      totalPoints: 'Tổng điểm dữ liệu:',
-      dataLayer: 'Lớp đang chọn:',
-      riskDist: 'Phân bố mức độ rủi ro',
-    },
+
     bot: {
       title: 'TerraBot',
       subtitle: 'Trợ lý AI • Sẵn sàng hỗ trợ',
@@ -304,6 +274,8 @@ export const translations: Record<Language, TranslationKeys> = {
       send: 'Gửi',
       welcome: 'Xin chào! Tôi là TerraBot - Trợ lý AI Cảnh báo Thiên tai & Sơ cấp cứu. Tôi có thể giúp gì cho bạn hôm nay?',
       errorMsg: 'Xin lỗi, hiện tại tôi không thể kết nối tới máy chủ. Vui lòng thử lại sau hoặc gọi hotline khẩn cấp 112 nếu gặp nguy hiểm.',
+      replyEmergency: '📞 Hotline Cứu hộ Khẩn cấp (112/115)',
+      replyGuide: '🆘 Hướng dẫn Thoát hiểm Khẩn cấp',
       replyWeather: '🌦️ Thời tiết & Cảnh báo hôm nay',
       replyCpr: '🫀 Hướng dẫn sơ cấp cứu CPR',
       replyFlood: '🌊 Ứng phó khi ngập lụt khẩn cấp',
@@ -321,6 +293,7 @@ export const translations: Record<Language, TranslationKeys> = {
       collapseTooltip: 'Thu nhỏ (Esc)',
       closeTooltip: 'Đóng (Esc)',
     },
+
     admin: {
       controlRoom: 'Trung tâm Điều hành',
       title: 'Trung tâm Điều hành',
@@ -375,7 +348,7 @@ export const translations: Record<Language, TranslationKeys> = {
       home: 'Home',
       alerts: 'Alerts',
       survival: 'Handbook',
-      research: '📊 Research',
+      research: 'Research',
       admin: '⚙️ Admin',
       login: 'Login',
       register: 'Register',
@@ -464,23 +437,7 @@ export const translations: Record<Language, TranslationKeys> = {
       guideLabel: 'Step-by-step instructions:',
       offlineNotice: '📱 This content is cached and works offline without internet connection',
     },
-    research: {
-      title: 'GIS Research & Data Hub',
-      subtitle: 'Geospatial analysis and Landslide Susceptibility Mapping (LSM)',
-      tabTrends: 'Climate Trends',
-      tabModels: 'AI Models & Forecasts',
-      tabReports: 'Periodic Reports',
-      exportData: 'Export Report (CSV/PDF)',
-      filterRegion: 'Filter by region',
-      chartTitle: 'Disaster Frequency Chart by Year',
-      layerLsm: '🗺️ LSM Map',
-      layerDisaster: '⚠️ Disasters',
-      layerElevation: '⛰️ Elevation',
-      statsTitle: 'Layer Statistics',
-      totalPoints: 'Total Data Points:',
-      dataLayer: 'Active Layer:',
-      riskDist: 'Risk Level Distribution',
-    },
+
     bot: {
       title: 'TerraBot',
       subtitle: 'AI Assistant • Ready to assist',
@@ -488,6 +445,8 @@ export const translations: Record<Language, TranslationKeys> = {
       send: 'Send',
       welcome: 'Hello! I am TerraBot - AI Disaster Warning & First Aid Assistant. How can I help you today?',
       errorMsg: 'Sorry, I cannot connect to the server right now. Please try again later or call emergency hotline 112 if in danger.',
+      replyEmergency: '📞 Emergency Hotline (112/115)',
+      replyGuide: '🆘 Emergency Evacuation Guide',
       replyWeather: '🌦️ Today\'s Weather & Alerts',
       replyCpr: '🫀 CPR First Aid Guide',
       replyFlood: '🌊 Emergency Flood Response',
@@ -505,6 +464,7 @@ export const translations: Record<Language, TranslationKeys> = {
       collapseTooltip: 'Compress (Esc)',
       closeTooltip: 'Close (Esc)',
     },
+
     admin: {
       controlRoom: 'Control Room',
       title: 'Control Room',

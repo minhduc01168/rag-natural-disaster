@@ -107,14 +107,17 @@ export function ChatWindow() {
   };
 
   const quickReplies = [
+    t('bot.replyEmergency'),
+    t('bot.replyGuide'),
     t('bot.replyWeather'),
     t('bot.replyCpr'),
     t('bot.replyFlood'),
     t('bot.replyWater'),
   ];
 
+
   return (
-    <div className="flex flex-col h-full bg-slate-950/30">
+    <div className="flex flex-col h-full bg-slate-50/70">
       {/* Messages area */}
       <div className="flex-1 overflow-y-auto p-4 space-y-1 scroll-smooth">
         {messages.map((message) => (
@@ -123,11 +126,11 @@ export function ChatWindow() {
 
         {isLoading && (
           <div className="flex justify-start mb-3">
-            <div className="bg-slate-800 border border-slate-700 rounded-2xl rounded-bl-md px-4 py-3">
+            <div className="bg-white border border-slate-200 shadow-xs rounded-2xl rounded-bl-md px-4 py-3">
               <div className="flex items-center gap-1.5">
-                <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce [animation-delay:0ms]" />
-                <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce [animation-delay:150ms]" />
-                <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce [animation-delay:300ms]" />
+                <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce [animation-delay:0ms]" />
+                <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce [animation-delay:150ms]" />
+                <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce [animation-delay:300ms]" />
               </div>
             </div>
           </div>
@@ -137,15 +140,15 @@ export function ChatWindow() {
       </div>
 
       {/* Quick Replies */}
-      <div className="px-3 py-2 border-t border-slate-800/60">
+      <div className="px-3 py-2 border-t border-slate-200/80 bg-white">
         <div className="flex flex-wrap gap-1.5">
           {quickReplies.map((reply) => (
             <button
               key={reply}
               onClick={() => handleSend(reply)}
               disabled={isLoading}
-              className="px-3 py-1 bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-slate-500
-                         rounded-full text-xs text-slate-300 hover:text-white transition-all disabled:opacity-40 shadow-sm hover:scale-105"
+              className="px-3 py-1 bg-slate-100 hover:bg-slate-200 border border-slate-200
+                         rounded-full text-xs font-medium text-slate-700 hover:text-slate-900 transition-all disabled:opacity-40 shadow-xs hover:scale-105"
             >
               {reply}
             </button>
@@ -158,3 +161,6 @@ export function ChatWindow() {
     </div>
   );
 }
+
+
+

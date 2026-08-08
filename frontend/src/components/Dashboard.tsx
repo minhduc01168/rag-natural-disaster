@@ -11,8 +11,8 @@ export function Dashboard() {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
-          <p className="mt-4 text-slate-300">{t('common.loading')}</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-slate-600 font-medium">{t('common.loading')}</p>
         </div>
       </div>
     );
@@ -23,20 +23,20 @@ export function Dashboard() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-3xl font-bold text-white drop-shadow-sm">{t('home.title')}</h2>
+          <h2 className="text-3xl font-black text-slate-900 tracking-tight">{t('home.title')}</h2>
           <div className="flex items-center gap-2 mt-1">
-            <span className="text-xs bg-blue-500/10 text-blue-400 border border-blue-500/20 px-2.5 py-0.5 rounded-full font-medium">
+            <span className="text-xs bg-blue-100 text-blue-800 border border-blue-200/80 px-3 py-1 rounded-full font-semibold shadow-xs">
               📍 {weather?.location_name || t('weather.location')}
             </span>
-            <span className="text-slate-400 text-sm hidden sm:inline">· {t('home.subtitle')}</span>
+            <span className="text-slate-500 text-sm hidden sm:inline">· {t('home.subtitle')}</span>
           </div>
         </div>
         <button
           onClick={refetch}
-          className="flex items-center gap-2 px-4 py-2.5 bg-slate-800/80 hover:bg-slate-700 border border-slate-700 hover:border-slate-500 rounded-xl text-sm font-semibold text-slate-200 hover:text-white transition-all shadow-sm hover:scale-105 active:scale-95 shrink-0 self-start sm:self-auto"
+          className="flex items-center gap-2 px-4 py-2.5 bg-white hover:bg-slate-50 border border-slate-200/90 hover:border-slate-300 rounded-xl text-sm font-semibold text-slate-700 hover:text-slate-900 transition-all shadow-xs hover:scale-105 active:scale-95 shrink-0 self-start sm:self-auto"
           title={t('common.refresh')}
         >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
           </svg>
           <span>{t('common.refresh')}</span>
@@ -45,12 +45,10 @@ export function Dashboard() {
 
       {/* Error message */}
       {error && (
-        <div className="bg-red-500/10 backdrop-blur-md border border-red-500/20 rounded-xl p-4">
-          <p className="text-red-400 text-sm">⚠️ {error} - Đang hiển thị dữ liệu mẫu</p>
+        <div className="bg-amber-50 border border-amber-200/90 rounded-2xl p-4 shadow-xs">
+          <p className="text-amber-800 text-sm font-medium">⚠️ {error} - Đang hiển thị dữ liệu mẫu</p>
         </div>
       )}
-
-
 
       {/* Alert Status */}
       {alert && (
@@ -72,8 +70,9 @@ export function Dashboard() {
           rainfall={weather.rainfall}
         />
       )}
-
-
     </div>
   );
 }
+
+
+

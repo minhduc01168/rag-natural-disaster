@@ -92,71 +92,71 @@ export function KnowledgeBasePage() {
     <div className="space-y-6">
       <div className="flex justify-between items-end">
         <div>
-          <h1 className="text-3xl font-bold text-white drop-shadow-sm">{t('admin.kbTitle')}</h1>
-          <p className="text-slate-400 mt-2 text-sm">{t('admin.kbSubtitle')}</p>
+          <h1 className="text-3xl font-black text-slate-900">{t('admin.kbTitle')}</h1>
+          <p className="text-slate-500 mt-2 text-sm">{t('admin.kbSubtitle')}</p>
         </div>
       </div>
 
       {error && (
-        <div className="bg-red-500/10 border border-red-500/30 text-red-400 p-4 rounded-xl">
+        <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded-xl font-medium shadow-xs">
           {error}
         </div>
       )}
 
       {success && (
-        <div className="bg-green-500/10 border border-green-500/30 text-green-400 p-4 rounded-xl">
+        <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 p-4 rounded-xl font-semibold shadow-xs">
           {success}
         </div>
       )}
 
       {(loading || committing) && (
-        <div className="bg-yellow-500/10 border border-yellow-500/30 text-yellow-400 p-4 rounded-xl flex items-center gap-3 animate-pulse shadow-lg">
-          <div className="w-5 h-5 border-2 border-yellow-400 border-t-transparent rounded-full animate-spin shrink-0" />
+        <div className="bg-amber-50 border border-amber-200 text-amber-900 p-4 rounded-xl flex items-center gap-3 animate-pulse shadow-xs">
+          <div className="w-5 h-5 border-2 border-amber-600 border-t-transparent rounded-full animate-spin shrink-0" />
           <div>
             <p className="font-semibold text-sm flex items-center gap-2 flex-wrap">
               <span>{t('admin.statusLabel')}:</span>
-              <span className="bg-yellow-500/20 text-yellow-300 px-2 py-0.5 rounded text-xs uppercase font-bold tracking-wider">{t('admin.statusProcessing')}</span>
+              <span className="bg-amber-100 text-amber-900 px-2 py-0.5 rounded text-xs uppercase font-extrabold tracking-wider">{t('admin.statusProcessing')}</span>
               <span>— {loading ? t('admin.analyzing') : t('admin.committing')}</span>
             </p>
-            <p className="text-xs text-yellow-500/80 mt-1">{t('admin.statusProcessingDesc')}</p>
+            <p className="text-xs text-amber-700/80 mt-1">{t('admin.statusProcessingDesc')}</p>
           </div>
         </div>
       )}
 
-      <div className="bg-slate-900/50 border border-white/10 p-6 rounded-2xl backdrop-blur-md shadow-xl">
-        <h2 className="text-xl font-semibold mb-4 text-slate-200">{t('admin.step1')}</h2>
+      <div className="bg-white/95 border border-slate-200/90 p-6 rounded-2xl shadow-sm">
+        <h2 className="text-xl font-extrabold mb-4 text-slate-900">{t('admin.step1')}</h2>
         <div className="flex flex-col sm:flex-row sm:items-center gap-4">
           <input 
             type="file" 
             ref={fileInputRef}
             onChange={handleFileChange}
             accept=".pdf,.docx,.txt,.md"
-            className="block w-full text-sm text-slate-400
+            className="block w-full text-sm text-slate-600
               file:mr-4 file:py-2 file:px-4
               file:rounded-full file:border-0
               file:text-sm file:font-semibold
-              file:bg-blue-500/10 file:text-blue-400
-              hover:file:bg-blue-500/20 transition-all cursor-pointer"
+              file:bg-blue-50 file:text-blue-700
+              hover:file:bg-blue-100 transition-all cursor-pointer"
           />
           <button 
             onClick={handleDryRun}
             disabled={!file || loading}
-            className="bg-blue-600 hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed text-white px-6 py-2.5 rounded-xl whitespace-nowrap shadow-lg shadow-blue-500/20 font-semibold transition-all hover:scale-105 active:scale-95"
+            className="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white px-6 py-2.5 rounded-xl whitespace-nowrap shadow-md shadow-blue-500/20 font-semibold transition-all hover:scale-105 active:scale-95"
           >
             {loading ? t('admin.analyzing') : t('admin.dryRun')}
           </button>
         </div>
-        <p className="text-xs text-slate-500 mt-3">{t('admin.step1Note')}</p>
+        <p className="text-xs text-slate-500 mt-3 font-medium">{t('admin.step1Note')}</p>
       </div>
 
       {chunks && (
-        <div className="bg-slate-900/50 border border-white/10 p-6 rounded-2xl backdrop-blur-md shadow-xl animate-in fade-in slide-in-from-bottom-4">
+        <div className="bg-white/95 border border-slate-200/90 p-6 rounded-2xl shadow-sm animate-in fade-in slide-in-from-bottom-4">
           <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-6">
-            <h2 className="text-xl font-semibold text-slate-200">{t('admin.step2')}</h2>
+            <h2 className="text-xl font-extrabold text-slate-900">{t('admin.step2')}</h2>
             <button 
               onClick={handleCommit}
               disabled={committing}
-              className="bg-green-600 hover:bg-green-500 disabled:opacity-50 text-white px-6 py-2.5 rounded-xl shadow-lg shadow-green-500/20 font-semibold transition-all hover:scale-105 active:scale-95 whitespace-nowrap"
+              className="bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white px-6 py-2.5 rounded-xl shadow-md shadow-emerald-500/20 font-semibold transition-all hover:scale-105 active:scale-95 whitespace-nowrap"
             >
               {committing ? t('admin.committing') : `${t('admin.commit')} (${chunks.length} ${t('admin.chunks')})`}
             </button>
@@ -166,21 +166,21 @@ export function KnowledgeBasePage() {
             {chunks.map((chunk, idx) => {
               const isExpanded = expandedChunks[idx] || false;
               return (
-                <div key={idx} className="bg-slate-800/80 border border-slate-700 rounded-xl p-4 flex flex-col group hover:border-slate-500 transition-colors">
+                <div key={idx} className="bg-slate-50 border border-slate-200/90 rounded-xl p-4 flex flex-col group hover:border-slate-400 transition-colors">
                   <div className="flex justify-between items-start mb-3">
-                    <span className="text-xs font-semibold bg-slate-700 text-slate-300 px-3 py-1.5 rounded-md">
+                    <span className="text-xs font-bold bg-slate-200 text-slate-800 px-3 py-1 rounded-md">
                       Chunk #{idx + 1}
                     </span>
-                    <span className="text-xs text-slate-400 font-mono bg-black/20 px-2 py-1 rounded-md" title="Kích thước ước tính">
+                    <span className="text-xs text-slate-500 font-mono bg-slate-200/70 px-2 py-1 rounded-md font-medium" title="Kích thước ước tính">
                       ~{Math.round(chunk.text.length / 4)} tokens
                     </span>
                   </div>
-                  <div className={`text-sm text-slate-300 whitespace-pre-wrap font-mono bg-slate-950/50 p-4 rounded-lg transition-all duration-300 ${!isExpanded ? 'line-clamp-3 overflow-hidden' : ''}`}>
+                  <div className={`text-sm text-slate-800 whitespace-pre-wrap font-mono bg-white p-4 rounded-lg border border-slate-200/80 transition-all duration-300 ${!isExpanded ? 'line-clamp-3 overflow-hidden' : ''}`}>
                     {chunk.text}
                   </div>
                   <button 
                     onClick={() => setExpandedChunks(prev => ({ ...prev, [idx]: !isExpanded }))}
-                    className="mt-3 text-xs font-medium text-blue-400 hover:text-blue-300 self-start flex items-center gap-1 transition-colors"
+                    className="mt-3 text-xs font-bold text-blue-600 hover:text-blue-700 self-start flex items-center gap-1 transition-colors"
                   >
                     {isExpanded ? '🔼 Thu gọn' : '🔽 Xem chi tiết'}
                   </button>
@@ -193,3 +193,4 @@ export function KnowledgeBasePage() {
     </div>
   );
 }
+
