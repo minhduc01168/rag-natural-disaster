@@ -35,176 +35,198 @@ os.makedirs(OUTPUT_DIR, exist_ok=True)
 # ==============================================================================
 def generate_figure_1():
     print("Generating Figure 1: Clean System Architecture (Winston SA Multi-Stage Layout)...")
-    fig = plt.figure(figsize=(17.5, 10.5), dpi=300)
+    fig = plt.figure(figsize=(18, 10.5), dpi=300)
     ax = fig.add_axes([0, 0, 1, 1])
     ax.set_xlim(0, 17.5)
-    ax.set_ylim(0, 10.5)
+    ax.set_ylim(0, 10.0)
     ax.axis("off")
 
-    # Clean background canvas
-    canvas_bg = patches.Rectangle((0, 0), 17.5, 10.5, facecolor="#F8FAFC", edgecolor="none")
-    ax.add_patch(canvas_bg)
+    # Canvas Background: Crisp white
+    ax.add_patch(patches.Rectangle((0, 0), 17.5, 10.0, facecolor="#FFFFFF", zorder=0))
 
-    # --------------------------------------------------------------------------
-    # 0. HEADER: TITLE & TAXONOMY
-    # --------------------------------------------------------------------------
+    # Master Architectural Header Banner
     ax.text(
         8.75,
-        10.12,
+        9.68,
         "TERRA: Tactical Emergency Retrieval-augmented Resilient Architecture",
         ha="center",
         va="center",
-        fontsize=16.5,
+        fontsize=15.5,
         fontweight="bold",
         color="#0F172A",
+        zorder=3,
     )
     ax.text(
         8.75,
-        9.80,
+        9.38,
         "Decoupled Multi-Stage Hybrid Retrieval & Neural Re-Ranking Framework for Mountain Disaster Operational Decision Support",
         ha="center",
         va="center",
-        fontsize=10.2,
+        fontsize=9.2,
         fontstyle="italic",
         color="#475569",
+        zorder=3,
     )
 
-    # Color tokens
-    c_blue_p = "#1D4ED8"     # Blue (Data Plane & Dense)
-    c_teal_p = "#0F766E"     # Teal (Sparse Lexical)
-    c_emerald_p = "#047857"  # Emerald (Hybrid Retrieval & RRF)
-    c_amber_p = "#B45309"    # Amber (Neural Cross-Encoder & Guarantees)
-    c_purple_p = "#6B21A8"   # Purple (LLM Synthesis)
-    c_slate_gray = "#64748B"
+    # Architectural Color Palette
+    c_blue_p = "#1E40AF"
+    c_teal_p = "#0F766E"
+    c_green_p = "#065F46"
+    c_amber_p = "#92400E"
+    c_purple_p = "#6B21A8"
 
-    # Helper: draw outer system phase container
-    def draw_phase_container(x, y, w, h, title, subtitle="", bg="#F8FAFC", border="#3B82F6"):
-        rect = patches.FancyBboxPatch(
+    # Helper: draw outer tier container
+    def draw_phase_container(x, y, w, h, title, subtitle, bg, border):
+        container = patches.FancyBboxPatch(
             (x, y),
             w,
             h,
-            boxstyle="round,pad=0.08,rounding_size=0.15",
+            boxstyle="round,pad=0.06,rounding_size=0.16",
             facecolor=bg,
             edgecolor=border,
             linewidth=1.6,
             zorder=1,
         )
-        ax.add_patch(rect)
+        ax.add_patch(container)
         ax.text(
-            x + 0.25,
-            y + h - 0.22,
+            x + 0.22,
+            y + h - 0.24,
             title,
             ha="left",
             va="center",
             fontsize=9.8,
             fontweight="bold",
-            color=border if border not in ["#CBD5E1", "#E2E8F0"] else "#1E293B",
-            zorder=2,
+            color=border,
+            zorder=3,
         )
-        if subtitle:
-            ax.text(
-                x + 0.25,
-                y + h - 0.42,
-                subtitle,
-                ha="left",
-                va="center",
-                fontsize=7.6,
-                fontstyle="italic",
-                color=c_slate_gray,
-                zorder=2,
-            )
+        ax.text(
+            x + 0.22,
+            y + h - 0.44,
+            subtitle,
+            ha="left",
+            va="center",
+            fontsize=7.6,
+            fontstyle="italic",
+            color="#64748B",
+            zorder=3,
+        )
 
-    # Helper: draw architectural component card
-    def draw_component_card(x, y, w, h, title, chip_text, items, bg="#FFFFFF", border="#CBD5E1", title_color="#0F172A", chip_color=None):
-        rect = patches.FancyBboxPatch(
+    # Helper: draw component cards
+    def draw_component_card(x, y, w, h, title, chip_text, items, bg="#FFFFFF", border="#CBD5E1", title_color="#0F172A"):
+        card = patches.FancyBboxPatch(
             (x, y),
             w,
             h,
-            boxstyle="round,pad=0.05,rounding_size=0.12",
+            boxstyle="round,pad=0.05,rounding_size=0.10",
             facecolor=bg,
             edgecolor=border,
             linewidth=1.2,
-            zorder=3,
+            zorder=2,
         )
-        ax.add_patch(rect)
+        ax.add_patch(card)
 
-        # Title
         ax.text(
-            x + 0.18,
+            x + 0.16,
             y + h - 0.24,
             title,
             ha="left",
             va="center",
-            fontsize=8.8,
+            fontsize=8.6,
             fontweight="bold",
             color=title_color,
             zorder=4,
         )
 
-        # Micro-chip badge below title
         if chip_text:
-            cp_col = chip_color if chip_color else title_color
             ax.text(
-                x + 0.18,
+                x + 0.16,
                 y + h - 0.46,
                 chip_text,
                 ha="left",
                 va="center",
-                fontsize=6.8,
+                fontsize=6.6,
                 fontweight="bold",
-                color=cp_col,
-                bbox=dict(boxstyle="round,pad=0.16", facecolor="#FFFFFF", edgecolor=border, lw=0.7),
+                color=border,
+                bbox=dict(boxstyle="round,pad=0.12,rounding_size=0.06", facecolor="#F8FAFC", edgecolor=border, lw=0.65),
                 zorder=4,
             )
 
-        # Bullet items
-        y_text = y + h - (0.72 if chip_text else 0.48)
-        for item in items:
+        y_text = y + h - (0.72 if chip_text else 0.44)
+        for it in items:
+            if it == "":
+                y_text -= 0.09
+                continue
+            is_sub = it.startswith("  -") or it.startswith("    ") or it.startswith("  ✓") or it.startswith("  (")
+            f_size = 6.4 if is_sub else 6.9
+            f_weight = "normal"
             ax.text(
-                x + 0.18,
+                x + 0.16,
                 y_text,
-                item,
+                it,
                 ha="left",
-                va="top",
-                fontsize=7.3,
+                va="center",
+                fontsize=f_size,
+                fontweight=f_weight,
                 color="#334155",
-                linespacing=1.20,
+                linespacing=1.18,
                 zorder=4,
             )
-            y_text -= 0.27
+            y_text -= 0.25
 
-    # Helper: draw orthogonal dataflow arrow with badge
-    def draw_arrow(x1, y1, x2, y2, label="", color="#475569", lw=1.8, style="-|>", badge_color=None, badge_bg="#FFFFFF"):
+    # Helper: draw dataflow arrow with label placed COMPLETELY OUTSIDE the arrow shaft
+    def draw_arrow(x1, y1, x2, y2, label="", color="#475569", lw=2.0, label_pos="above", badge_bg="#FFFFFF"):
+        # 1. Uninterrupted crisp arrow line
         ax.annotate(
             "",
             xy=(x2, y2),
             xytext=(x1, y1),
             arrowprops=dict(
-                arrowstyle=style,
+                arrowstyle="-|>",
                 color=color,
                 lw=lw,
-                mutation_scale=13,
-                shrinkA=0,
-                shrinkB=0,
+                mutation_scale=14,
+                shrinkA=1,
+                shrinkB=1,
             ),
             zorder=6,
         )
+        # 2. Label placed with guaranteed clearance from the arrow line
         if label:
-            b_col = badge_color if badge_color else color
+            if label_pos == "above":
+                tx = (x1 + x2) / 2
+                ty = (y1 + y2) / 2 + 0.16
+                ha = "center"
+                va = "bottom"
+            elif label_pos == "below":
+                tx = (x1 + x2) / 2
+                ty = (y1 + y2) / 2 - 0.16
+                ha = "center"
+                va = "top"
+            elif label_pos == "right":
+                tx = (x1 + x2) / 2 + 0.18
+                ty = (y1 + y2) / 2
+                ha = "left"
+                va = "center"
+            elif label_pos == "left":
+                tx = (x1 + x2) / 2 - 0.18
+                ty = (y1 + y2) / 2
+                ha = "right"
+                va = "center"
+
             ax.text(
-                (x1 + x2) / 2,
-                (y1 + y2) / 2,
+                tx,
+                ty,
                 label,
-                ha="center",
-                va="center",
+                ha=ha,
+                va=va,
                 fontsize=7.0,
                 fontweight="bold",
-                color=b_col,
+                color=color,
                 bbox=dict(
-                    boxstyle="round,pad=0.18",
+                    boxstyle="round,pad=0.14,rounding_size=0.08",
                     facecolor=badge_bg,
-                    edgecolor=b_col,
-                    lw=0.85,
+                    edgecolor=color,
+                    lw=0.8,
                 ),
                 zorder=7,
             )
@@ -213,10 +235,10 @@ def generate_figure_1():
     # TIER 1 (TOP-LEFT): OFFLINE KNOWLEDGE INGESTION & DUAL INDEXING PLANE
     # ==========================================================================
     draw_phase_container(
-        0.5,
-        6.30,
-        10.5,
-        3.20,
+        0.50,
+        6.15,
+        10.45,
+        2.95,
         title="TIER 1: OFFLINE KNOWLEDGE INGESTION & DUAL INDEXING PLANE",
         subtitle="Corpus Ingestion, AST Structural Parsing, Two-Tier Chunking & Persistent Dual-Index Construction",
         bg="#F8FAFC",
@@ -225,10 +247,10 @@ def generate_figure_1():
 
     # Card 1.1: Document Parsing
     draw_component_card(
-        0.75,
-        6.45,
-        2.90,
-        2.40,
+        0.72,
+        6.30,
+        2.80,
+        2.20,
         title="1. Corpus Normalization",
         chip_text="[7 Mountain Disaster Manuals]",
         items=[
@@ -243,15 +265,15 @@ def generate_figure_1():
         title_color=c_blue_p,
     )
 
-    # Arrow 1.1 -> 1.2
-    draw_arrow(3.65, 7.65, 4.30, 7.65, label="AST Nodes", color="#2563EB")
+    # Arrow 1.1 -> 1.2 (Unobstructed, label above)
+    draw_arrow(3.52, 7.40, 4.32, 7.40, label="AST Nodes", color="#2563EB", label_pos="above")
 
     # Card 1.2: Two-Tier Chunker
     draw_component_card(
-        4.30,
-        6.45,
-        2.95,
-        2.40,
+        4.32,
+        6.30,
+        2.80,
+        2.20,
         title="2. Two-Tier Semantic Chunker",
         chip_text="[Tier 1: H1-H4 | Tier 2: L=1000, δ=150]",
         items=[
@@ -267,15 +289,15 @@ def generate_figure_1():
         title_color=c_blue_p,
     )
 
-    # Arrow 1.2 -> 1.3
-    draw_arrow(7.25, 7.65, 7.90, 7.65, label="Passages", color="#2563EB")
+    # Arrow 1.2 -> 1.3 (Unobstructed, label above)
+    draw_arrow(7.12, 7.40, 7.92, 7.40, label="Passages", color="#2563EB", label_pos="above")
 
     # Card 1.3: Dual Persistent Storage Engine
     draw_component_card(
-        7.90,
-        6.45,
-        2.85,
-        2.40,
+        7.92,
+        6.30,
+        2.80,
+        2.20,
         title="3. Dual Persistent Storage",
         chip_text="[ChromaDB + In-Memory BM25]",
         items=[
@@ -295,20 +317,20 @@ def generate_figure_1():
     # TIER 1 (TOP-RIGHT): OPERATIONAL CRITERIA & EMERGENCY GUARANTEES
     # ==========================================================================
     draw_phase_container(
-        11.25,
-        6.30,
-        5.75,
-        3.20,
+        11.20,
+        6.15,
+        5.80,
+        2.95,
         title="OPERATIONAL CRITERIA & SYSTEM GUARANTEES",
         subtitle="Mandates for High-Stakes Disaster Response Decision Support",
         bg="#FFFBEB",
         border="#D97706",
     )
     draw_component_card(
-        11.45,
-        6.45,
-        5.35,
-        2.40,
+        11.40,
+        6.30,
+        5.40,
+        2.20,
         title="Mission-Critical Operational Mandates",
         chip_text="[High-Stakes Emergency Doctrine: Zero-Hallucination]",
         items=[
@@ -327,24 +349,22 @@ def generate_figure_1():
     # TIER 2 (BOTTOM): ONLINE OPERATIONAL INFERENCE PIPELINE
     # ==========================================================================
     draw_phase_container(
-        0.5,
-        0.75,
-        16.5,
-        5.00,
+        0.50,
+        0.80,
+        16.50,
+        4.90,
         title="TIER 2: ONLINE OPERATIONAL HYBRID RETRIEVAL & GROUNDED SYNTHESIS PIPELINE",
         subtitle="Real-Time Query Ingestion, Multi-Channel Hybrid Retrieval (RRF), Neural Re-Ranking & Grounded LLM Generation",
         bg="#F8FAFC",
         border="#475569",
     )
 
-    # --------------------------------------------------------------------------
     # STAGE 1: FIELD QUERY INGESTION
-    # --------------------------------------------------------------------------
     draw_component_card(
-        0.75,
-        0.95,
-        2.90,
-        4.10,
+        0.72,
+        0.98,
+        2.80,
+        4.00,
         title="Stage 1: Field Query Ingestion",
         chip_text="[Tactical Command Client]",
         items=[
@@ -367,17 +387,11 @@ def generate_figure_1():
         title_color="#B91C1C",
     )
 
-    # Query fan-out arrows to Channel A (Dense) and Channel B (Sparse)
-    draw_arrow(3.65, 3.85, 4.40, 3.85, label="q (Dense)", color="#1D4ED8")
-    draw_arrow(3.65, 2.05, 4.40, 2.05, label="q (Sparse)", color="#0F766E")
-
-    # --------------------------------------------------------------------------
     # STAGE 2: HYBRID RETRIEVAL & RECIPROCAL RANK FUSION (RRF)
-    # --------------------------------------------------------------------------
     stage2_rect = patches.FancyBboxPatch(
-        (4.30, 0.95),
-        4.50,
-        4.10,
+        (4.42, 0.98),
+        4.30,
+        4.00,
         boxstyle="round,pad=0.06,rounding_size=0.12",
         facecolor="#F0FDF4",
         edgecolor="#10B981",
@@ -387,35 +401,35 @@ def generate_figure_1():
     ax.add_patch(stage2_rect)
 
     ax.text(
-        4.50,
-        4.82,
+        4.62,
+        4.74,
         "Stage 2: Hybrid Retrieval & Fusion",
         ha="left",
         va="center",
-        fontsize=9.2,
+        fontsize=9.0,
         fontweight="bold",
         color="#047857",
         zorder=4,
     )
     ax.text(
-        4.50,
-        4.60,
+        4.62,
+        4.52,
         "[Dual-Channel Parallel Search + RRF k=60]",
         ha="left",
         va="center",
-        fontsize=6.8,
+        fontsize=6.7,
         fontweight="bold",
         color="#065F46",
-        bbox=dict(boxstyle="round,pad=0.15", facecolor="#D1FAE5", edgecolor="#10B981", lw=0.7),
+        bbox=dict(boxstyle="round,pad=0.12,rounding_size=0.06", facecolor="#D1FAE5", edgecolor="#10B981", lw=0.65),
         zorder=4,
     )
 
     # Subcard 2A: Dense Vector Retrieval
     draw_component_card(
-        4.50,
-        2.95,
-        4.10,
-        1.50,
+        4.62,
+        3.02,
+        3.90,
+        1.38,
         title="Channel A: Dense Vector Search",
         chip_text="[Harrier-OSS-0.6B | Cosine Sim]",
         items=[
@@ -430,10 +444,10 @@ def generate_figure_1():
 
     # Subcard 2B: Sparse Lexical Retrieval
     draw_component_card(
-        4.50,
-        1.10,
-        4.10,
-        1.50,
+        4.62,
+        1.14,
+        3.90,
+        1.38,
         title="Channel B: Sparse Lexical Search",
         chip_text="[Okapi BM25 | Exact Legal Codes]",
         items=[
@@ -446,14 +460,11 @@ def generate_figure_1():
         title_color=c_teal_p,
     )
 
-    # Vertical Arrow: Index Feed from Dual Storage (Top, x=8.45) straight down into Stage 2
-    draw_arrow(8.45, 6.45, 8.45, 5.15, label="Dual Index Feed", color="#1D4ED8", badge_bg="#FFFFFF")
-
     # Reciprocal Rank Fusion (RRF) banner inside Stage 2
     rrf_box = patches.FancyBboxPatch(
-        (4.50, 2.68),
-        4.10,
-        0.24,
+        (4.62, 2.64),
+        3.90,
+        0.26,
         boxstyle="round,pad=0.03,rounding_size=0.06",
         facecolor="#D1FAE5",
         edgecolor="#059669",
@@ -462,28 +473,33 @@ def generate_figure_1():
     )
     ax.add_patch(rrf_box)
     ax.text(
-        6.55,
-        2.80,
+        6.57,
+        2.77,
         "Reciprocal Rank Fusion (RRF): Score(d) = ∑ 1 / (60 + rank_i(d))",
         ha="center",
         va="center",
-        fontsize=6.9,
+        fontsize=6.6,
         fontweight="bold",
         color="#065F46",
         zorder=5,
     )
 
-    # Arrow from Stage 2 to Stage 3
-    draw_arrow(8.80, 2.80, 9.50, 2.80, label="Top-10 Pool", color="#059669")
+    # Query fan-out arrows from Stage 1 to Stage 2 Channels (unobstructed, label above)
+    draw_arrow(3.52, 3.71, 4.42, 3.71, label="q (Dense)", color="#1D4ED8", label_pos="above")
+    draw_arrow(3.52, 1.83, 4.42, 1.83, label="q (Sparse)", color="#0F766E", label_pos="above")
 
-    # --------------------------------------------------------------------------
+    # Vertical Arrow: Index Feed from Dual Storage down into Stage 2 (unobstructed, label right)
+    draw_arrow(8.32, 6.30, 8.32, 4.98, label="Dual Index Feed", color="#1D4ED8", label_pos="right")
+
+    # Arrow from Stage 2 to Stage 3 (unobstructed, label above)
+    draw_arrow(8.72, 2.77, 9.62, 2.77, label="Top-10 Pool", color="#059669", label_pos="above")
+
     # STAGE 3: NEURAL CROSS-ENCODER RE-RANKER
-    # --------------------------------------------------------------------------
     draw_component_card(
-        9.50,
-        0.95,
-        3.45,
-        4.10,
+        9.62,
+        0.98,
+        3.25,
+        4.00,
         title="Stage 3: Cross-Encoder Reranker",
         chip_text="[ms-marco-MiniLM-L-6-v2 | Token-Level]",
         items=[
@@ -506,17 +522,15 @@ def generate_figure_1():
         title_color=c_amber_p,
     )
 
-    # Arrow from Stage 3 to Stage 4
-    draw_arrow(12.95, 2.80, 13.65, 2.80, label="Top-3 Gold", color="#D97706")
+    # Arrow from Stage 3 to Stage 4 (unobstructed, label above)
+    draw_arrow(12.87, 2.77, 13.77, 2.77, label="Top-3 Gold", color="#D97706", label_pos="above")
 
-    # --------------------------------------------------------------------------
     # STAGE 4: GROUNDED SYNTHESIS & TACTICAL DISPATCH
-    # --------------------------------------------------------------------------
     draw_component_card(
-        13.65,
-        0.95,
-        3.10,
-        4.10,
+        13.77,
+        0.98,
+        2.98,
+        4.00,
         title="Stage 4: Grounded Synthesis",
         chip_text="[Gemini 2.5 Flash | Attribution Shield]",
         items=[
@@ -539,14 +553,12 @@ def generate_figure_1():
         title_color=c_purple_p,
     )
 
-    # --------------------------------------------------------------------------
-    # BOTTOM SLA & NFR BAR (Enterprise Platform Standard)
-    # --------------------------------------------------------------------------
+    # BOTTOM SLA & NFR BAR
     sla_bg = patches.FancyBboxPatch(
-        (0.5, 0.15),
-        16.5,
-        0.45,
-        boxstyle="round,pad=0.04,rounding_size=0.10",
+        (0.50, 0.18),
+        16.50,
+        0.42,
+        boxstyle="round,pad=0.04,rounding_size=0.08",
         facecolor="#0F172A",
         edgecolor="#334155",
         linewidth=1.2,
@@ -563,11 +575,11 @@ def generate_figure_1():
     )
     ax.text(
         8.75,
-        0.37,
+        0.39,
         sla_text,
         ha="center",
         va="center",
-        fontsize=8.2,
+        fontsize=8.0,
         fontweight="bold",
         color="#F8FAFC",
         zorder=3,
