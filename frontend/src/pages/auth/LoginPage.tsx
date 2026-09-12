@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { apiUrl } from '../../config/api';
 
 export function LoginPage() {
   const [email, setEmail] = useState('');
@@ -23,7 +24,7 @@ export function LoginPage() {
       formData.append('username', email);
       formData.append('password', password);
 
-      const response = await fetch('http://localhost:8000/api/v1/auth/login', {
+      const response = await fetch(apiUrl('/api/v1/auth/login'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -38,7 +39,7 @@ export function LoginPage() {
       const data = await response.json();
       
       // Fetch user info
-      const userResponse = await fetch('http://localhost:8000/api/v1/auth/me', {
+      const userResponse = await fetch(apiUrl('/api/v1/auth/me'), {
         headers: {
           'Authorization': `Bearer ${data.access_token}`
         }

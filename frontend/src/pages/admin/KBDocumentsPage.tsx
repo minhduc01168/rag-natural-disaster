@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useLanguage } from '../../context/LanguageContext';
+import { apiUrl } from '../../config/api';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -18,7 +19,7 @@ interface ChunkData {
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
-const API = 'http://localhost:8000/api/v1/admin/rag';
+const API = apiUrl('/api/v1/admin/rag');
 
 function fileIcon(name: string) {
   if (name.endsWith('.pdf'))  return '📄';

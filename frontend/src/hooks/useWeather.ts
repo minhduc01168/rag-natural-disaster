@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { apiUrl } from '../config/api';
 
 interface WeatherData {
   temperature: number;
@@ -24,10 +25,6 @@ interface UseWeatherReturn {
   refetch: () => void;
 }
 
-const API_BASE_URL = typeof window !== 'undefined' 
-  ? (window as any).__VITE_API_BASE_URL__ || 'http://localhost:8000'
-  : 'http://localhost:8000';
-
 export function useWeather(lat: number = 21.0285, lon: number = 105.8542): UseWeatherReturn {
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [alert, setAlert] = useState<AlertData | null>(null);
@@ -39,7 +36,7 @@ export function useWeather(lat: number = 21.0285, lon: number = 105.8542): UseWe
     setError(null);
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/v1/fast-lane/weather/${lat}/${lon}`);
+      const response = await fetch(apiUrl(`/api/v1/fast-lane/weather/${lat}/${lon}`));
       if (!response.ok) {
         throw new Error('Failed to fetch weather data');
       }

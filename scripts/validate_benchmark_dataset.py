@@ -19,8 +19,11 @@ import os
 import sys
 
 DATASET_DIR = "backend/app/rag/evaluation/datasets"
+ROOT_BENCHMARK_DIR = "benchmark"
 JSON_PATH = os.path.join(DATASET_DIR, "disaster_qa_benchmark_100.json")
 CSV_PATH = os.path.join(DATASET_DIR, "disaster_qa_benchmark_100.csv")
+ROOT_JSON_PATH = os.path.join(ROOT_BENCHMARK_DIR, "disaster_qa_benchmark_100.json")
+ROOT_CSV_PATH = os.path.join(ROOT_BENCHMARK_DIR, "disaster_qa_benchmark_100.csv")
 SOURCE_DIR = "filtered_pdf_markdown"
 
 REQUIRED_FIELDS = [
@@ -64,15 +67,11 @@ def run_validation():
 
     # 1. Check file existence
     print("\n[CHECK 1] Verifying dataset files exist...")
-    if not os.path.exists(JSON_PATH):
-        errors.append(f"Missing JSON dataset file: {JSON_PATH}")
-    else:
-        print(f"  - Found JSON: {JSON_PATH} ({os.path.getsize(JSON_PATH):,} bytes)")
-
-    if not os.path.exists(CSV_PATH):
-        errors.append(f"Missing CSV dataset file: {CSV_PATH}")
-    else:
-        print(f"  - Found CSV: {CSV_PATH} ({os.path.getsize(CSV_PATH):,} bytes)")
+    for p in [JSON_PATH, CSV_PATH, ROOT_JSON_PATH, ROOT_CSV_PATH]:
+        if not os.path.exists(p):
+            errors.append(f"Missing dataset file: {p}")
+        else:
+            print(f"  - Found: {p} ({os.path.getsize(p):,} bytes)")
 
     if errors:
         for err in errors:

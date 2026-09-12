@@ -21,7 +21,15 @@ class Settings(BaseSettings):
     CHROMA_PORT: int = 8000
     
     # CORS
-    ALLOWED_ORIGINS: list[str] = ["http://localhost:3000", "http://localhost:5173"]
+    ALLOWED_ORIGINS: list[str] = [
+        "http://localhost:3001",
+        "http://127.0.0.1:3001",
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+    ]
+    CORS_ORIGIN_REGEX: str = r"^https?://.*$"
     
     # API Keys (do not commit real values)
     GEMINI_API_KEY: str = ""

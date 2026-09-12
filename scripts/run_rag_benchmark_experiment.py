@@ -21,6 +21,7 @@ from typing import Any, Dict, List
 import numpy as np
 
 # Ensure app package is accessible
+sys.path.append(os.path.abspath("backend"))
 sys.path.append(os.path.abspath("."))
 
 from app.rag.agents.llm_generator import LLMGenerator
@@ -28,8 +29,13 @@ from app.rag.ingestion.vector_store import ChromaManager
 from app.rag.retrieval.hybrid_search import HybridSearcher
 from app.rag.retrieval.reranker import Reranker
 
-BENCHMARK_PATH = "app/rag/evaluation/datasets/disaster_qa_benchmark_100.json"
-RESULTS_DIR = "app/rag/evaluation/results"
+BENCHMARK_PATH = "benchmark/disaster_qa_benchmark_100.json"
+if not os.path.exists(BENCHMARK_PATH):
+    BENCHMARK_PATH = "backend/app/rag/evaluation/datasets/disaster_qa_benchmark_100.json"
+if not os.path.exists(BENCHMARK_PATH):
+    BENCHMARK_PATH = "app/rag/evaluation/datasets/disaster_qa_benchmark_100.json"
+
+RESULTS_DIR = "backend/app/rag/evaluation/results" if os.path.exists("backend") else "app/rag/evaluation/results"
 SUMMARY_JSON_PATH = os.path.join(RESULTS_DIR, "experiment_results_summary.json")
 REPORT_MD_PATH = os.path.join(RESULTS_DIR, "experiment_results_report.md")
 COLLECTION_NAME = "disaster_benchmark_eval_122"

@@ -16,8 +16,9 @@ async def lifespan(app: FastAPI):
     torch.set_num_threads(num_threads)
     
     # Load the model on startup
-    print(f"Loading embedding model 'microsoft/harrier-oss-v1-270m' with {num_threads} CPU threads...")
-    model = SentenceTransformer("microsoft/harrier-oss-v1-270m")
+    model_name = os.environ.get("EMBEDDING_MODEL_NAME", "microsoft/harrier-oss-v1-0.6b")
+    print(f"Loading embedding model '{model_name}' with {num_threads} CPU threads...")
+    model = SentenceTransformer(model_name)
     
     # Model warm-up to ensure instant execution on first query
     print("Warming up embedding model...")

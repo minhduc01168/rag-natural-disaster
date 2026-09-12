@@ -22,8 +22,11 @@ from scripts.benchmark_data.doc6_a351 import DOC6_ITEMS
 from scripts.benchmark_data.doc7_a6cd import DOC7_ITEMS
 
 OUTPUT_DIR = "backend/app/rag/evaluation/datasets"
+ROOT_BENCHMARK_DIR = "benchmark"
 JSON_OUTPUT_PATH = os.path.join(OUTPUT_DIR, "disaster_qa_benchmark_100.json")
 CSV_OUTPUT_PATH = os.path.join(OUTPUT_DIR, "disaster_qa_benchmark_100.csv")
+ROOT_JSON_OUTPUT_PATH = os.path.join(ROOT_BENCHMARK_DIR, "disaster_qa_benchmark_100.json")
+ROOT_CSV_OUTPUT_PATH = os.path.join(ROOT_BENCHMARK_DIR, "disaster_qa_benchmark_100.csv")
 
 SOURCE_DOCS = [
     "0575f59d64e3407fa40049196cd01c5d.md",
@@ -116,9 +119,12 @@ def build_and_validate():
     # 4. Save JSON dataset
     print("\n[4/5] Exporting datasets...")
     os.makedirs(OUTPUT_DIR, exist_ok=True)
+    os.makedirs(ROOT_BENCHMARK_DIR, exist_ok=True)
     with open(JSON_OUTPUT_PATH, "w", encoding="utf-8") as f:
         json.dump(all_items, f, ensure_ascii=False, indent=2)
-    print(f"  [OK] Exported JSON: {JSON_OUTPUT_PATH}")
+    with open(ROOT_JSON_OUTPUT_PATH, "w", encoding="utf-8") as f:
+        json.dump(all_items, f, ensure_ascii=False, indent=2)
+    print(f"  [OK] Exported JSON: {JSON_OUTPUT_PATH} and {ROOT_JSON_OUTPUT_PATH}")
 
     # 5. Save CSV dataset (with UTF-8-SIG for Microsoft Excel Vietnamese compatibility)
     csv_rows = []
@@ -132,7 +138,11 @@ def build_and_validate():
         writer = csv.DictWriter(f, fieldnames=SCHEMA_FIELDS)
         writer.writeheader()
         writer.writerows(csv_rows)
-    print(f"  [OK] Exported CSV (UTF-8 with BOM): {CSV_OUTPUT_PATH}")
+    with open(ROOT_CSV_OUTPUT_PATH, "w", encoding="utf-8-sig", newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=SCHEMA_FIELDS)
+        writer.writeheader()
+        writer.writerows(csv_rows)
+    print(f"  [OK] Exported CSV (UTF-8 with BOM): {CSV_OUTPUT_PATH} and {ROOT_CSV_OUTPUT_PATH}")
 
     # 6. Print dataset statistical breakdown
     print("\n[5/5] Dataset Statistical Summary:")

@@ -63,9 +63,9 @@ Sử dụng kiến trúc Multi-Agent để xử lý các loại câu hỏi khác
 
 ---
 
-## Cài đặt (Khuyến nghị dùng Docker)
+## Cài đặt & Triển khai (Khuyến nghị dùng Docker - Port 3001)
 
-Dự án được tối ưu hóa để chạy dễ dàng bằng **Docker Compose**.
+Dự án được tối ưu hóa để chạy dễ dàng bằng **Docker Compose** trên cổng **3001**:
 
 ```bash
 # 1. Clone repository
@@ -76,14 +76,30 @@ cd rag-natural-disaster
 cp backend/.env.example backend/.env
 # Chỉnh sửa file backend/.env và nhập GEMINI_API_KEY của bạn
 
-# 3. Khởi chạy bằng Docker
-docker-compose build
-docker-compose up -d
+# 3. Khởi chạy bằng Docker (Mặc định Port 3001)
+docker compose up -d --build
+
+# 4. Tự động nạp 7 tài liệu cẩm nang PCTT miền núi vào ChromaDB
+docker compose exec backend python scripts/seed_knowledge_base.py
 ```
 
 **Các dịch vụ sẽ chạy tại:**
-- **Giao diện Web (Chatbot):** `http://localhost:3000`
+- **Giao diện Web (Chatbot & GIS):** `http://localhost:3001` (hoặc `http://<IP_SERVER>:3001`)
 - **Tài liệu API (Swagger):** `http://localhost:8000/docs`
+
+> 📖 **Xem hướng dẫn chi tiết:**
+> - [Hướng dẫn Triển khai & Mở Cổng Tường Lửa Port 3001](file:///home/mypc/rag-natural-disaster/DEPLOYMENT_GUIDE.md)
+> - [Bộ Dữ liệu Chuẩn 100 Cặp QA (JSON & CSV)](file:///home/mypc/rag-natural-disaster/benchmark/README.md)
+
+---
+
+## Bộ Dữ liệu Chuẩn Đánh giá RAG (TERRA-100 Benchmark)
+
+Hệ thống đi kèm bộ dữ liệu đánh giá thực nghiệm khoa học gồm **100 cặp QA chuẩn** trích xuất nguyên bản 100% (Verbatim Ground Truth) từ 7 tài liệu PCTT miền núi:
+- 📄 **JSON Dataset**: [`benchmark/disaster_qa_benchmark_100.json`](file:///home/mypc/rag-natural-disaster/benchmark/disaster_qa_benchmark_100.json)
+- 📊 **CSV Dataset (Excel UTF-8 BOM)**: [`benchmark/disaster_qa_benchmark_100.csv`](file:///home/mypc/rag-natural-disaster/benchmark/disaster_qa_benchmark_100.csv)
+- 📜 **Tài liệu mô tả lược đồ & phân bố**: [`benchmark/README.md`](file:///home/mypc/rag-natural-disaster/benchmark/README.md)
+- ⚙️ **Script kiểm định tính toàn vẹn 100%**: `python3 scripts/validate_benchmark_dataset.py`
 
 ---
 
@@ -93,22 +109,28 @@ Kiến trúc thư mục được tuân thủ nghiêm ngặt theo chuẩn Clean A
 
 ```
 rag-natural-disaster/
-├── frontend/                    # Giao diện Web (React + Vite)
+├── benchmark/                   # ⭐ Bộ 100 cặp QA đánh giá RAG (JSON & CSV)
+│   ├── disaster_qa_benchmark_100.json
+│   ├── disaster_qa_benchmark_100.csv
+│   └── README.md
+├── frontend/                    # Giao diện Web (React + Vite, Port 3001)
 │   └── src/
+│       ├── config/api.ts        # Dynamic Base URL helper (Local / Server)
 │       ├── components/chat/     # Component giao diện Chat
-│       └── pages/               # Trang chính (TerraBotPage)
-│
-├── backend/                     # API Server (FastAPI)
+│       └── pages/               # Trang chính (TerraBotPage, GIS, Admin)
+├── backend/                     # API Server (FastAPI, Port 8000)
 │   ├── app/
-│   │   ├── api/                 # Endpoint REST API (rag_router.py)
-│   │   └── rag/                 # Lõi xử lý AI
-│   │       ├── agents/          # Multi-Agent Orchestration
-│   │       ├── ingestion/       # Xử lý & Nhúng tài liệu (Parser, Chunker)
-│   │       ├── retrieval/       # Tìm kiếm lai (Hybrid Search)
-│   │       └── tools/           # Các công cụ mở rộng (Weather, Geo)
+│   │   ├── api/                 # Endpoint REST API
+│   │   └── rag/                 # Lõi xử lý AI (Agents, Retrieval, Ingestion)
 │   └── tests/                   # Kịch bản kiểm thử E2E và Unit Test
-│
-└── docker-compose.yml           # File triển khai vùng chứa (Container)
+├── embedding_service/           # Microservice nhúng Harrier-OSS-v1-0.6B (Port 8002)
+├── filtered_pdf_markdown/       # 7 tài liệu tri thức PCTT miền núi
+├── scripts/                     # Scripts hỗ trợ (Seed, Validate, Benchmark, Paper Figures)
+│   ├── seed_knowledge_base.py
+│   ├── validate_benchmark_dataset.py
+│   └── build_benchmark_dataset.py
+├── DEPLOYMENT_GUIDE.md          # ⭐ Hướng dẫn triển khai & mở port chi tiết
+└── docker-compose.yml           # Cấu hình Docker Compose đa dịch vụ
 ```
 
 ---

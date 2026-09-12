@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { MessageBubble } from './MessageBubble';
 import { ChatInput } from './ChatInput';
 import { useLanguage } from '../../context/LanguageContext';
+import { apiUrl } from '../../config/api';
 
 interface Message {
   id: string;
@@ -11,8 +12,6 @@ interface Message {
   agent?: string;
   sources?: string[];
 }
-
-const API_BASE_URL = 'http://localhost:8000';
 
 export function ChatWindow() {
   const { t } = useLanguage();
@@ -65,7 +64,7 @@ export function ChatWindow() {
 
     try {
       // Call API
-      const response = await fetch(`${API_BASE_URL}/api/v1/rag/chat`, {
+      const response = await fetch(apiUrl('/api/v1/rag/chat'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
