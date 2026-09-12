@@ -1,6 +1,6 @@
 /**
  * Global API Configuration for TERRA Frontend.
- * Supports both Local Development and Server Deployment (e.g. port 3001 / Nginx reverse proxy).
+ * Supports both Local Development and Server Deployment (e.g. port 3000 / Nginx reverse proxy).
  */
 
 const getBaseUrl = (): string => {

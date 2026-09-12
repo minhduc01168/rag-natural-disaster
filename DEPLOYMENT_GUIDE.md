@@ -1,6 +1,6 @@
-# Hướng Dẫn Vận Hành & Triển Khai Hệ Thống TERRA (Local & Server Port 3001)
+# Hướng Dẫn Vận Hành & Triển Khai Hệ Thống TERRA (Local & Server Port 3000)
 
-Tài liệu này hướng dẫn chi tiết cách chạy hệ thống **TERRA (Hệ thống Hỗ trợ Ra Quyết định Phòng Chống Thiên Tai Miền Núi)** trên môi trường cục bộ (Local Development) và triển khai trên máy chủ thực tế (Production Server) với cổng truy cập giao diện là **Port 3001**, kèm theo cẩm nang đầy đủ về **cách mở Port trên tường lửa (Firewall) và các nền tảng Cloud**.
+Tài liệu này hướng dẫn chi tiết cách chạy hệ thống **TERRA (Hệ thống Hỗ trợ Ra Quyết định Phòng Chống Thiên Tai Miền Núi)** trên môi trường cục bộ (Local Development) và triển khai trên máy chủ thực tế (Production Server) với cổng truy cập giao diện là **Port 3000**, kèm theo cẩm nang đầy đủ về **cách mở Port trên tường lửa (Firewall) và các nền tảng Cloud**.
 
 ---
 
@@ -10,19 +10,20 @@ Hệ thống được thiết kế theo mô hình vi dịch vụ container hóa 
 
 | Dịch vụ | Port Nội bộ (Container) | Port Công khai (Host Server) | Mục đích & Giao thức |
 | :--- | :---: | :---: | :--- |
-| **Frontend (Web App)** | `80` | **`3001`** | Giao diện React/Vite, bản đồ GIS, Chatbot cứu nạn (Nginx Reverse Proxy) |
+| **Frontend (Web App)** | `80` | **`3000`** | Giao diện React/Vite, bản đồ GIS, Chatbot cứu nạn (Nginx Reverse Proxy) |
 | **Backend (FastAPI)** | `8000` | `8000` | Core API, RAG Engine, Multi-Agent, Auth, Fast-lane cảnh báo |
 | **ChromaDB** | `8000` | `8001` | Vector Database lưu trữ embedding tri thức thiên tai |
 | **Embedding Service** | `8002` | `8002` | Microservice nhúng vector mô hình `microsoft/harrier-oss-v1-0.6b` |
 | **PostgreSQL + PostGIS**| `5432` | `5432` | CSDL quan hệ lưu Users, tọa độ không gian sạt lở, rủi ro |
 
 > [!TIP]
-> **Ưu điểm của thiết kế Nginx Proxy nội bộ trên Port 3001:**
-> Người dùng và các thiết bị bên ngoài **chỉ cần mở duy nhất Port 3001**. Trình duyệt gọi `/api/v1/...` sẽ được Nginx tại port 3001 chuyển tiếp trực tiếp vào `backend:8000` bên trong Docker network `terraalert-network`. Bạn **không cần** phải mở port 8000 ra internet, giúp tăng cường tối đa tính bảo mật và triệt tiêu hoàn toàn lỗi CORS.
+> **Ưu điểm của thiết kế Nginx Proxy nội bộ trên Port 3000:**
+> Người dùng và các thiết bị bên ngoài **chỉ cần mở duy nhất Port 3000**. Trình duyệt gọi `/api/v1/...` sẽ được Nginx tại port 3000 chuyển tiếp trực tiếp vào `backend:8000` bên trong Docker network `terraalert-network`. Bạn **không cần** phải mở port 8000 ra internet, giúp tăng cường tối đa tính bảo mật và triệt tiêu hoàn toàn lỗi CORS.
+> *(Lưu ý: Nếu port 3000 trên máy chủ của bạn bị trùng với dịch vụ khác, bạn có thể dễ dàng đổi port bằng biến môi trường `FRONTEND_PORT=3001` mà không cần sửa code).*
 
 ---
 
-## 2. Cách 1: Chạy Trên Server Bằng Docker (Khuyến Nghị - Port 3001)
+## 2. Cách 1: Chạy Trên Server Bằng Docker (Khuyến Nghị - Port 3000)
 
 ### 2.1. Yêu cầu hệ thống (Prerequisites)
 - Hệ điều hành: Ubuntu 20.04 / 22.04 / 24.04 LTS, Debian, CentOS, AlmaLinux, Rocky Linux hoặc bất kỳ bản phân phối Linux nào.
@@ -53,7 +54,7 @@ DATABASE_URL=postgresql://postgres:postgres@postgres:5432/terraalert
 CHROMA_HOST=chromadb
 CHROMA_PORT=8000
 
-ALLOWED_ORIGINS=["http://localhost:3001","http://127.0.0.1:3001","http://localhost:3000","http://localhost:5173"]
+ALLOWED_ORIGINS=["http://localhost:3000","http://127.0.0.1:3000","http://localhost:5173"]
 EMBEDDING_SERVICE_URL=http://embedding_service:8002/embed
 
 GEMINI_API_KEY=AIzaSy... (API Key của bạn)
@@ -63,7 +64,7 @@ SECRET_KEY=terrasecret12345_production_change_me
 ### 2.3. Khởi chạy toàn bộ hệ thống (One-command Start)
 Tại thư mục gốc dự án:
 ```bash
-# Build và chạy ngầm toàn bộ 5 containers
+# Build và chạy ngầm toàn bộ 5 containers (Port 3000)
 docker compose up -d --build
 ```
 
@@ -72,7 +73,7 @@ Kiểm tra trạng thái các container đang chạy:
 docker compose ps
 ```
 *Kết quả hiển thị trạng thái `Up` cho:*
-- `rag-natural-disaster-frontend-1` -> `0.0.0.0:3001->80/tcp`
+- `rag-natural-disaster-frontend-1` -> `0.0.0.0:3000->80/tcp`
 - `rag-natural-disaster-backend-1` -> `0.0.0.0:8000->8000/tcp`
 - `rag-natural-disaster-chromadb-1` -> `0.0.0.0:8001->8000/tcp`
 - `rag-natural-disaster-embedding_service-1` -> `0.0.0.0:8002->8002/tcp`
@@ -85,17 +86,17 @@ docker compose exec backend python scripts/seed_knowledge_base.py
 ```
 
 ### 2.5. Kiểm tra truy cập
-- **Giao diện người dùng Web**: Truy cập `http://<IP_SERVER_CUA_BAN>:3001`
-- **Tài liệu API (Swagger UI)**: Truy cập `http://<IP_SERVER_CUA_BAN>:8000/docs` (hoặc qua proxy: `http://<IP_SERVER_CUA_BAN>:3001/api/v1/...`)
+- **Giao diện người dùng Web**: Truy cập `http://<IP_SERVER_CUA_BAN>:3000`
+- **Tài liệu API (Swagger UI)**: Truy cập `http://<IP_SERVER_CUA_BAN>:8000/docs` (hoặc qua proxy: `http://<IP_SERVER_CUA_BAN>:3000/api/v1/...`)
 - **Tài khoản quản trị mặc định**:
   - Email: `admin@terraalert.com`
   - Password: `admin`
 
 ---
 
-## 3. Hướng Dẫn Mở Cổng 3001 Trên Server (Firewall & Cloud Security Groups)
+## 3. Hướng Dẫn Mở Cổng 3000 Trên Server (Firewall & Cloud Security Groups)
 
-Nếu bạn đã chạy Docker nhưng từ máy tính cá nhân không mở được `http://<IP_SERVER>:3001`, nguyên nhân 99% là do tường lửa đang chặn cổng 3001. Hãy thực hiện theo hướng dẫn tương ứng với môi trường máy chủ của bạn:
+Nếu bạn đã chạy Docker nhưng từ máy tính cá nhân không mở được `http://<IP_SERVER>:3000`, nguyên nhân 99% là do tường lửa đang chặn cổng 3000. Hãy thực hiện theo hướng dẫn tương ứng với môi trường máy chủ của bạn:
 
 ### 3.1. Đối với máy chủ Ubuntu / Debian (Sử dụng UFW)
 UFW (Uncomplicated Firewall) là công cụ tường lửa phổ biến nhất trên Ubuntu:
@@ -104,9 +105,9 @@ UFW (Uncomplicated Firewall) là công cụ tường lửa phổ biến nhất t
    ```bash
    sudo ufw status
    ```
-2. **Mở cổng 3001 cho giao thức TCP:**
+2. **Mở cổng 3000 cho giao thức TCP:**
    ```bash
-   sudo ufw allow 3001/tcp comment 'TERRA Web App Frontend'
+   sudo ufw allow 3000/tcp comment 'TERRA Web App Frontend'
    ```
 3. *(Tùy chọn) Mở thêm cổng 80, 443 nếu dùng Nginx ngoài:*
    ```bash
@@ -121,14 +122,14 @@ UFW (Uncomplicated Firewall) là công cụ tường lửa phổ biến nhất t
    ```bash
    sudo ufw status numbered
    ```
-   *Bạn sẽ thấy dòng `3001/tcp ALLOW IN Anywhere`.*
+   *Bạn sẽ thấy dòng `3000/tcp ALLOW IN Anywhere`.*
 
 ---
 
 ### 3.2. Đối với máy chủ CentOS / RHEL / AlmaLinux / Rocky Linux (Sử dụng Firewalld)
-1. **Mở cổng 3001 vĩnh viễn:**
+1. **Mở cổng 3000 vĩnh viễn:**
    ```bash
-   sudo firewall-cmd --permanent --zone=public --add-port=3001/tcp
+   sudo firewall-cmd --permanent --zone=public --add-port=3000/tcp
    ```
 2. **Tải lại cấu hình:**
    ```bash
@@ -142,9 +143,9 @@ UFW (Uncomplicated Firewall) là công cụ tường lửa phổ biến nhất t
 ---
 
 ### 3.3. Đối với hệ thống dùng trực tiếp Iptables
-1. **Thêm quy tắc cho phép TCP cổng 3001:**
+1. **Thêm quy tắc cho phép TCP cổng 3000:**
    ```bash
-   sudo iptables -A INPUT -p tcp --dport 3001 -j ACCEPT
+   sudo iptables -A INPUT -p tcp --dport 3000 -j ACCEPT
    ```
 2. **Lưu lại quy tắc để không bị mất khi reboot:**
    ```bash
@@ -169,7 +170,7 @@ Nếu thuê VPS/Cloud, bạn cần mở cổng ở **Bảng điều khiển Web 
 4. Chọn tab **Inbound rules** -> Bấm **Edit inbound rules**.
 5. Bấm **Add rule**:
    - **Type**: `Custom TCP`
-   - **Port range**: `3001`
+   - **Port range**: `3000`
    - **Source**: `0.0.0.0/0` (Truy cập công khai) hoặc điền IP văn phòng/cá nhân của bạn.
    - **Description**: `TERRA Frontend Web App`
 6. Bấm **Save rules**.
@@ -177,41 +178,53 @@ Nếu thuê VPS/Cloud, bạn cần mở cổng ở **Bảng điều khiển Web 
 #### B. Google Cloud Platform (GCP Compute Engine)
 1. Đăng nhập Google Cloud Console -> **VPC network** -> **Firewall**.
 2. Nhấp vào **Create Firewall Rule**:
-   - **Name**: `allow-terra-frontend-3001`
+   - **Name**: `allow-terra-frontend-3000`
    - **Targets**: `All instances in the network` (hoặc chỉ định target tag).
    - **Source IPv4 ranges**: `0.0.0.0/0`
-   - **Protocols and ports**: Tích chọn `Specified protocols and ports` -> Tích `TCP` -> Điền `3001`.
+   - **Protocols and ports**: Tích chọn `Specified protocols and ports` -> Tích `TCP` -> Điền `3000`.
 3. Bấm **Create**.
+
+*Hoặc chạy nhanh 1 câu lệnh qua Google Cloud Shell:*
+```bash
+gcloud compute firewall-rules create allow-port-3000 \
+    --direction=INGRESS \
+    --priority=1000 \
+    --network=default \
+    --action=ALLOW \
+    --rules=tcp:3000 \
+    --source-ranges=0.0.0.0/0 \
+    --description="Allow inbound traffic on port 3000 for TERRA Frontend"
+```
 
 #### C. DigitalOcean / Linode / Vultr / Hetzner
 1. Vào mục **Networking** / **Firewalls**.
 2. Tìm Firewall đang gắn với VPS/Droplet của bạn.
 3. Thêm **Inbound Rule**:
    - **Protocol**: `TCP`
-   - **Port**: `3001`
+   - **Port**: `3000`
    - **Sources**: `All IPv4` (`0.0.0.0/0`) và `All IPv6` (`::/0`).
 4. Bấm **Save Rule**.
 
 #### D. Các nhà cung cấp Cloud tại Việt Nam (Viettel IDC, VNPT Cloud, FPT Smart Cloud, Bizfly, CMC)
 1. Vào trang Quản lý máy chủ ảo / Virtual Machines.
 2. Chọn mục **Security Group** hoặc **Firewall / Network Rules**.
-3. Thêm Luật cho phép đến (Inbound): Giao thức `TCP`, Cổng `3001`, Dải IP nguồn `0.0.0.0/0`.
+3. Thêm Luật cho phép đến (Inbound): Giao thức `TCP`, Cổng `3000`, Dải IP nguồn `0.0.0.0/0`.
 4. Áp dụng (Apply) vào VM.
 
 ---
 
-### 3.5. Kiểm tra kiểm chứng xem Port 3001 đã lắng nghe & thông suốt chưa
-1. **Kiểm tra trên máy chủ xem Docker đã lắng nghe port 3001 chưa:**
+### 3.5. Kiểm tra kiểm chứng xem Port 3000 đã lắng nghe & thông suốt chưa
+1. **Kiểm tra trên máy chủ xem Docker đã lắng nghe port 3000 chưa:**
    ```bash
-   sudo ss -tulpn | grep 3001
+   sudo ss -tulpn | grep 3000
    # hoặc:
-   sudo netstat -tlpn | grep 3001
+   sudo netstat -tlpn | grep 3000
    ```
-   *Cần thấy tiến trình `docker-proxy` đang LISTEN trên `0.0.0.0:3001`.*
+   *Cần thấy tiến trình `docker-proxy` đang LISTEN trên `0.0.0.0:3000`.*
 
 2. **Kiểm tra từ máy tính cá nhân qua cURL hoặc Telnet/Nmap:**
    ```bash
-   curl -I http://<IP_SERVER_CUA_BAN>:3001
+   curl -I http://<IP_SERVER_CUA_BAN>:3000
    ```
    *Nếu trả về `HTTP/1.1 200 OK` nghĩa là port đã thông hoàn toàn!*
 
@@ -254,7 +267,7 @@ docker compose up -d postgres chromadb embedding_service
 
 ## 5. Cấu Hình Tùy Chọn: Tên Miền & Chứng Chỉ SSL HTTPS (Nginx Reverse Proxy)
 
-Để đưa hệ thống vào vận hành chính thức với tên miền (ví dụ: `https://thientai.domain.com`), bạn có thể cấu hình Nginx bên ngoài máy chủ trỏ về Port 3001:
+Để đưa hệ thống vào vận hành chính thức với tên miền (ví dụ: `https://thientai.domain.com`), bạn có thể cấu hình Nginx bên ngoài máy chủ trỏ về Port 3000:
 
 1. **Tạo file cấu hình Nginx:**
    ```nginx
@@ -263,7 +276,7 @@ docker compose up -d postgres chromadb embedding_service
        server_name thientai.domain.com;
 
        location / {
-           proxy_pass http://127.0.0.1:3001;
+           proxy_pass http://127.0.0.1:3000;
            proxy_set_header Host $host;
            proxy_set_header X-Real-IP $remote_addr;
            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;

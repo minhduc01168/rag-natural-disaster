@@ -63,9 +63,9 @@ Sử dụng kiến trúc Multi-Agent để xử lý các loại câu hỏi khác
 
 ---
 
-## Cài đặt & Triển khai (Khuyến nghị dùng Docker - Port 3001)
+## Cài đặt & Triển khai (Khuyến nghị dùng Docker - Port 3000)
 
-Dự án được tối ưu hóa để chạy dễ dàng bằng **Docker Compose** trên cổng **3001**:
+Dự án được tối ưu hóa để chạy dễ dàng bằng **Docker Compose** trên cổng **3000**:
 
 ```bash
 # 1. Clone repository
@@ -76,7 +76,7 @@ cd rag-natural-disaster
 cp backend/.env.example backend/.env
 # Chỉnh sửa file backend/.env và nhập GEMINI_API_KEY của bạn
 
-# 3. Khởi chạy bằng Docker (Mặc định Port 3001)
+# 3. Khởi chạy bằng Docker (Mặc định Port 3000)
 docker compose up -d --build
 
 # 4. Tự động nạp 7 tài liệu cẩm nang PCTT miền núi vào ChromaDB
@@ -84,11 +84,11 @@ docker compose exec backend python scripts/seed_knowledge_base.py
 ```
 
 **Các dịch vụ sẽ chạy tại:**
-- **Giao diện Web (Chatbot & GIS):** `http://localhost:3001` (hoặc `http://<IP_SERVER>:3001`)
+- **Giao diện Web (Chatbot & GIS):** `http://localhost:3000` (hoặc `http://<IP_SERVER>:3000`)
 - **Tài liệu API (Swagger):** `http://localhost:8000/docs`
 
 > 📖 **Xem hướng dẫn chi tiết:**
-> - [Hướng dẫn Triển khai & Mở Cổng Tường Lửa Port 3001](file:///home/mypc/rag-natural-disaster/DEPLOYMENT_GUIDE.md)
+> - [Hướng dẫn Triển khai & Mở Cổng Tường Lửa Port 3000](file:///home/mypc/rag-natural-disaster/DEPLOYMENT_GUIDE.md)
 > - [Bộ Dữ liệu Chuẩn 100 Cặp QA (JSON & CSV)](file:///home/mypc/rag-natural-disaster/benchmark/README.md)
 
 ---
@@ -113,7 +113,7 @@ rag-natural-disaster/
 │   ├── disaster_qa_benchmark_100.json
 │   ├── disaster_qa_benchmark_100.csv
 │   └── README.md
-├── frontend/                    # Giao diện Web (React + Vite, Port 3001)
+├── frontend/                    # Giao diện Web (React + Vite, Port 3000)
 │   └── src/
 │       ├── config/api.ts        # Dynamic Base URL helper (Local / Server)
 │       ├── components/chat/     # Component giao diện Chat
