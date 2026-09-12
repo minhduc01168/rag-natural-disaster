@@ -34,27 +34,27 @@ os.makedirs(OUTPUT_DIR, exist_ok=True)
 # FIGURE 1: TERRA 4-Stage Decoupled Architecture Diagram
 # ==============================================================================
 def generate_figure_1():
-    print("Generating Figure 1: System Architecture...")
-    fig, ax = plt.subplots(figsize=(14, 8), dpi=300)
-    ax.set_xlim(0, 14)
-    ax.set_ylim(0, 8.5)
+    print("Generating Figure 1: Clean System Architecture (Orthogonal Layout)...")
+    fig, ax = plt.subplots(figsize=(16.0, 9.2), dpi=300)
+    ax.set_xlim(0, 16.0)
+    ax.set_ylim(0, 9.2)
     ax.axis("off")
 
     # Title & Subtitle
     ax.text(
-        7.0,
-        8.2,
+        8.0,
+        8.85,
         "TERRA: Tactical Emergency Retrieval-augmented Resilient Architecture",
         ha="center",
         va="center",
-        fontsize=15,
+        fontsize=15.5,
         fontweight="bold",
         color="#0F172A",
     )
     ax.text(
-        7.0,
-        7.85,
-        "Four-Stage Decoupled Pipeline for High-Stakes Mountain Disaster Operational Decision Support",
+        8.0,
+        8.52,
+        "Decoupled Multi-Stage Framework for Mountain Disaster Operational Decision Support",
         ha="center",
         va="center",
         fontsize=10.5,
@@ -62,88 +62,80 @@ def generate_figure_1():
         color="#475569",
     )
 
-    # Box styles & palettes
-    c_stage1 = "#EFF6FF"  # Blue tint - Ingestion
-    c_stage1_b = "#2563EB"
-    c_stage2 = "#F0FDF4"  # Green tint - Hybrid Retrieval
-    c_stage2_b = "#16A34A"
-    c_stage3 = "#FEF3C7"  # Amber tint - Re-ranking
-    c_stage3_b = "#D97706"
-    c_stage4 = "#FAF5FF"  # Purple tint - Generation
-    c_stage4_b = "#9333EA"
+    # Color tokens
+    c_blue_bg = "#F8FAFC"
+    c_blue_b = "#2563EB"
+    c_slate_bg = "#F8FAFC"
+    c_slate_b = "#475569"
 
-    # Helper function for drawing rounded stage boxes
-    def draw_stage(x, y, w, h, title, subtitle, bg_col, border_col):
+    # Helper: draw container with title banner
+    def draw_container(x, y, w, h, title, bg_color, border_color):
         rect = patches.FancyBboxPatch(
             (x, y),
             w,
             h,
-            boxstyle="round,pad=0.15,rounding_size=0.2",
-            facecolor=bg_col,
-            edgecolor=border_col,
-            linewidth=1.8,
+            boxstyle="round,pad=0.12,rounding_size=0.18",
+            facecolor=bg_color,
+            edgecolor=border_color,
+            linewidth=1.6,
+            zorder=1,
         )
         ax.add_patch(rect)
         ax.text(
-            x + w / 2,
-            y + h - 0.35,
+            x + 0.35,
+            y + h - 0.26,
             title,
-            ha="center",
+            ha="left",
             va="center",
-            fontsize=11.5,
+            fontsize=10.0,
             fontweight="bold",
-            color=border_col,
-        )
-        ax.text(
-            x + w / 2,
-            y + h - 0.7,
-            subtitle,
-            ha="center",
-            va="center",
-            fontsize=8.5,
-            fontstyle="italic",
-            color="#334155",
+            color=border_color,
+            zorder=2,
         )
 
-    # Helper function for drawing sub-component cards
+    # Helper: draw card
     def draw_card(
-        x, y, w, h, title, details, bg="#FFFFFF", border="#94A3B8", text_c="#0F172A"
+        x, y, w, h, title, items, bg="#FFFFFF", border="#CBD5E1", header_color="#0F172A"
     ):
         rect = patches.FancyBboxPatch(
             (x, y),
             w,
             h,
-            boxstyle="round,pad=0.1,rounding_size=0.12",
+            boxstyle="round,pad=0.08,rounding_size=0.12",
             facecolor=bg,
             edgecolor=border,
-            linewidth=1.1,
+            linewidth=1.3,
+            zorder=3,
         )
         ax.add_patch(rect)
         ax.text(
             x + w / 2,
-            y + h - 0.28,
+            y + h - 0.25,
             title,
             ha="center",
             va="center",
-            fontsize=9.5,
+            fontsize=9.2,
             fontweight="bold",
-            color=text_c,
+            color=header_color,
+            zorder=4,
         )
-        ax.text(
-            x + w / 2,
-            y + (h - 0.28) / 2,
-            details,
-            ha="center",
-            va="center",
-            fontsize=8.0,
-            color="#475569",
-            linespacing=1.25,
-        )
+        y_text = y + h - 0.52
+        for item in items:
+            ax.text(
+                x + 0.14,
+                y_text,
+                item,
+                ha="left",
+                va="top",
+                fontsize=7.8,
+                color="#334155",
+                linespacing=1.22,
+                zorder=4,
+            )
+            y_text -= 0.35
 
-    # Helper function for arrow connectors
-    def draw_arrow(
-        x1, y1, x2, y2, label="", color="#475569", label_y_offset=0.25
-    ):
+    # Helper: draw straight orthogonal arrow with centered badge
+    def draw_arrow(x1, y1, x2, y2, label="", color="#475569", badge_bg="#FFFFFF"):
         ax.annotate(
             "",
             xy=(x2, y2),
@@ -151,256 +143,223 @@ def generate_figure_1():
             arrowprops=dict(
                 arrowstyle="-|>",
                 color=color,
-                lw=1.8,
+                lw=2.0,
                 mutation_scale=14,
-                shrinkA=3,
-                shrinkB=3,
+                shrinkA=0,
+                shrinkB=0,
             ),
+            zorder=5,
         )
         if label:
             ax.text(
                 (x1 + x2) / 2,
-                (y1 + y2) / 2 + label_y_offset,
+                (y1 + y2) / 2,
                 label,
                 ha="center",
                 va="center",
-                fontsize=8.0,
+                fontsize=7.5,
                 fontweight="bold",
                 color=color,
-                bbox=dict(boxstyle="round,pad=0.15", facecolor="#FFFFFF", edgecolor="none"),
+                bbox=dict(
+                    boxstyle="round,pad=0.22",
+                    facecolor=badge_bg,
+                    edgecolor=color,
+                    lw=0.9,
+                ),
+                zorder=6,
             )
 
-    # -------------------------------------------------------------
-    # STAGE 1: Offline Knowledge Ingestion
-    # -------------------------------------------------------------
-    draw_stage(
-        0.5,
-        1.0,
-        3.0,
-        6.4,
-        "STAGE 1: KNOWLEDGE INGESTION",
-        "Two-Tier Structure-Preserving Chunking",
-        c_stage1,
-        c_stage1_b,
-    )
-    draw_card(
-        0.7,
-        5.6,
-        2.6,
-        1.0,
-        "Authoritative Handbooks",
-        "7 Mountain Disaster Manuals\nLaw 33/2013, QĐ 18/2021",
-        bg="#FFFFFF",
-        border=c_stage1_b,
-    )
-    draw_card(
-        0.7,
-        4.1,
-        2.6,
-        1.1,
-        "Tier-1 Markdown Splitter",
-        "Header depth H1-H4 tracking\nPreserves table & decree integrity",
-        bg="#FFFFFF",
-        border="#93C5FD",
-    )
-    draw_card(
-        0.7,
-        2.6,
-        2.6,
-        1.1,
-        "Tier-2 Recursive Splitter",
-        "Target length L = 1000 chars\nSliding overlap δ = 150 chars",
-        bg="#FFFFFF",
-        border="#93C5FD",
-    )
-    draw_card(
-        0.7,
-        1.2,
-        2.6,
-        1.0,
-        "Dual Persistent Storage",
-        "ChromaDB (Vector Store)\nIn-Memory BM25 Corpus Index",
-        bg="#DBEAFE",
-        border=c_stage1_b,
+    # --------------------------------------------------------------------------
+    # TOP CONTAINER: Offline Phase (Knowledge Ingestion & Storage)
+    # --------------------------------------------------------------------------
+    draw_container(
+        0.45,
+        5.00,
+        7.35,
+        3.20,
+        "OFFLINE PHASE: KNOWLEDGE INGESTION & DUAL INDEXING",
+        "#EFF6FF",
+        c_blue_b,
     )
 
-    draw_arrow(2.0, 5.6, 2.0, 5.2)
-    draw_arrow(2.0, 4.1, 2.0, 3.7)
-    draw_arrow(2.0, 2.6, 2.0, 2.2)
-
-    # -------------------------------------------------------------
-    # USER QUERY INPUT BOX (Left to Stage 2)
-    # -------------------------------------------------------------
+    # Card 1: Two-Tier Chunker
     draw_card(
-        4.0,
-        7.1,
-        2.6,
-        0.85,
+        0.65,
+        5.20,
+        2.85,
+        2.50,
+        "1. Two-Tier Semantic Chunker",
+        [
+            "• 7 Mountain Disaster Manuals",
+            "• Tier 1: Header H1-H4 structure",
+            "• Preserves tabular rows & legal context",
+            "• Tier 2: Recursive sliding split",
+            "  (Chunk size L=1000, Overlap δ=150)",
+            "• Breadcrumb metadata propagation",
+        ],
+        border="#93C5FD",
+        header_color="#1D4ED8",
+    )
+
+    # Horizontal Arrow between Card 1 and Card 2 (Top Tier)
+    draw_arrow(3.50, 6.45, 4.30, 6.45, label="Passages", color="#2563EB")
+
+    # Card 2: Dual Storage
+    draw_card(
+        4.30,
+        5.20,
+        3.25,
+        2.50,
+        "2. Dual Persistent Storage",
+        [
+            "• ChromaDB Vector Database",
+            "  (Harrier-OSS-0.6B Embeddings, d=1024)",
+            "• BM25 Lexical Inverted Index",
+            "  (Vietnamese Tokenized Index)",
+            "• Dual Indexing guarantees hybrid",
+            "  keyword + dense coverage",
+        ],
+        bg="#F0F9FF",
+        border="#2563EB",
+        header_color="#1D4ED8",
+    )
+
+    # Top Right Container: System Specifications & Goals
+    draw_container(
+        8.20,
+        5.00,
+        7.35,
+        3.20,
+        "OPERATIONAL CRITERIA & SYSTEM GUARANTEES",
+        "#FEF3C7",
+        "#D97706",
+    )
+    draw_card(
+        8.40,
+        5.20,
+        6.95,
+        2.50,
+        "High-Stakes Emergency Decision Support Mandates",
+        [
+            "• Domain Mandate: Fast operational decisions under the 'Four-on-the-spot' doctrine",
+            "• Zero-Hallucination Policy: Exact statutory citations (QĐ 18/2021, Law 33/2013)",
+            "• Sub-Second SLA: End-to-end P50 retrieval latency <350ms for low-bandwidth 3G/4G",
+            "• Cross-Attention Precision: Resolves subtle lexical collisions (e.g., Level 1 vs. Level 3)",
+            "• Life-Safety Attribution: Verifiable first-aid, evacuation routes, and rescue contacts",
+        ],
+        bg="#FFFBEB",
+        border="#F59E0B",
+        header_color="#B45309",
+    )
+
+    # Vertical Feed-Down Arrow from Dual Storage (Top) to Hybrid Retrieval (Bottom)
+    # Perfectly aligned at x = 5.925 (center of Card 2 in both tiers)
+    draw_arrow(
+        5.925, 5.00, 5.925, 3.75, label="Dual Index Lookup", color="#1D4ED8", badge_bg="#FFFFFF"
+    )
+
+    # --------------------------------------------------------------------------
+    # BOTTOM CONTAINER: Online Phase (Inference Pipeline)
+    # --------------------------------------------------------------------------
+    draw_container(
+        0.45,
+        0.50,
+        15.10,
+        3.80,
+        "ONLINE PHASE: REAL-TIME INFERENCE PIPELINE",
+        c_slate_bg,
+        c_slate_b,
+    )
+
+    # Bottom Card 1: Operational User Query
+    draw_card(
+        0.65,
+        0.70,
+        2.85,
+        3.05,
         "Operational User Query",
-        "\"13 nhiệm vụ Chủ tịch xã về PCTT?\"\n(Mountain Command Query)",
+        [
+            "• Input from Commune Leader:",
+            "  \"13 nhiệm vụ Chủ tịch xã",
+            "   về PCTT khi xảy ra lũ quét?\"",
+            "• Contains administrative legal jargon",
+            "• High-urgency operational need",
+            "• Parallel broadcast to retrieval",
+        ],
         bg="#FEF2F2",
         border="#EF4444",
-        text_c="#B91C1C",
+        header_color="#B91C1C",
     )
 
-    # -------------------------------------------------------------
-    # STAGE 2: Hybrid Dense-Lexical Retrieval & RRF
-    # -------------------------------------------------------------
-    draw_stage(
-        3.9,
-        1.0,
-        3.0,
-        5.7,
-        "STAGE 2: HYBRID RETRIEVAL",
-        "Dense-Sparse Fusion via RRF (k=60)",
-        c_stage2,
-        c_stage2_b,
-    )
+    # Horizontal Arrow 1 -> 2
+    draw_arrow(3.50, 2.22, 4.30, 2.22, label="Query", color="#0F172A")
+
+    # Bottom Card 2: Stage 2 Hybrid Retrieval & RRF
     draw_card(
-        4.1,
-        4.7,
-        2.6,
-        1.0,
-        "Dense Retrieval Pathway",
-        "Harrier-OSS-v1-0.6B (d=1024)\nChromaDB Cosine Sim (Top-10)",
-        bg="#FFFFFF",
-        border=c_stage2_b,
-    )
-    draw_card(
-        4.1,
-        3.3,
-        2.6,
-        1.0,
-        "Lexical Retrieval Pathway",
-        "BM25 Okapi with Viet Tokenizer\nExact Jargon & Legal Match (Top-10)",
-        bg="#FFFFFF",
-        border=c_stage2_b,
-    )
-    draw_card(
-        4.1,
-        1.3,
-        2.6,
-        1.5,
-        "Reciprocal Rank Fusion",
-        "RRF Score(d) = ∑ 1 / (60 + r_i)\nEliminates semantic bias\nFuses Top-10 candidates",
-        bg="#DCFCE7",
-        border=c_stage2_b,
+        4.30,
+        0.70,
+        3.25,
+        3.05,
+        "Stage 2: Hybrid Retrieval & RRF",
+        [
+            "• Dense: Harrier-0.6B Cosine (Top-10)",
+            "• Sparse: BM25 Okapi Match (Top-10)",
+            "• Reciprocal Rank Fusion (k=60):",
+            "  Score(d) = ∑ 1 / (60 + rank_i)",
+            "• Mitigates dense representation bias",
+            "• Fuses candidates into Top-10 Pool",
+        ],
+        bg="#F0FDF4",
+        border="#16A34A",
+        header_color="#15803D",
     )
 
-    draw_arrow(5.3, 7.1, 5.3, 5.7, label="Query Broadcast")
-    draw_arrow(5.3, 5.7, 5.3, 5.7)
-    # Connect Stage 1 Dual storage to Stage 2
-    draw_arrow(3.3, 1.7, 4.1, 4.9, label="Passage Vectors", color="#2563EB")
-    draw_arrow(3.3, 1.5, 4.1, 3.6, label="Inverted Index", color="#2563EB")
-    draw_arrow(5.4, 4.7, 5.4, 4.3)
-    draw_arrow(5.4, 3.3, 5.4, 2.8)
+    # Horizontal Arrow 2 -> 3
+    draw_arrow(7.55, 2.22, 8.40, 2.22, label="Top-10 Pool", color="#16A34A")
 
-    # -------------------------------------------------------------
-    # STAGE 3: Cross-Encoder Re-ranking
-    # -------------------------------------------------------------
-    draw_stage(
-        7.3,
-        1.0,
-        3.0,
-        6.4,
-        "STAGE 3: CROSS-ENCODER",
-        "Token-Level Cross-Attention",
-        c_stage3,
-        c_stage3_b,
-    )
+    # Bottom Card 3: Stage 3 Cross-Encoder Reranker
     draw_card(
-        7.5,
-        5.4,
-        2.6,
-        1.1,
-        "Candidate Pool Input",
-        "Top-10 Candidates from RRF\nFull query-passage concatenation",
-        bg="#FFFFFF",
-        border=c_stage3_b,
-    )
-    draw_card(
-        7.5,
-        3.4,
-        2.6,
-        1.5,
-        "ms-marco-MiniLM-L-6-v2",
-        "Full token-level interaction\nScore(q, p) = CrossAttn(q ∘ p)\nResolves keyword stuffing\nLatency: ~25ms per pool",
+        8.40,
+        0.70,
+        3.35,
+        3.05,
+        "Stage 3: Cross-Encoder Reranker",
+        [
+            "• Model: ms-marco-MiniLM-L-6-v2",
+            "• Full Token Cross-Attention [q ∘ p]",
+            "• Evaluates fine-grained semantics",
+            "• Re-ranks and slices Top-3 Passages",
+            "• Context Precision: 92.4% (+28.6%)",
+            "• Low Latency: ~25ms per candidate pool",
+        ],
         bg="#FEF3C7",
-        border=c_stage3_b,
-    )
-    draw_card(
-        7.5,
-        1.4,
-        2.6,
-        1.3,
-        "Strict Top-K Selection",
-        "Extracts Top-3 Gold Passages\nRejection threshold filtering\nContext Precision: 92.4%",
-        bg="#FFFFFF",
-        border=c_stage3_b,
+        border="#D97706",
+        header_color="#B45309",
     )
 
-    draw_arrow(6.7, 2.0, 7.5, 5.7, label="Top-10 Pool", color="#16A34A")
-    draw_arrow(8.8, 5.4, 8.8, 4.9)
-    draw_arrow(8.8, 3.4, 8.8, 2.7)
+    # Horizontal Arrow 3 -> 4
+    draw_arrow(11.75, 2.22, 12.55, 2.22, label="Top-3 Gold", color="#D97706")
 
-    # -------------------------------------------------------------
-    # STAGE 4: Grounded Multi-Agent LLM Generation
-    # -------------------------------------------------------------
-    draw_stage(
-        10.6,
-        1.0,
-        3.0,
-        6.4,
-        "STAGE 4: SYNTHESIS LAYER",
-        "Fact-Checked Decision Support",
-        c_stage4,
-        c_stage4_b,
-    )
+    # Bottom Card 4: Stage 4 Grounded Synthesis
     draw_card(
-        10.8,
-        5.4,
-        2.6,
-        1.1,
-        "Prompt Engine & Guardrail",
-        "Context Injection (Top-3)\nStrict Grounding Constraint\n(Zero-Hallucination Policy)",
-        bg="#FFFFFF",
-        border=c_stage4_b,
-    )
-    draw_card(
-        10.8,
-        3.4,
-        2.6,
-        1.5,
-        "Gemini 2.5 Flash Generator",
-        "Operational Task Synthesis\nActionable Step Formulation\nLatency: 1.2s - 1.8s\nFaithfulness Score: 94.8%",
-        bg="#F3E8FF",
-        border=c_stage4_b,
-    )
-    draw_card(
-        10.8,
-        1.4,
-        2.6,
-        1.3,
-        "Actionable Guidance",
-        "Cited Legal Decrees (QĐ 18)\nExact 4-on-the-spot Actions\nEmergency Dispatch Contacts",
+        12.55,
+        0.70,
+        2.80,
+        3.05,
+        "Stage 4: Synthesis Layer",
+        [
+            "• Generator: Gemini 2.5 Flash",
+            "• Strict Attribution Guardrail",
+            "• Faithfulness: 94.8% (Anti-hallucination)",
+            "• Answer Relevance: 91.2%",
+            "• Actionable Checklist Output:",
+            "  - Verifiable Legal Decrees",
+            "  - '4-on-the-spot' Tactical Actions",
+            "  - Emergency Dispatch Contacts",
+        ],
         bg="#FAF5FF",
-        border=c_stage4_b,
-    )
-
-    draw_arrow(10.1, 2.0, 10.8, 5.7, label="Top-3 Contexts", color="#D97706")
-    draw_arrow(12.1, 5.4, 12.1, 4.9)
-    draw_arrow(12.1, 3.4, 12.1, 2.7)
-
-    # Output arrow to user
-    ax.text(
-        12.1,
-        0.55,
-        "Verified Decision Output Delivered to Field Team",
-        ha="center",
-        va="center",
-        fontsize=9.5,
-        fontweight="bold",
-        color="#15803D",
+        border="#9333EA",
+        header_color="#7E22CE",
     )
 
     plt.tight_layout()
@@ -447,7 +406,7 @@ def generate_figure_2():
     ax1.set_title("(a) Retrieval Accuracy Across Ranks (Hit@K)", fontsize=12, fontweight="bold", pad=12)
     ax1.set_xticks(x)
     ax1.set_xticklabels(configs, fontsize=9.5, fontweight="medium")
-    ax1.set_ylim(40, 105)
+    ax1.set_ylim(40, 110)
     ax1.grid(axis="y", linestyle="--", alpha=0.6)
     ax1.legend(loc="upper left", framealpha=0.9, fontsize=9.5)
 
@@ -467,18 +426,18 @@ def generate_figure_2():
                 color="#0F172A",
             )
 
-    # Highlight delta arrow
+    # Highlight delta arrow directly above Config C (no bar crossing)
     ax1.annotate(
-        "+29.0%\nHit@1 Lift",
-        xy=(2 - width, 87.0),
-        xytext=(1 - width, 94.0),
+        "+29.0% Hit@1 Lift\n(vs. Naive Dense)",
+        xy=(2 - width, 89.0),
+        xytext=(2 - width, 103.0),
         arrowprops=dict(facecolor="#DC2626", shrink=0.08, width=1.5, headwidth=6),
         ha="center",
         va="center",
-        fontsize=9.0,
+        fontsize=8.5,
         fontweight="bold",
         color="#DC2626",
-        bbox=dict(boxstyle="round,pad=0.2", facecolor="#FEF2F2", edgecolor="#DC2626", lw=0.8),
+        bbox=dict(boxstyle="round,pad=0.25", facecolor="#FEF2F2", edgecolor="#DC2626", lw=1.0),
     )
 
     # Subplot 2: MRR and Context Precision
@@ -585,7 +544,7 @@ def generate_figure_3():
 
     # Draw axis lines & labels
     plt.xticks(angles[:-1], categories, size=9.5, fontweight="bold", color="#1E293B")
-    ax.tick_params(axis="x", pad=18)
+    ax.tick_params(axis="x", pad=28)
 
     ax.set_rlabel_position(25)
     plt.yticks(
@@ -594,7 +553,7 @@ def generate_figure_3():
         color="#64748B",
         size=8.5,
     )
-    plt.ylim(30, 105)
+    plt.ylim(30, 110)
 
     # Plot Config A: Naive Dense
     ax.plot(
@@ -750,9 +709,9 @@ def generate_figure_4():
     ax2.set_title("(b) LLM Synthesis Quality & Grounding Fidelity", fontsize=11.5, fontweight="bold", pad=12)
     ax2.set_xticks(x2)
     ax2.set_xticklabels(categories, fontsize=9.5, fontweight="medium")
-    ax2.set_ylim(75, 105)
+    ax2.set_ylim(75, 114)
     ax2.grid(axis="y", linestyle="--", alpha=0.6)
-    ax2.legend(loc="lower right", framealpha=0.9, fontsize=9.5)
+    ax2.legend(loc="upper right", framealpha=0.95, fontsize=9.2)
 
     # Benchmark threshold line
     ax2.axhline(90.0, color="#DC2626", linestyle=":", lw=1.2, label="High-Stakes Safety Baseline (90%)")
