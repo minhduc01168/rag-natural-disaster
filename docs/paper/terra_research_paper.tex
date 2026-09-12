@@ -65,6 +65,13 @@ To unify unbounded BM25 scores and bounded cosine similarities without hyperpara
 \text{RRF\_Score}(p) = \sum_{m \in \{\text{dense}, \text{BM25}\}} \frac{1}{k_{\text{rrf}} + r_m(p)}, \quad k_{\text{rrf}} = 60
 \end{equation}
 
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.98\textwidth]{figures/fig1_terra_architecture.png}
+\caption{End-to-end decoupled system architecture of the TERRA framework, depicting the four operational stages: (1) Structure-Preserving Ingestion, (2) Hybrid Lexical-Dense Retrieval with RRF ($k=60$), (3) Cross-Encoder Neural Re-ranking, and (4) Grounded Multi-Agent Synthesis.}
+\label{fig:architecture}
+\end{figure*}
+
 \subsection{Cross-Encoder Neural Re-Ranking}
 Candidate passages from RRF are fed into a cross-encoder model (\texttt{ms-marco-MiniLM-L-6-v2}) that performs full cross-attention over all token pairs $[\text{CLS}] \circ q \circ [\text{SEP}] \circ p \circ [\text{SEP}]$. The top-3 highest-scoring passages are dispatched to the generator.
 
@@ -109,7 +116,28 @@ P50 Latency (ms) & \textbf{184} & 225 & 312 & Operational Real-time \\
 \end{center}
 \end{table}
 
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\columnwidth]{figures/fig2_ablation_metrics.png}
+\caption{Ablation benchmark comparison across 100 queries: (a) Retrieval Hit@k across ranks, demonstrating the +29.0\% Hit@1 lift of TERRA; (b) Ranking quality metrics (MRR and Context Precision).}
+\label{fig:ablation}
+\end{figure}
+
 The Cross-Encoder stage provides the decisive breakthrough: Hit@1 jumps by +29.0\% absolute over baseline, while MRR reaches 0.9167. Generation faithfulness reaches 94.8\%, proving the success of our grounding constraints in eliminating hallucinated emergency instructions.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.92\columnwidth]{figures/fig3_category_radar.png}
+\caption{Top-1 retrieval accuracy (Hit@1) across 6 mountain hazard domains, demonstrating TERRA's resilience against domain-specific jargon and high-relief physical hazards.}
+\label{fig:radar}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\columnwidth]{figures/fig4_difficulty_tradeoff.png}
+\caption{System robustness and generation safety: (a) Retrieval accuracy across query complexity levels (Easy, Medium, Hard); (b) Faithfulness and Answer Relevance staying consistently above the 90\% safety baseline.}
+\label{fig:difficulty}
+\end{figure}
 
 \section{Conclusion}
 TERRA establishes an accurate, auditable, and resilient RAG framework for mountain natural disaster decision support. By coupling sparse-dense Reciprocal Rank Fusion with neural cross-encoder re-ranking, the system achieves state-of-the-art precision across 100 standardized disaster benchmark queries, offering an actionable technological foundation for disaster risk reduction in vulnerable communities.
