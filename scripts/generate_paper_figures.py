@@ -34,335 +34,545 @@ os.makedirs(OUTPUT_DIR, exist_ok=True)
 # FIGURE 1: TERRA 4-Stage Decoupled Architecture Diagram
 # ==============================================================================
 def generate_figure_1():
-    print("Generating Figure 1: Clean System Architecture (Orthogonal Layout)...")
-    fig, ax = plt.subplots(figsize=(16.0, 9.2), dpi=300)
-    ax.set_xlim(0, 16.0)
-    ax.set_ylim(0, 9.2)
+    print("Generating Figure 1: Clean System Architecture (Winston SA Multi-Stage Layout)...")
+    fig = plt.figure(figsize=(17.5, 10.5), dpi=300)
+    ax = fig.add_axes([0, 0, 1, 1])
+    ax.set_xlim(0, 17.5)
+    ax.set_ylim(0, 10.5)
     ax.axis("off")
 
-    # Title & Subtitle
+    # Clean background canvas
+    canvas_bg = patches.Rectangle((0, 0), 17.5, 10.5, facecolor="#F8FAFC", edgecolor="none")
+    ax.add_patch(canvas_bg)
+
+    # --------------------------------------------------------------------------
+    # 0. HEADER: TITLE & TAXONOMY
+    # --------------------------------------------------------------------------
     ax.text(
-        8.0,
-        8.85,
+        8.75,
+        10.12,
         "TERRA: Tactical Emergency Retrieval-augmented Resilient Architecture",
         ha="center",
         va="center",
-        fontsize=15.5,
+        fontsize=16.5,
         fontweight="bold",
         color="#0F172A",
     )
     ax.text(
-        8.0,
-        8.52,
-        "Decoupled Multi-Stage Framework for Mountain Disaster Operational Decision Support",
+        8.75,
+        9.80,
+        "Decoupled Multi-Stage Hybrid Retrieval & Neural Re-Ranking Framework for Mountain Disaster Operational Decision Support",
         ha="center",
         va="center",
-        fontsize=10.5,
+        fontsize=10.2,
         fontstyle="italic",
         color="#475569",
     )
 
     # Color tokens
-    c_blue_bg = "#F8FAFC"
-    c_blue_b = "#2563EB"
-    c_slate_bg = "#F8FAFC"
-    c_slate_b = "#475569"
+    c_blue_p = "#1D4ED8"     # Blue (Data Plane & Dense)
+    c_teal_p = "#0F766E"     # Teal (Sparse Lexical)
+    c_emerald_p = "#047857"  # Emerald (Hybrid Retrieval & RRF)
+    c_amber_p = "#B45309"    # Amber (Neural Cross-Encoder & Guarantees)
+    c_purple_p = "#6B21A8"   # Purple (LLM Synthesis)
+    c_slate_gray = "#64748B"
 
-    # Helper: draw container with title banner
-    def draw_container(x, y, w, h, title, bg_color, border_color):
+    # Helper: draw outer system phase container
+    def draw_phase_container(x, y, w, h, title, subtitle="", bg="#F8FAFC", border="#3B82F6"):
         rect = patches.FancyBboxPatch(
             (x, y),
             w,
             h,
-            boxstyle="round,pad=0.12,rounding_size=0.18",
-            facecolor=bg_color,
-            edgecolor=border_color,
+            boxstyle="round,pad=0.08,rounding_size=0.15",
+            facecolor=bg,
+            edgecolor=border,
             linewidth=1.6,
             zorder=1,
         )
         ax.add_patch(rect)
         ax.text(
-            x + 0.35,
-            y + h - 0.26,
+            x + 0.25,
+            y + h - 0.22,
             title,
             ha="left",
             va="center",
-            fontsize=10.0,
+            fontsize=9.8,
             fontweight="bold",
-            color=border_color,
+            color=border if border not in ["#CBD5E1", "#E2E8F0"] else "#1E293B",
             zorder=2,
         )
+        if subtitle:
+            ax.text(
+                x + 0.25,
+                y + h - 0.42,
+                subtitle,
+                ha="left",
+                va="center",
+                fontsize=7.6,
+                fontstyle="italic",
+                color=c_slate_gray,
+                zorder=2,
+            )
 
-    # Helper: draw card
-    def draw_card(
-        x, y, w, h, title, items, bg="#FFFFFF", border="#CBD5E1", header_color="#0F172A"
-    ):
+    # Helper: draw architectural component card
+    def draw_component_card(x, y, w, h, title, chip_text, items, bg="#FFFFFF", border="#CBD5E1", title_color="#0F172A", chip_color=None):
         rect = patches.FancyBboxPatch(
             (x, y),
             w,
             h,
-            boxstyle="round,pad=0.08,rounding_size=0.12",
+            boxstyle="round,pad=0.05,rounding_size=0.12",
             facecolor=bg,
             edgecolor=border,
-            linewidth=1.3,
+            linewidth=1.2,
             zorder=3,
         )
         ax.add_patch(rect)
+
+        # Title
         ax.text(
-            x + w / 2,
-            y + h - 0.25,
+            x + 0.18,
+            y + h - 0.24,
             title,
-            ha="center",
+            ha="left",
             va="center",
-            fontsize=9.2,
+            fontsize=8.8,
             fontweight="bold",
-            color=header_color,
+            color=title_color,
             zorder=4,
         )
-        y_text = y + h - 0.52
+
+        # Micro-chip badge below title
+        if chip_text:
+            cp_col = chip_color if chip_color else title_color
+            ax.text(
+                x + 0.18,
+                y + h - 0.46,
+                chip_text,
+                ha="left",
+                va="center",
+                fontsize=6.8,
+                fontweight="bold",
+                color=cp_col,
+                bbox=dict(boxstyle="round,pad=0.16", facecolor="#FFFFFF", edgecolor=border, lw=0.7),
+                zorder=4,
+            )
+
+        # Bullet items
+        y_text = y + h - (0.72 if chip_text else 0.48)
         for item in items:
             ax.text(
-                x + 0.14,
+                x + 0.18,
                 y_text,
                 item,
                 ha="left",
                 va="top",
-                fontsize=7.8,
+                fontsize=7.3,
                 color="#334155",
-                linespacing=1.22,
+                linespacing=1.20,
                 zorder=4,
             )
-            y_text -= 0.35
+            y_text -= 0.27
 
-    # Helper: draw straight orthogonal arrow with centered badge
-    def draw_arrow(x1, y1, x2, y2, label="", color="#475569", badge_bg="#FFFFFF"):
+    # Helper: draw orthogonal dataflow arrow with badge
+    def draw_arrow(x1, y1, x2, y2, label="", color="#475569", lw=1.8, style="-|>", badge_color=None, badge_bg="#FFFFFF"):
         ax.annotate(
             "",
             xy=(x2, y2),
             xytext=(x1, y1),
             arrowprops=dict(
-                arrowstyle="-|>",
+                arrowstyle=style,
                 color=color,
-                lw=2.0,
-                mutation_scale=14,
+                lw=lw,
+                mutation_scale=13,
                 shrinkA=0,
                 shrinkB=0,
             ),
-            zorder=5,
+            zorder=6,
         )
         if label:
+            b_col = badge_color if badge_color else color
             ax.text(
                 (x1 + x2) / 2,
                 (y1 + y2) / 2,
                 label,
                 ha="center",
                 va="center",
-                fontsize=7.5,
+                fontsize=7.0,
                 fontweight="bold",
-                color=color,
+                color=b_col,
                 bbox=dict(
-                    boxstyle="round,pad=0.22",
+                    boxstyle="round,pad=0.18",
                     facecolor=badge_bg,
-                    edgecolor=color,
-                    lw=0.9,
+                    edgecolor=b_col,
+                    lw=0.85,
                 ),
-                zorder=6,
+                zorder=7,
             )
 
-    # --------------------------------------------------------------------------
-    # TOP CONTAINER: Offline Phase (Knowledge Ingestion & Storage)
-    # --------------------------------------------------------------------------
-    draw_container(
-        0.45,
-        5.00,
-        7.35,
+    # ==========================================================================
+    # TIER 1 (TOP-LEFT): OFFLINE KNOWLEDGE INGESTION & DUAL INDEXING PLANE
+    # ==========================================================================
+    draw_phase_container(
+        0.5,
+        6.30,
+        10.5,
         3.20,
-        "OFFLINE PHASE: KNOWLEDGE INGESTION & DUAL INDEXING",
-        "#EFF6FF",
-        c_blue_b,
-    )
-
-    # Card 1: Two-Tier Chunker
-    draw_card(
-        0.65,
-        5.20,
-        2.85,
-        2.50,
-        "1. Two-Tier Semantic Chunker",
-        [
-            "• 7 Mountain Disaster Manuals",
-            "• Tier 1: Header H1-H4 structure",
-            "• Preserves tabular rows & legal context",
-            "• Tier 2: Recursive sliding split",
-            "  (Chunk size L=1000, Overlap δ=150)",
-            "• Breadcrumb metadata propagation",
-        ],
-        border="#93C5FD",
-        header_color="#1D4ED8",
-    )
-
-    # Horizontal Arrow between Card 1 and Card 2 (Top Tier)
-    draw_arrow(3.50, 6.45, 4.30, 6.45, label="Passages", color="#2563EB")
-
-    # Card 2: Dual Storage
-    draw_card(
-        4.30,
-        5.20,
-        3.25,
-        2.50,
-        "2. Dual Persistent Storage",
-        [
-            "• ChromaDB Vector Database",
-            "  (Harrier-OSS-0.6B Embeddings, d=1024)",
-            "• BM25 Lexical Inverted Index",
-            "  (Vietnamese Tokenized Index)",
-            "• Dual Indexing guarantees hybrid",
-            "  keyword + dense coverage",
-        ],
-        bg="#F0F9FF",
+        title="TIER 1: OFFLINE KNOWLEDGE INGESTION & DUAL INDEXING PLANE",
+        subtitle="Corpus Ingestion, AST Structural Parsing, Two-Tier Chunking & Persistent Dual-Index Construction",
+        bg="#F8FAFC",
         border="#2563EB",
-        header_color="#1D4ED8",
     )
 
-    # Top Right Container: System Specifications & Goals
-    draw_container(
-        8.20,
-        5.00,
-        7.35,
-        3.20,
-        "OPERATIONAL CRITERIA & SYSTEM GUARANTEES",
-        "#FEF3C7",
-        "#D97706",
-    )
-    draw_card(
-        8.40,
-        5.20,
-        6.95,
-        2.50,
-        "High-Stakes Emergency Decision Support Mandates",
-        [
-            "• Domain Mandate: Fast operational decisions under the 'Four-on-the-spot' doctrine",
-            "• Zero-Hallucination Policy: Exact statutory citations (QĐ 18/2021, Law 33/2013)",
-            "• Sub-Second SLA: End-to-end P50 retrieval latency <350ms for low-bandwidth 3G/4G",
-            "• Cross-Attention Precision: Resolves subtle lexical collisions (e.g., Level 1 vs. Level 3)",
-            "• Life-Safety Attribution: Verifiable first-aid, evacuation routes, and rescue contacts",
+    # Card 1.1: Document Parsing
+    draw_component_card(
+        0.75,
+        6.45,
+        2.90,
+        2.40,
+        title="1. Corpus Normalization",
+        chip_text="[7 Mountain Disaster Manuals]",
+        items=[
+            "• Legal: Law 33/2013, QĐ 18/2021",
+            "• WB5 Handbook, Commune Guides",
+            "• Markdown AST structural parser",
+            "• H1-H4 header hierarchy extraction",
+            "• Preserves statutory tables & articles",
         ],
-        bg="#FFFBEB",
-        border="#F59E0B",
-        header_color="#B45309",
+        bg="#FFFFFF",
+        border="#93C5FD",
+        title_color=c_blue_p,
     )
 
-    # Vertical Feed-Down Arrow from Dual Storage (Top) to Hybrid Retrieval (Bottom)
-    # Perfectly aligned at x = 5.925 (center of Card 2 in both tiers)
-    draw_arrow(
-        5.925, 5.00, 5.925, 3.75, label="Dual Index Lookup", color="#1D4ED8", badge_bg="#FFFFFF"
+    # Arrow 1.1 -> 1.2
+    draw_arrow(3.65, 7.65, 4.30, 7.65, label="AST Nodes", color="#2563EB")
+
+    # Card 1.2: Two-Tier Chunker
+    draw_component_card(
+        4.30,
+        6.45,
+        2.95,
+        2.40,
+        title="2. Two-Tier Semantic Chunker",
+        chip_text="[Tier 1: H1-H4 | Tier 2: L=1000, δ=150]",
+        items=[
+            "• Tier 1: Legal structure partition",
+            "  (Preserves 'Điều, Khoản, Điểm')",
+            "• Tier 2: Recursive sliding window",
+            "  (Chunk size L=1000 chars, δ=150)",
+            "• Institutional breadcrumb metadata",
+            "• Zero semantic context truncation",
+        ],
+        bg="#FFFFFF",
+        border="#93C5FD",
+        title_color=c_blue_p,
     )
 
-    # --------------------------------------------------------------------------
-    # BOTTOM CONTAINER: Online Phase (Inference Pipeline)
-    # --------------------------------------------------------------------------
-    draw_container(
-        0.45,
-        0.50,
-        15.10,
-        3.80,
-        "ONLINE PHASE: REAL-TIME INFERENCE PIPELINE",
-        c_slate_bg,
-        c_slate_b,
-    )
+    # Arrow 1.2 -> 1.3
+    draw_arrow(7.25, 7.65, 7.90, 7.65, label="Passages", color="#2563EB")
 
-    # Bottom Card 1: Operational User Query
-    draw_card(
-        0.65,
-        0.70,
+    # Card 1.3: Dual Persistent Storage Engine
+    draw_component_card(
+        7.90,
+        6.45,
         2.85,
-        3.05,
-        "Operational User Query",
-        [
-            "• Input from Commune Leader:",
-            "  \"13 nhiệm vụ Chủ tịch xã",
-            "   về PCTT khi xảy ra lũ quét?\"",
-            "• Contains administrative legal jargon",
-            "• High-urgency operational need",
-            "• Parallel broadcast to retrieval",
+        2.40,
+        title="3. Dual Persistent Storage",
+        chip_text="[ChromaDB + In-Memory BM25]",
+        items=[
+            "• Dense: ChromaDB Vector Store",
+            "  - Model: Harrier-OSS-0.6B (d=1024)",
+            "  - Cosine distance index",
+            "• Sparse: BM25 Lexical Inverted Index",
+            "  - Tokenized Vietnamese stems",
+            "  - Okapi BM25 (k1=1.5, b=0.75)",
+        ],
+        bg="#EFF6FF",
+        border="#1D4ED8",
+        title_color=c_blue_p,
+    )
+
+    # ==========================================================================
+    # TIER 1 (TOP-RIGHT): OPERATIONAL CRITERIA & EMERGENCY GUARANTEES
+    # ==========================================================================
+    draw_phase_container(
+        11.25,
+        6.30,
+        5.75,
+        3.20,
+        title="OPERATIONAL CRITERIA & SYSTEM GUARANTEES",
+        subtitle="Mandates for High-Stakes Disaster Response Decision Support",
+        bg="#FFFBEB",
+        border="#D97706",
+    )
+    draw_component_card(
+        11.45,
+        6.45,
+        5.35,
+        2.40,
+        title="Mission-Critical Operational Mandates",
+        chip_text="[High-Stakes Emergency Doctrine: Zero-Hallucination]",
+        items=[
+            "• 'Four-on-the-spot' Doctrine: Command, Forces, Equipment, Logistics",
+            "• Zero-Hallucination Mandate: Exact citations (QĐ 18/2021, Law 33/2013)",
+            "• Sub-Second Edge SLA: Retrieval P50 < 350ms over 3G/4G mountain relays",
+            "• Cross-Attention Precision: Resolves subtle lexical collisions (Level 1 vs 3)",
+            "• Life-Safety Attribution: Actionable first aid, routes & rescue contacts",
+        ],
+        bg="#FFFFFF",
+        border="#F59E0B",
+        title_color=c_amber_p,
+    )
+
+    # ==========================================================================
+    # TIER 2 (BOTTOM): ONLINE OPERATIONAL INFERENCE PIPELINE
+    # ==========================================================================
+    draw_phase_container(
+        0.5,
+        0.75,
+        16.5,
+        5.00,
+        title="TIER 2: ONLINE OPERATIONAL HYBRID RETRIEVAL & GROUNDED SYNTHESIS PIPELINE",
+        subtitle="Real-Time Query Ingestion, Multi-Channel Hybrid Retrieval (RRF), Neural Re-Ranking & Grounded LLM Generation",
+        bg="#F8FAFC",
+        border="#475569",
+    )
+
+    # --------------------------------------------------------------------------
+    # STAGE 1: FIELD QUERY INGESTION
+    # --------------------------------------------------------------------------
+    draw_component_card(
+        0.75,
+        0.95,
+        2.90,
+        4.10,
+        title="Stage 1: Field Query Ingestion",
+        chip_text="[Tactical Command Client]",
+        items=[
+            "• Field Commander Input:",
+            "  \"13 nhiệm vụ của Chủ tịch xã",
+            "   khi xảy ra lũ quét sạt lở?\"",
+            "",
+            "• Operational Context:",
+            "  - Severe time-criticality",
+            "  - Complex legal jargon",
+            "  - Risk of life & property",
+            "",
+            "• Query Dispatch:",
+            "  - Parallel broadcast to Dense",
+            "  - Parallel broadcast to Sparse",
+            "  - Preserves token embeddings",
         ],
         bg="#FEF2F2",
         border="#EF4444",
-        header_color="#B91C1C",
+        title_color="#B91C1C",
     )
 
-    # Horizontal Arrow 1 -> 2
-    draw_arrow(3.50, 2.22, 4.30, 2.22, label="Query", color="#0F172A")
+    # Query fan-out arrows to Channel A (Dense) and Channel B (Sparse)
+    draw_arrow(3.65, 3.85, 4.40, 3.85, label="q (Dense)", color="#1D4ED8")
+    draw_arrow(3.65, 2.05, 4.40, 2.05, label="q (Sparse)", color="#0F766E")
 
-    # Bottom Card 2: Stage 2 Hybrid Retrieval & RRF
-    draw_card(
-        4.30,
-        0.70,
-        3.25,
-        3.05,
-        "Stage 2: Hybrid Retrieval & RRF",
-        [
-            "• Dense: Harrier-0.6B Cosine (Top-10)",
-            "• Sparse: BM25 Okapi Match (Top-10)",
-            "• Reciprocal Rank Fusion (k=60):",
-            "  Score(d) = ∑ 1 / (60 + rank_i)",
-            "• Mitigates dense representation bias",
-            "• Fuses candidates into Top-10 Pool",
+    # --------------------------------------------------------------------------
+    # STAGE 2: HYBRID RETRIEVAL & RECIPROCAL RANK FUSION (RRF)
+    # --------------------------------------------------------------------------
+    stage2_rect = patches.FancyBboxPatch(
+        (4.30, 0.95),
+        4.50,
+        4.10,
+        boxstyle="round,pad=0.06,rounding_size=0.12",
+        facecolor="#F0FDF4",
+        edgecolor="#10B981",
+        linewidth=1.3,
+        zorder=2,
+    )
+    ax.add_patch(stage2_rect)
+
+    ax.text(
+        4.50,
+        4.82,
+        "Stage 2: Hybrid Retrieval & Fusion",
+        ha="left",
+        va="center",
+        fontsize=9.2,
+        fontweight="bold",
+        color="#047857",
+        zorder=4,
+    )
+    ax.text(
+        4.50,
+        4.60,
+        "[Dual-Channel Parallel Search + RRF k=60]",
+        ha="left",
+        va="center",
+        fontsize=6.8,
+        fontweight="bold",
+        color="#065F46",
+        bbox=dict(boxstyle="round,pad=0.15", facecolor="#D1FAE5", edgecolor="#10B981", lw=0.7),
+        zorder=4,
+    )
+
+    # Subcard 2A: Dense Vector Retrieval
+    draw_component_card(
+        4.50,
+        2.95,
+        4.10,
+        1.50,
+        title="Channel A: Dense Vector Search",
+        chip_text="[Harrier-OSS-0.6B | Cosine Sim]",
+        items=[
+            "• Dense semantic embedding match",
+            "• Resolves broad thematic intent & concepts",
+            "• Slices Top-10 Dense candidates",
         ],
-        bg="#F0FDF4",
-        border="#16A34A",
-        header_color="#15803D",
+        bg="#FFFFFF",
+        border="#3B82F6",
+        title_color=c_blue_p,
     )
 
-    # Horizontal Arrow 2 -> 3
-    draw_arrow(7.55, 2.22, 8.40, 2.22, label="Top-10 Pool", color="#16A34A")
-
-    # Bottom Card 3: Stage 3 Cross-Encoder Reranker
-    draw_card(
-        8.40,
-        0.70,
-        3.35,
-        3.05,
-        "Stage 3: Cross-Encoder Reranker",
-        [
-            "• Model: ms-marco-MiniLM-L-6-v2",
-            "• Full Token Cross-Attention [q ∘ p]",
-            "• Evaluates fine-grained semantics",
-            "• Re-ranks and slices Top-3 Passages",
-            "• Context Precision: 92.4% (+28.6%)",
-            "• Low Latency: ~25ms per candidate pool",
+    # Subcard 2B: Sparse Lexical Retrieval
+    draw_component_card(
+        4.50,
+        1.10,
+        4.10,
+        1.50,
+        title="Channel B: Sparse Lexical Search",
+        chip_text="[Okapi BM25 | Exact Legal Codes]",
+        items=[
+            "• Inverted index lexical keyword match",
+            "• Pinpoints exact decree numbers & terms",
+            "• Slices Top-10 Sparse candidates",
         ],
-        bg="#FEF3C7",
-        border="#D97706",
-        header_color="#B45309",
+        bg="#FFFFFF",
+        border="#0D9488",
+        title_color=c_teal_p,
     )
 
-    # Horizontal Arrow 3 -> 4
-    draw_arrow(11.75, 2.22, 12.55, 2.22, label="Top-3 Gold", color="#D97706")
+    # Vertical Arrow: Index Feed from Dual Storage (Top, x=8.45) straight down into Stage 2
+    draw_arrow(8.45, 6.45, 8.45, 5.15, label="Dual Index Feed", color="#1D4ED8", badge_bg="#FFFFFF")
 
-    # Bottom Card 4: Stage 4 Grounded Synthesis
-    draw_card(
-        12.55,
-        0.70,
+    # Reciprocal Rank Fusion (RRF) banner inside Stage 2
+    rrf_box = patches.FancyBboxPatch(
+        (4.50, 2.68),
+        4.10,
+        0.24,
+        boxstyle="round,pad=0.03,rounding_size=0.06",
+        facecolor="#D1FAE5",
+        edgecolor="#059669",
+        linewidth=1.0,
+        zorder=4,
+    )
+    ax.add_patch(rrf_box)
+    ax.text(
+        6.55,
         2.80,
-        3.05,
-        "Stage 4: Synthesis Layer",
-        [
-            "• Generator: Gemini 2.5 Flash",
-            "• Strict Attribution Guardrail",
-            "• Faithfulness: 94.8% (Anti-hallucination)",
-            "• Answer Relevance: 91.2%",
-            "• Actionable Checklist Output:",
-            "  - Verifiable Legal Decrees",
-            "  - '4-on-the-spot' Tactical Actions",
-            "  - Emergency Dispatch Contacts",
+        "Reciprocal Rank Fusion (RRF): Score(d) = ∑ 1 / (60 + rank_i(d))",
+        ha="center",
+        va="center",
+        fontsize=6.9,
+        fontweight="bold",
+        color="#065F46",
+        zorder=5,
+    )
+
+    # Arrow from Stage 2 to Stage 3
+    draw_arrow(8.80, 2.80, 9.50, 2.80, label="Top-10 Pool", color="#059669")
+
+    # --------------------------------------------------------------------------
+    # STAGE 3: NEURAL CROSS-ENCODER RE-RANKER
+    # --------------------------------------------------------------------------
+    draw_component_card(
+        9.50,
+        0.95,
+        3.45,
+        4.10,
+        title="Stage 3: Cross-Encoder Reranker",
+        chip_text="[ms-marco-MiniLM-L-6-v2 | Token-Level]",
+        items=[
+            "• Full Token Cross-Attention [q ∘ p]:",
+            "  - Evaluates direct query-document",
+            "    token interactions",
+            "  - Eliminates semantic representation bias",
+            "",
+            "• Precision Slicing Gate:",
+            "  - Evaluates Top-10 candidates",
+            "  - Strictly isolates Top-3 Gold Passages",
+            "",
+            "• Benchmark Validated Performance:",
+            "  - Context Precision: 92.4% (+28.6% lift)",
+            "  - MRR: 0.9167 | Hit@1: 87.0%",
+            "  - Neural Latency: ~25ms per pool",
+        ],
+        bg="#FFFBEB",
+        border="#D97706",
+        title_color=c_amber_p,
+    )
+
+    # Arrow from Stage 3 to Stage 4
+    draw_arrow(12.95, 2.80, 13.65, 2.80, label="Top-3 Gold", color="#D97706")
+
+    # --------------------------------------------------------------------------
+    # STAGE 4: GROUNDED SYNTHESIS & TACTICAL DISPATCH
+    # --------------------------------------------------------------------------
+    draw_component_card(
+        13.65,
+        0.95,
+        3.10,
+        4.10,
+        title="Stage 4: Grounded Synthesis",
+        chip_text="[Gemini 2.5 Flash | Attribution Shield]",
+        items=[
+            "• Fact-Checked LLM Generation:",
+            "  - Model: Gemini 2.5 Flash",
+            "  - Strict In-Context Attribution Guard",
+            "  - Faithfulness: 94.8% (Anti-hallucination)",
+            "  - Answer Relevance: 91.2%",
+            "",
+            "• Verified Actionable Output:",
+            "  ✓ 4-on-the-spot Protocol Checklist",
+            "    (Chỉ huy, Lực lượng, PT, Hậu cần)",
+            "  ✓ Verifiable Statutory Citations",
+            "    (Điều 32 Luật PCTT, QĐ 18)",
+            "  ✓ Certified Emergency Dispatch",
+            "    Hotline & Evacuation Contacts",
         ],
         bg="#FAF5FF",
-        border="#9333EA",
-        header_color="#7E22CE",
+        border="#7C3AED",
+        title_color=c_purple_p,
     )
 
-    plt.tight_layout()
+    # --------------------------------------------------------------------------
+    # BOTTOM SLA & NFR BAR (Enterprise Platform Standard)
+    # --------------------------------------------------------------------------
+    sla_bg = patches.FancyBboxPatch(
+        (0.5, 0.15),
+        16.5,
+        0.45,
+        boxstyle="round,pad=0.04,rounding_size=0.10",
+        facecolor="#0F172A",
+        edgecolor="#334155",
+        linewidth=1.2,
+        zorder=2,
+    )
+    ax.add_patch(sla_bg)
+
+    sla_text = (
+        "OPERATIONAL SLAs:   "
+        "[LATENCY] P50 < 350ms (End-to-End <1.8s)   |   "
+        "[PRECISION] Context Precision: 92.4% (+28.6% vs Naive)   |   "
+        "[FIDELITY] Grounding Faithfulness: 94.8%   |   "
+        "[ROBUSTNESS] High-Relief Disaster Hit@1: 100%"
+    )
+    ax.text(
+        8.75,
+        0.37,
+        sla_text,
+        ha="center",
+        va="center",
+        fontsize=8.2,
+        fontweight="bold",
+        color="#F8FAFC",
+        zorder=3,
+    )
+
     out_path = os.path.join(OUTPUT_DIR, "fig1_terra_architecture.png")
     plt.savefig(out_path, dpi=300, bbox_inches="tight")
     plt.close()
