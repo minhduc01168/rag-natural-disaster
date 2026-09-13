@@ -1,10 +1,23 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Fragment } from 'react';
 
-import { MapContainer, TileLayer, Marker, Popup, Circle } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, Circle, useMap } from 'react-leaflet';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import L from 'leaflet';
 
 import 'leaflet/dist/leaflet.css';
+
+// Automatically resize Leaflet map on mount and window changes
+function MapResizer() {
+  const map = useMap();
+  useEffect(() => {
+    map.invalidateSize();
+    const timer = setTimeout(() => {
+      map.invalidateSize();
+    }, 250);
+    return () => clearTimeout(timer);
+  }, [map]);
+  return null;
+}
 
 // Custom Leaflet Markers
 const landslideRedIcon = L.divIcon({
@@ -181,10 +194,13 @@ export function ResearchPage() {
               zoom={8}
               scrollWheelZoom={false}
               className="w-full h-full"
+              style={{ width: '100%', height: '100%' }}
             >
+              <MapResizer />
               <TileLayer
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+                url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+                maxZoom={19}
               />
 
               {/* VRAIN Rain Gauge Station Markers */}
@@ -209,7 +225,7 @@ export function ResearchPage() {
 
               {/* HDX Landslide Hotspots & Buffer Risk Polygons (Circle Overlays) */}
               {filteredHotspots.map((hotspot) => (
-                <div key={hotspot.id}>
+                <Fragment key={hotspot.id}>
                   {/* Circle Buffer Overlay (Khoanh vùng nguy cơ sạt lở 1.8km - 3.5km) */}
                   <Circle
                     center={[hotspot.lat, hotspot.lng]}
@@ -243,7 +259,7 @@ export function ResearchPage() {
                       </div>
                     </Popup>
                   </Marker>
-                </div>
+                </Fragment>
               ))}
             </MapContainer>
           </div>

@@ -1,6 +1,20 @@
-import { MapContainer, TileLayer, GeoJSON } from 'react-leaflet';
+import { useEffect } from 'react';
+import { MapContainer, TileLayer, GeoJSON, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+
+// Automatically resize Leaflet map on mount
+function MapResizer() {
+  const map = useMap();
+  useEffect(() => {
+    map.invalidateSize();
+    const timer = setTimeout(() => {
+      map.invalidateSize();
+    }, 250);
+    return () => clearTimeout(timer);
+  }, [map]);
+  return null;
+}
 
 // Fix Leaflet default icon issue
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -61,10 +75,13 @@ export function MapView({ center = [21.0285, 105.8542], zoom = 10, geojson, onFe
       center={center}
       zoom={zoom}
       className="w-full h-[500px] rounded-xl overflow-hidden"
+      style={{ width: '100%', height: '500px' }}
     >
+      <MapResizer />
       <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+        url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+        maxZoom={19}
       />
       
       {geojson && geojson.features.length > 0 && (

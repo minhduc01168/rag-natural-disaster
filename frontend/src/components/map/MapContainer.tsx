@@ -17,10 +17,15 @@ export function MapContainerComponent({ center = [21.0285, 105.8542], zoom = 10 
       // Initialize map
       const map = L.map(mapRef.current).setView(center, zoom);
 
-      // Add OpenStreetMap tiles
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      // Add CartoDB Voyager tiles
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+        maxZoom: 19,
       }).addTo(map);
+
+      setTimeout(() => {
+        map.invalidateSize();
+      }, 250);
 
       mapInstanceRef.current = map;
     }

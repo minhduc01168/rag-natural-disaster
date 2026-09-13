@@ -44,6 +44,9 @@ self.addEventListener('fetch', (event) => {
   // Skip non-GET requests
   if (request.method !== 'GET') return;
 
+  // Pass external requests (e.g. Map tiles, weather APIs) directly to network
+  if (url.origin !== location.origin) return;
+
   // Navigation requests - network first, fallback to offline page
   if (request.mode === 'navigate') {
     event.respondWith(
