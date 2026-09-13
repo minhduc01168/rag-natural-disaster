@@ -38,7 +38,7 @@ class EmbedResponse(BaseModel):
     embeddings: list[list[float]]
 
 @app.post("/embed", response_model=EmbedResponse)
-async def embed_texts(request: EmbedRequest):
+def embed_texts(request: EmbedRequest):
     if not request.texts:
         return EmbedResponse(embeddings=[])
     
@@ -47,8 +47,8 @@ async def embed_texts(request: EmbedRequest):
 
     try:
         n = len(request.texts)
-        # Tối ưu batch_size: n <= 4 (query chat đơn lẻ) dùng batch_size=n; nhiều chunks dùng 64
-        batch_size = 64 if n > 4 else n
+        # Sử dụng batch size vừa phải để CPU xử lý ổn định
+        batch_size = min(32, n)
         embeddings = model.encode(
             request.texts,
             batch_size=batch_size,

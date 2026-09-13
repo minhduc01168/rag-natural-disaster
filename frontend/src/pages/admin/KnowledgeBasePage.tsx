@@ -75,7 +75,8 @@ export function KnowledgeBasePage() {
       });
 
       if (!response.ok) {
-        throw new Error('Lỗi khi lưu vào CSDL');
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.detail || 'Lỗi khi lưu vào CSDL');
       }
 
       setSuccess(`Đã lưu thành công ${chunks.length} phân đoạn vào hệ thống.`);

@@ -18,7 +18,19 @@ sys.path.append(os.path.abspath("."))
 from app.rag.ingestion.chunker import SemanticChunker
 from app.rag.ingestion.vector_store import ChromaManager
 
-SOURCE_DIR = "filtered_pdf_markdown"
+def get_source_dir():
+    candidates = [
+        os.environ.get("SOURCE_DIR", ""),
+        "filtered_pdf_markdown",
+        "/app/filtered_pdf_markdown",
+        os.path.join(os.path.dirname(__file__), "..", "filtered_pdf_markdown"),
+    ]
+    for c in candidates:
+        if c and os.path.exists(c):
+            return c
+    return "filtered_pdf_markdown"
+
+SOURCE_DIR = get_source_dir()
 
 DOCUMENTS = [
     ("0575f59d64e3407fa40049196cd01c5d.md", "Tài liệu tập huấn PCTT cơ bản"),
@@ -31,9 +43,9 @@ DOCUMENTS = [
 ]
 
 
-def seed_knowledge_base(collection_name: str = "disaster_knowledge", reset: bool = False, batch_size: int = 50):
+def seed_knowledge_base(collection_name: str = "disaster_knowledge", reset: bool = False, batch_size: int = 4):
     print("=" * 75)
-    print(f"  TERRA: SEEDING KNOWLEDGE BASE -> Collection: '{collection_name}'")
+    print(f"  TERRA: SEEDING KNOWLEDGE BASE -> Collection: '{collection_name}' (Source: {SOURCE_DIR})")
     print("=" * 75)
 
     chroma_mgr = ChromaManager(collection_name=collection_name)

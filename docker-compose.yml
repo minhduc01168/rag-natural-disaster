@@ -5,6 +5,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - "${FRONTEND_PORT:-3000}:80"
+    volumes:
+      - ./frontend/nginx.conf:/etc/nginx/conf.d/default.conf:ro
     depends_on:
       - backend
     networks:
@@ -24,6 +26,9 @@ services:
       - EMBEDDING_SERVICE_URL=http://embedding_service:8002/embed
     volumes:
       - backend_chroma:/app/.chroma
+      - ./backend/app:/app/app
+      - ./scripts:/app/scripts:ro
+      - ./filtered_pdf_markdown:/app/filtered_pdf_markdown:ro
     depends_on:
       - postgres
       - chromadb
@@ -74,6 +79,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8002:8002"
+    volumes:
+      - ./embedding_service/main.py:/app/main.py
     networks:
       - terraalert-network
 

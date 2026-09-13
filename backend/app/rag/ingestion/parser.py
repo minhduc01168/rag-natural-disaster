@@ -87,6 +87,12 @@ class MasterDocumentParser:
     def route_and_parse(self, file_path: str) -> str:
         ext = os.path.splitext(file_path)[1].lower()
         
+        # Nhóm file Markdown hoặc Text thuần túy: Đọc trực tiếp siêu nhanh, bảo toàn cấu trúc chuẩn
+        if ext in ['.md', '.txt', '.markdown']:
+            print(f"Routing: Đọc trực tiếp file văn bản thuần {ext}")
+            with open(file_path, "r", encoding="utf-8") as f:
+                return f.read()
+
         # Nhóm file ưu tiên Gemini
         gemini_preferred = ['.pdf', '.jpg', '.jpeg', '.png']
         
@@ -100,7 +106,7 @@ class MasterDocumentParser:
                 parser = self._get_docling()
                 return parser.parse_document(file_path)
         else:
-            # Nhóm file ưu tiên Docling (docx, pptx, md, html, v.v)
+            # Nhóm file văn phòng phức tạp (docx, pptx, html, v.v)
             print(f"Routing: Chọn Docling cho định dạng {ext}")
             parser = self._get_docling()
             return parser.parse_document(file_path)
