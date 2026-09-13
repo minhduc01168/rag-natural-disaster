@@ -17,10 +17,10 @@ export function MapContainerComponent({ center = [21.0285, 105.8542], zoom = 10 
       // Initialize map
       const map = L.map(mapRef.current).setView(center, zoom);
 
-      // Add CartoDB Voyager tiles
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-        maxZoom: 19,
+      // Add Esri World Topo tiles
+      L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
+        attribution: 'Tiles &copy; Esri &mdash; Esri, USGS, NOAA',
+        maxZoom: 18,
       }).addTo(map);
 
       setTimeout(() => {
